@@ -78,7 +78,7 @@
             border-radius: 6px; padding: 18px; box-shadow: 0 1px 2px rgba(0,0,0,0.03);
         }
         .kpi-card.fat { border-left-color: #C58A94; }
-        .kpi-card.das { border-left-color: #10B981; }
+        .kpi-card.das { border-left-color: #F59E0B; }
         .kpi-card.acu { border-left-color: #8B5CF6; }
         .kpi-card.carga { border-left-color: #6366F1; }
         .kpi-card.resultado { border-left-color: #10B981; }
@@ -86,6 +86,7 @@
         .kpi-value { font-size: 22px; font-weight: 700; color: #111827; margin-bottom: 4px; }
         .kpi-sub { font-size: 12px; color: #6B7280; }
         .kpi-sub.pos { color: #10B981; }
+        .kpi-sub.warn { color: #F59E0B; }
 
         /* PAINEL FINANCEIRO */
         .panel {
@@ -112,8 +113,18 @@
         }
         .payment-type { font-size: 13px; color: #6B7280; font-weight: 600; margin-bottom: 12px; }
         .payment-type.pago { color: #10B981; }
+        .payment-value { font-size: 24px; font-weight: 700; color: #111827; margin-bottom: 8px; }
+        .payment-value.pago { color: #10B981; }
         .payment-info { font-size: 12px; color: #6B7280; margin-bottom: 10px; line-height: 1.4; }
         .payment-info.pago { color: #059669; }
+        .payment-code { font-size: 11px; background: #F3F4F6; padding: 8px; border-radius: 4px;
+            color: #374151; margin-bottom: 12px; word-break: break-all; font-family: monospace; }
+        .btn-copy {
+            width: 100%; padding: 10px; border: none; border-radius: 6px; cursor: pointer;
+            font-size: 12px; font-weight: 600; transition: all 0.2s;
+        }
+        .btn-copy.das { background: #C5A059; color: white; }
+        .btn-copy.das:hover { background: #B89146; }
 
         /* BARRA DE LIMITE MEI */
         .limit-bar-container {
@@ -206,29 +217,29 @@
         <!-- KPI CARDS -->
         <div class="kpis-grid">
             <div class="kpi-card fat">
-                <div class="kpi-label">Faturamento Agosto</div>
-                <div class="kpi-value">R$ 4.880,00</div>
+                <div class="kpi-label">Faturamento Setembro</div>
+                <div class="kpi-value">R$ 4,830.00</div>
                 <div class="kpi-sub">NFS-e Emitida</div>
             </div>
             <div class="kpi-card das">
                 <div class="kpi-label">DAS-MEI Status</div>
-                <div class="kpi-value" style="font-size: 16px;">✔️ Quitado</div>
-                <div class="kpi-sub pos">Pago e Regularizado</div>
+                <div class="kpi-value">R$ 86,05</div>
+                <div class="kpi-sub warn">Venc.: 20/10/2026</div>
             </div>
             <div class="kpi-card acu">
                 <div class="kpi-label">Acumulado no Ano</div>
-                <div class="kpi-value">R$ 4.880,00</div>
-                <div class="kpi-sub">14,5% do limite</div>
+                <div class="kpi-value">R$ 9,710.00</div>
+                <div class="kpi-sub">28,8% do limite</div>
             </div>
             <div class="kpi-card carga">
                 <div class="kpi-label">Carga Tributária</div>
-                <div class="kpi-value">1,76%</div>
-                <div class="kpi-sub">Efetiva em agosto</div>
+                <div class="kpi-value">3.79%</div>
+                <div class="kpi-sub">Efetiva em setembro</div>
             </div>
             <div class="kpi-card resultado">
                 <div class="kpi-label">Resultado Operacional</div>
-                <div class="kpi-value">R$ 4.793,95</div>
-                <div class="kpi-sub pos">Margem: 98,24%</div>
+                <div class="kpi-value">R$ 4,646.95</div>
+                <div class="kpi-sub pos">Margem: 96.21%</div>
             </div>
         </div>
 
@@ -236,55 +247,58 @@
         <div class="panel">
             <div class="panel-title">
                 <span>📋 Painel Financeiro - Guias e Pagamentos do Mês</span>
-                <div class="competencia-badge">Competência Agosto/2026</div>
+                <div class="competencia-badge">Competência Setembro/2026</div>
             </div>
             <div class="payment-grid">
-                <div class="payment-item pago">
-                    <div class="payment-type pago">✔️ Guia DAS-MEI de Agosto/2026 Paga e Regularizada</div>
-                    <div class="payment-info pago">
-                        O valor fixo de <strong>R$ 86,05</strong> (INSS R$ 81,05 + ISS R$ 5,00) referente à competência 08/2026 já foi quitado. <strong>Início de atividades 100% regular.</strong>
+                <div class="payment-item">
+                    <div class="payment-type">DAS-MEI Simples Nacional</div>
+                    <div class="payment-value">R$ 86,05</div>
+                    <div class="payment-info">
+                        <strong>Vencimento:</strong> 20/10/2026<br>
+                        INSS Previdenciário R$ 81,05 + ISS Municipal R$ 5,00.
                     </div>
+                    <div class="payment-code">85890000000 0 86050328262 0 93070826286 3 92128608699 9</div>
+                    <button class="btn-copy das" onclick="copiarCodigo('85890000000086050328262093070826286392128608699 9', this)">
+                        📋 Copiar Código DAS-MEI (R$ 86,05)
+                    </button>
                 </div>
             </div>
         </div>
 
-                <!-- APURAÇÃO DE RESULTADO -->
+        <!-- APURAÇÃO DE RESULTADO -->
         <div class="apuracao-card">
-            <div class="apuracao-titulo">📊 Apuração de Resultado - Agosto/2026</div>
+            <div class="apuracao-titulo">📊 Apuração de Resultado - Setembro/2026</div>
             
             <div class="apuracao-linha">
                 <div class="apuracao-label destaque">Receita Bruta (Faturamento)</div>
-                <div class="apuracao-valor">R$ 4,880.00</div>
+            <div class="apuracao-valor">R$ 4,830.00</div>
             </div>
             
             <div class="apuracao-linha">
                 <div class="apuracao-label"><span class="apuracao-deducao">−</span> Despesa Tributária (DAS-MEI)</div>
                 <div class="apuracao-valor">R$ 86.05</div>
-            </div>
-            
+            </div>            
             <div class="apuracao-linha">
-                <div class="apuracao-label"><span class="apuracao-deducao">−</span> Despesa Operacional (Insumos/Materiais)</div>
-                <div class="apuracao-valor">R$ 0.00</div>
+                <div class="apuracao-label"><span class="apuracao-deducao">−</span> Despesa Contabilidade (Serviço Tomado)</div>
+                <div class="apuracao-valor">R$ 97.00</div>
             </div>
             
             <div class="apuracao-linha total">
                 <div class="apuracao-label">= Lucro Líquido (Disponível ao CPF)</div>
-                <div class="apuracao-valor">R$ 4,793.95</div>
+                <div class="apuracao-valor">R$ 4,646.95</div>
             </div>
             
             <div class="apuracao-info">
-                ℹ️ <strong>Nota:</strong> Este é um exemplo de segregação de despesas. 
-                Você pode personalizar as categorias conforme seus gastos mensais (infraestrutura, softwares, etc.).
+                ℹ️ <strong>Legenda:</strong> DAS-MEI = Guia federal de impostos | Contabilidade = Serviço contábil mensal
             </div>
         </div>
-
-<!-- BARRA DE LIMITE MEI -->
+        <!-- BARRA DE LIMITE MEI -->
         <div class="limit-bar-container">
             <div class="limit-bar-title">📊 Barra de Limite MEI 2026</div>
             <div class="limit-bar-stats">
                 <div class="limit-stat">
                     <div class="limit-stat-label">Faturamento Acumulado</div>
-                    <div class="limit-stat-value">R$ 4.880,00</div>
+                    <div class="limit-stat-value">R$ 9,710.00</div>
                 </div>
                 <div class="limit-stat">
                     <div class="limit-stat-label">Limite Proporcional Anual 2026 (5 meses até Dezembro)</div>
@@ -292,11 +306,11 @@
                 </div>
                 <div class="limit-stat">
                     <div class="limit-stat-label">Margem Segura até Dezembro</div>
-                    <div class="limit-stat-value">R$ 28.870,00 (85,5%)</div>
+                    <div class="limit-stat-value">R$ 24,040.00 (71.2%)</div>
                 </div>
             </div>
             <div class="limit-progress">
-                <div class="limit-progress-bar" style="width: 14.5%;"></div>
+                <div class="limit-progress-bar" style="width: 29%;"></div>
             </div>
             <div class="limit-progress-text">14,5% utilizado | 85,5% disponível</div>
         </div>
@@ -416,17 +430,17 @@
                 new Chart(ctxBarras, {
                     type: 'bar',
                     data: {
-                        labels: ['Agosto/2026'],
+                        labels: ['Setembro/2026'],
                         datasets: [
                             {
                                 label: 'Faturamento',
-                                data: [4880.00],
+                                data: [4830.0],
                                 backgroundColor: '#C58A94',
                                 borderRadius: 6
                             },
                             {
                                 label: 'Despesas',
-                                data: [0.00],
+                                data: [97.00],
                                 backgroundColor: '#C5A059',
                                 borderRadius: 6
                             }
