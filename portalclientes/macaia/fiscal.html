@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MACAIA GESTAO LTDA - Portal do Cliente</title>
+    <title>Painel Fiscal - MACAIA GESTAO LTDA</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -17,319 +17,257 @@
             align-items: center;
             justify-content: flex-start;
             min-height: 100vh;
-            padding: 40px 20px;
+            padding: 30px 20px;
             position: relative;
-            overflow-x: hidden;
+        }
+
+        .voltar-btn {
+            align-self: center;
+            background: #ffffff;
+            color: #C5A059;
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 4px;
+            border: 1px solid #e8dcd7;
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            transition: all 0.25s ease-out;
+        }
+
+        .voltar-btn:hover {
+            background: #fef9f5;
+            border-color: #C5A059;
         }
 
         .header-card {
             background: #ffffff;
             width: 100%;
-            max-width: 950px;
-            padding: 28px 32px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            max-width: 900px;
+            padding: 16px 20px;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
             border-left: 4px solid #C5A059;
-            margin-bottom: 40px;
+            margin-bottom: 28px;
             text-align: center;
-            position: relative;
-            z-index: 1;
         }
 
         .header-info h1 {
-            font-size: 22px;
+            font-size: 18px;
             color: #2d2d2d;
             font-weight: 600;
-            letter-spacing: -0.3px;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
         .header-info p {
-            font-size: 13px;
-            color: #7a7a7a;
-            margin-bottom: 10px;
+            font-size: 12px;
+            color: #8a8a8a;
             font-weight: 400;
         }
 
-        /* CONTAINER DOS MESES */
-        .months-container {
+        .meses-container {
             width: 100%;
-            max-width: 950px;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-            margin-bottom: 40px;
-            position: relative;
-            z-index: 1;
+            max-width: 900px;
+            margin-bottom: 30px;
         }
 
-        /* CARD DO MÊS */
-        .month-card {
-            background: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            border: 1px solid #f0e8e3;
-            padding: 28px;
-            transition: all 0.3s ease-out;
-        }
-
-        .month-card.atual {
-            border-left: 6px solid #C5A059;
-            box-shadow: 0 4px 16px rgba(197, 160, 89, 0.1);
-        }
-
-        .month-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 24px;
-            padding-bottom: 16px;
-            border-bottom: 2px solid #f0e8e3;
-        }
-
-        .month-title {
-            font-size: 24px;
+        .meses-title {
+            font-size: 16px;
             font-weight: 700;
             color: #2d2d2d;
-            letter-spacing: -0.5px;
+            margin-bottom: 14px;
         }
 
-        .month-badge {
-            display: inline-block;
-            background: #fef5f2;
-            color: #a88170;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            padding: 5px 12px;
-            border-radius: 20px;
-            border: 1px solid #f0e8e3;
-            letter-spacing: 0.4px;
+        /* LAYOUT COLUNA ÚNICA */
+        .meses-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            max-width: 950px;
         }
 
-        .month-badge.atual {
-            background: #fbeee8;
-            color: #C5A059;
-            border-color: #f2eceb;
+        /* TODOS OS MESES IGUAL */
+        .mes-destaque {
+            display: contents;
         }
 
-        /* GRID DE 4 CARDS DENTRO DE CADA MÊS */
-        .menu-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 14px;
-        }
-
-        .portal-card {
+        .mes-card-destaque {
             background: #ffffff;
             text-decoration: none;
             color: inherit;
-            padding: 28px 18px 20px 18px;
-            border-radius: 10px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+            padding: 14px 16px;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            border: 2px solid #E74C3C;
+            text-align: center;
+            transition: all 0.25s ease-out;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+        }
+
+        .mes-card-destaque:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(231, 76, 60, 0.1);
+        }
+
+        .mes-nome-destaque {
+            font-size: 13px;
+            font-weight: 600;
+            color: #2d2d2d;
+        }
+
+        .mes-ano-destaque {
+            font-size: 10px;
+            color: #a0a0a0;
+            font-weight: 400;
+        }
+
+        .mes-badge-destaque {
+            display: inline-block;
+            background: #C5A059;
+            color: white;
+            font-size: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 12px;
+            margin-top: 4px;
+            letter-spacing: 0.4px;
+        }
+
+        /* OUTROS MESES */
+        .outros-meses {
+            display: contents;
+        }
+
+        .mes-card {
+            background: #ffffff;
+            text-decoration: none;
+            color: inherit;
+            padding: 14px 16px;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
             border: 1px solid #f0e8e3;
             text-align: center;
             transition: all 0.25s ease-out;
             display: flex;
             flex-direction: column;
             align-items: center;
-        }
-
-        .portal-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 14px rgba(197, 160, 89, 0.08);
-            border-color: #e8dcd7;
-        }
-
-        .icon-circle {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
             justify-content: center;
-            margin-bottom: 12px;
-            background: #fef5f2;
-            color: #C5A059;
-            transition: all 0.25s ease-out;
+            gap: 2px;
         }
 
-        .icon-circle svg {
-            width: 26px;
-            height: 26px;
-            stroke: currentColor;
-            fill: none;
-            stroke-width: 1.5;
-            stroke-linecap: round;
-            stroke-linejoin: round;
+        .mes-card:hover {
+            transform: translateY(-1px);
+            border-color: #C5A059;
+            box-shadow: 0 2px 6px rgba(197, 160, 89, 0.08);
         }
 
-        .portal-card:hover .icon-circle {
-            transform: scale(1.05);
-            background: #fdf0ea;
-            color: #C5A059;
-        }
-
-        .portal-card h2 {
-            font-size: 15px;
+        .mes-nome {
+            font-size: 13px;
             font-weight: 600;
-            margin-bottom: 8px;
             color: #2d2d2d;
         }
 
-        .portal-card p {
-            font-size: 12px;
-            color: #7a7a7a;
-            line-height: 1.4;
-            margin-bottom: 14px;
-            flex-grow: 1;
+        .mes-ano {
+            font-size: 10px;
+            color: #a0a0a0;
             font-weight: 400;
         }
 
-        .card-button {
-            width: 100%;
-            padding: 10px;
-            border-radius: 6px;
-            font-size: 10px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.4px;
-            background: #e8dcd7;
-            color: #8b7355;
-            border: none;
-            cursor: pointer;
-            transition: all 0.25s ease-out;
-        }
-
-        .portal-card:hover .card-button {
-            background: #dcc9c1;
-            color: #7a6447;
-        }
-
-        /* RODAPÉ */
+        /* FOOTER */
         .footer-institucional {
             text-align: center;
             width: 100%;
-            max-width: 950px;
+            max-width: 900px;
             border-top: 1px solid #e8dcd7;
-            padding-top: 20px;
+            padding-top: 16px;
             margin-top: 20px;
-            position: relative;
-            z-index: 1;
         }
 
         .footer-institucional p {
-            font-size: 12px;
+            font-size: 11px;
             color: #8a8a8a;
-            line-height: 1.6;
+            line-height: 1.5;
             font-weight: 400;
         }
 
         .footer-confidencial {
-            font-size: 11px !important;
+            font-size: 10px !important;
             color: #a39390 !important;
-            margin-top: 8px;
-            font-weight: 400;
+            margin-top: 6px;
         }
 
         /* RESPONSIVO */
         @media (max-width: 680px) {
-            .menu-container {
+            .meses-layout {
                 grid-template-columns: 1fr;
-                gap: 10px;
             }
 
-            .month-card {
-                padding: 20px;
-            }
-
-            .month-title {
-                font-size: 20px;
+            .outros-meses {
+                grid-column: 1;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- CABEÇALHO -->
+    <a href="index.html" class="voltar-btn">← Voltar ao Portal</a>
+
+    <!-- HEADER -->
     <div class="header-card">
         <div class="header-info">
-            <h1>MACAIA GESTAO LTDA</h1>
-            <p>CNPJ: 38.528.262/0001-64 • Painel de Atendimento Contábil</p>
+            <h1>Fiscal</h1>
+            <p>MACAIA GESTAO LTDA • Selecione o mês para visualizar</p>
         </div>
     </div>
 
-    <!-- CONTAINER DOS MESES -->
-    <div class="months-container">
+    <!-- MESES -->
+    <div class="meses-container">
+        <h2 class="meses-title">Meses Disponíveis</h2>
 
-        <!-- MÊS: SETEMBRO/2026 -->
-        <div class="month-card atual">
-            <div class="month-header">
-                <div class="month-title">Setembro/2026</div>
-                <div class="month-badge atual">Mês Atual</div>
-            </div>
+        <div class="meses-layout">
 
-            <div class="menu-container">
-                <a href="fiscal.html" class="portal-card">
-                    <div class="icon-circle">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M3 3v18h18"></path>
-                            <path d="M7 11l3-3 3 3 3-3 3 3"></path>
-                            <circle cx="9" cy="8" r="1.5"></circle>
-                            <circle cx="15" cy="6" r="1.5"></circle>
-                        </svg>
-                    </div>
-                    <h2>Fiscal</h2>
-                    <p>Faturamento, impostos e apuração.</p>
-                    <div class="card-button">Acessar</div>
-                </a>
-
-                <a href="#dp" class="portal-card">
-                    <div class="icon-circle">
-                        <svg viewBox="0 0 24 24">
-                            <circle cx="12" cy="8" r="3"></circle>
-                            <path d="M6 14c0-2 2.5-4 6-4s6 2 6 4v4H6z"></path>
-                        </svg>
-                    </div>
-                    <h2>Depto. Pessoal</h2>
-                    <p>Resumo da folha e encargos.</p>
-                    <div class="card-button">Acessar</div>
-                </a>
-
-                <a href="#financeiro" class="portal-card">
-                    <div class="icon-circle">
-                        <svg viewBox="0 0 24 24">
-                            <rect x="3" y="3" width="18" height="18" rx="2"></rect>
-                            <line x1="9" y1="9" x2="9" y2="15"></line>
-                            <line x1="12" y1="9" x2="12" y2="15"></line>
-                            <line x1="15" y1="9" x2="15" y2="15"></line>
-                        </svg>
-                    </div>
-                    <h2>Financeiro</h2>
-                    <p>Fluxo de caixa e análises.</p>
-                    <div class="card-button">Acessar</div>
-                </a>
-
-                <a href="#contabilidade" class="portal-card">
-                    <div class="icon-circle">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M7 3h10c1.1 0 2 .9 2 2v14c0 1.1-.9 2-2 2H7c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2z"></path>
-                            <line x1="9" y1="6" x2="15" y2="6"></line>
-                            <line x1="9" y1="10" x2="15" y2="10"></line>
-                            <line x1="9" y1="14" x2="15" y2="14"></line>
-                            <line x1="9" y1="18" x2="13" y2="18"></line>
-                        </svg>
-                    </div>
-                    <h2>Contabilidade</h2>
-                    <p>Balancetes e relatórios.</p>
-                    <div class="card-button">Acessar</div>
+            <!-- COLUNA ESQUERDA - SETEMBRO DESTAQUE -->
+            <div class="mes-destaque">
+                <a href="fiscal/documentos/2026/09.2026/index.html" class="mes-card-destaque">
+                    <div class="mes-nome-destaque">Setembro</div>
+                    <div class="mes-ano-destaque">2026</div>
+                    <div class="mes-badge-destaque">Atual</div>
                 </a>
             </div>
+
+            <!-- COLUNA DIREITA - OUTROS MESES -->
+            <div class="outros-meses">
+                <a href="fiscal/documentos/2026/08.2026/index.html" class="mes-card">
+                    <div class="mes-nome">Agosto</div>
+                    <div class="mes-ano">2026</div>
+                </a>
+
+                <a href="fiscal/documentos/2026/07.2026/index.html" class="mes-card">
+                    <div class="mes-nome">Julho</div>
+                    <div class="mes-ano">2026</div>
+                </a>
+
+                <a href="fiscal/documentos/2026/06.2026/index.html" class="mes-card">
+                    <div class="mes-nome">Junho</div>
+                    <div class="mes-ano">2026</div>
+                </a>
+
+                <a href="fiscal/documentos/2026/05.2026/index.html" class="mes-card">
+                    <div class="mes-nome">Maio</div>
+                    <div class="mes-ano">2026</div>
+                </a>
+            </div>
+
         </div>
-
     </div>
 
-    <!-- RODAPÉ -->
+    <!-- FOOTER -->
     <div class="footer-institucional">
         <p>Jaqueline Ferreira Assessoria Contábil Ltda | CRC SC-013019/O-4</p>
         <p>Responsável Técnica: Jaqueline do Prado Ferreira | CRC SC-048028/O-0</p>
