@@ -1,1 +1,706 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Fiscal</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #F9FAFB; color: #1F2937; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
 
+        /* HEADER */
+        .header {
+            background: white; border: 1px solid #E5E7EB; border-radius: 8px; padding: 24px;
+            margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .header-left h1 { font-size: 18px; font-weight: 700; color: #111827; margin-bottom: 4px; }
+        .header-left p { font-size: 13px; color: #6B7280; margin: 2px 0; }
+        .header-regime {
+            background: linear-gradient(135deg, #C58A94 0%, #C5A059 100%);
+            color: white; padding: 8px 16px; border-radius: 6px;
+            font-size: 12px; font-weight: 600;
+        }
+
+        /* KPIs */
+        .kpis-grid {
+            display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;
+            margin-bottom: 24px;
+        }
+        .kpi-card {
+            background: white; border: 1px solid #E5E7EB; border-left: 4px solid;
+            border-radius: 6px; padding: 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+        }
+        .kpi-card.fat { border-left-color: #C58A94; }
+        .kpi-card.das { border-left-color: #F59E0B; }
+        .kpi-card.rbt { border-left-color: #8B5CF6; }
+        .kpi-card.carga { border-left-color: #6366F1; }
+        .kpi-card.resultado { border-left-color: #10B981; }
+        .kpi-label { font-size: 10px; color: #6B7280; text-transform: uppercase; font-weight: 600; margin-bottom: 8px; }
+        .kpi-value { font-size: 20px; font-weight: 700; color: #111827; margin-bottom: 4px; }
+        .kpi-sub { font-size: 11px; color: #6B7280; }
+        .kpi-sub.pos { color: #10B981; }
+        .kpi-sub.warn { color: #F59E0B; }
+
+        /* PAINEL */
+        .panel {
+            background: white; border: 1px solid #E5E7EB; border-radius: 8px;
+            padding: 20px; margin-bottom: 24px;
+        }
+        .panel-title {
+            font-size: 14px; font-weight: 600; color: #111827; margin-bottom: 16px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .competencia-badge {
+            background: #FEF3C7; color: #92400E; padding: 4px 12px;
+            border-radius: 16px; font-size: 11px; font-weight: 600;
+        }
+
+        /* PAGAMENTOS */
+        .payment-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px;
+        }
+        .payment-item {
+            border: 1px solid #E5E7EB; border-radius: 6px; padding: 14px;
+            background: #F9FAFB;
+        }
+        .payment-type { font-size: 12px; color: #6B7280; font-weight: 600; margin-bottom: 10px; }
+        .payment-value { font-size: 22px; font-weight: 700; color: #111827; margin-bottom: 8px; }
+        .payment-info { font-size: 11px; color: #6B7280; margin-bottom: 10px; line-height: 1.4; }
+        .payment-code { font-size: 10px; background: #F3F4F6; padding: 8px; border-radius: 4px;
+            color: #374151; margin-bottom: 10px; word-break: break-all; font-family: monospace; }
+        .btn-copy {
+            width: 100%; padding: 8px; border: none; border-radius: 6px; cursor: pointer;
+            font-size: 11px; font-weight: 600; transition: all 0.2s;
+        }
+        .btn-copy.das { background: #C5A059; color: white; }
+        .btn-copy.das:hover { background: #B89146; }
+        .btn-copy.inss { background: #0D9488; color: white; }
+        .btn-copy.inss:hover { background: #0A7A6E; }
+
+        /* GRÁFICOS */
+        .charts-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;
+        }
+        .chart-container {
+            background: white; border: 1px solid #E5E7EB; border-radius: 8px;
+            padding: 20px; position: relative; height: 280px;
+        }
+        .chart-title { font-size: 13px; font-weight: 600; color: #111827; margin-bottom: 12px; }
+        canvas { max-height: 240px; }
+
+        /* APURAÇÃO */
+        .apuracao-grid {
+            display: grid; grid-template-columns: 1fr; gap: 14px; margin-bottom: 24px;
+        }
+        .apuracao-row {
+            display: grid; grid-template-columns: 2fr 1fr; gap: 10px;
+            padding: 12px; border-bottom: 1px solid #E5E7EB;
+            background: white;
+        }
+        .apuracao-row:first-child { border-radius: 8px 8px 0 0; }
+        .apuracao-row:last-child { border-bottom: none; border-radius: 0 0 8px 8px; }
+        .apuracao-label { font-size: 12px; color: #6B7280; font-weight: 500; }
+        .apuracao-value { font-size: 13px; font-weight: 600; color: #111827; text-align: right; }
+        .apuracao-row.total { background: #F3F4F6; font-weight: 700; color: #111827; }
+        .apuracao-row.resultado { background: linear-gradient(90deg, #F0FDF4 0%, #F0FDF4 100%); }
+        .apuracao-row.resultado .apuracao-value { color: #10B981; font-size: 16px; }
+
+        /* INDICADORES */
+        .health-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 24px;
+        }
+        .health-card {
+            background: white; border: 1px solid #E5E7EB; border-radius: 8px;
+            padding: 16px;
+        }
+        .health-label { font-size: 11px; color: #6B7280; text-transform: uppercase; font-weight: 600; margin-bottom: 8px; }
+        .health-value { font-size: 28px; font-weight: 700; color: #111827; margin-bottom: 4px; }
+        .health-status { font-size: 12px; padding: 4px 8px; border-radius: 4px; text-align: center; font-weight: 600; }
+        .health-status.ok { background: #ECFDF5; color: #10B981; }
+        .health-status.warn { background: #FFFBEB; color: #F59E0B; }
+        .health-status.critical { background: #FEF2F2; color: #EF4444; }
+
+        /* COMPARATIVO */
+        .comparative-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 24px;
+        }
+        .comp-card {
+            background: white; border: 1px solid #E5E7EB; border-radius: 8px;
+            padding: 16px; text-align: center;
+        }
+        .comp-month { font-size: 11px; color: #6B7280; font-weight: 600; text-transform: uppercase; }
+        .comp-value { font-size: 24px; font-weight: 700; color: #111827; margin: 8px 0; }
+        .comp-variance { font-size: 11px; font-weight: 600; }
+        .comp-variance.up { color: #10B981; }
+        .comp-variance.down { color: #EF4444; }
+
+        /* STATUS OBRIGAÇÕES */
+        .fiscal-grid {
+            display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 24px;
+        }
+        .fiscal-card {
+            background: white; border: 1px solid #E5E7EB; border-radius: 6px;
+            padding: 14px; text-align: center;
+        }
+        .fiscal-icon { font-size: 20px; margin-bottom: 6px; }
+        .fiscal-label { font-size: 11px; font-weight: 600; color: #111827; }
+        .fiscal-status { font-size: 10px; color: #6B7280; margin-top: 4px; }
+
+        /* DOCUMENTOS */
+        .docs-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+        }
+        .doc-link {
+            padding: 12px; background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 6px;
+            text-decoration: none; color: #374151; font-size: 12px; text-align: center;
+            font-weight: 500; transition: all 0.2s;
+        }
+        .doc-link:hover { background: #F3F4F6; border-color: #D1D5DB; }
+        .doc-link.highlight {
+            background: #F3E8E8; border-left: 3px solid #C5A059; color: #8B5A6B;
+        }
+
+        /* STATUS FISCAL */
+        .status-fiscal-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 24px;
+        }
+        .status-item {
+            background: white; border: 1px solid #E5E7EB; border-radius: 8px;
+            padding: 16px; display: flex; align-items: center; gap: 12px;
+        }
+        .status-icon { font-size: 28px; min-width: 40px; }
+        .status-content { flex: 1; }
+        .status-label { font-size: 11px; color: #6B7280; font-weight: 600; text-transform: uppercase; }
+        .status-value { font-size: 14px; font-weight: 700; color: #111827; }
+
+        /* CERTIDÕES */
+        .certidoes-grid {
+            display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 24px;
+        }
+        .cert-card {
+            background: white; border: 1px solid #E5E7EB; border-left: 4px solid #10B981;
+            border-radius: 6px; padding: 14px; text-align: center;
+        }
+        .cert-card.pendente { border-left-color: #F59E0B; }
+        .cert-icon { font-size: 24px; margin-bottom: 6px; }
+        .cert-label { font-size: 11px; font-weight: 600; color: #111827; }
+        .cert-status { font-size: 10px; color: #10B981; margin-top: 4px; font-weight: 600; }
+        .cert-status.pendente { color: #F59E0B; }
+
+        /* FOOTER */
+        .footer {
+            background: white; border-top: 1px solid #E5E7EB; padding: 16px;
+            font-size: 11px; color: #6B7280; text-align: center; margin-top: 24px;
+        }
+        .footer-line { margin: 4px 0; }
+
+        @media (max-width: 1200px) {
+            .kpis-grid { grid-template-columns: repeat(3, 1fr); }
+            .charts-grid { grid-template-columns: 1fr; }
+            .health-grid { grid-template-columns: 1fr; }
+            .comparative-grid { grid-template-columns: 1fr; }
+            .fiscal-grid { grid-template-columns: repeat(3, 1fr); }
+            .status-fiscal-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            .kpis-grid { grid-template-columns: repeat(2, 1fr); }
+            .fiscal-grid { grid-template-columns: repeat(2, 1fr); }
+            .certidoes-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 640px) {
+            .kpis-grid { grid-template-columns: 1fr; }
+            .fiscal-grid { grid-template-columns: 1fr; }
+            .certidoes-grid { grid-template-columns: repeat(2, 1fr); }
+            .docs-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!--
+      ============================================================
+      TEMPLATE MESTRE - DASHBOARD FISCAL MENSAL
+      Para cada empresa e competência:
+      1. Duplique este arquivo para a pasta da competência
+         (ex.: portalclientes/nome-empresa/fiscal/documentos/10.2026/index.html)
+      2. Altere SOMENTE o bloco CONFIG abaixo
+      3. Os arquivos (PDFs) devem estar na MESMA pasta deste index.html
+      4. Não altere o CSS nem a estrutura do HTML
+      Os valores calculados (faturamento vs mês anterior, RBT12 %, resultado,
+      margem, variações) são feitos automaticamente a partir dos dados.
+      ============================================================
+    -->
+
+    <script>
+    const CONFIG = {
+        empresa: {
+            nome: "NEVES SOLUÇÕES INTELIGENTES LTDA",
+            cnpj: "58.300.713/0001-50",
+            regime: { linha1: "Simples Nacional", linha2: "Anexo III" }
+        },
+
+        competencia: {
+            mesAno: "Setembro/2026",
+            numero: "09.2026"
+        },
+
+        faturamentoHistorico: [
+            { mes: "Setembro/2026", valor: 0.00 }
+        ],
+
+        das: {
+            valor: 0.00,
+            vencimento: "20/10/2026",
+            codigoBarras: ""
+        },
+
+        inss: {
+            valor: 178.31,
+            codigoBarras: "858800000016783103852627930716262796886961783972"
+        },
+
+        rbt12: {
+            valor: 0.00,
+            limite: 4800000.00,
+            limiarAtencao: 0.80,
+            situacao: "Regular"
+        },
+
+        cargaTributaria: { valor: 0, rotulo: "Anexo III" },
+
+        despesasOperacionais: 450.00,
+
+        composicaoDAS: [],
+
+        indicadores: {
+            margem:             { texto: "Sem receita no mês", classe: "warn" },
+            statusObrigacional: { valor: "Em Dia", texto: "✓ Adimplente", classe: "ok" }
+        },
+
+        statusFiscal: {
+            situacaoSimples: "Optante pelo Simples Nacional",
+            inscricaoEstadual: "Isenta"
+        },
+
+        obrigacoes: [
+            { label: "PGDAS-D",      status: "Transmitido" },
+            { label: "NFS-e",        status: "Sem movimento" },
+            { label: "Despesas",     status: "Escrituradas" },
+            { label: "Limite RBT12", status: "Regular" },
+            { label: "DAS",          status: "Apurado" },
+            { label: "Obrigações",   status: "Em Dia" }
+        ],
+
+        certidoes: [
+            { label: "Federal (CND)",      status: "Regular" },
+            { label: "Estadual (CND)",     status: "Regular" },
+            { label: "Municipal (CDMR)",   status: "Regular" },
+            { label: "FGTS (CRF)",         status: "Regular" },
+            { label: "Trabalhista (CNDT)", status: "Regular" }
+        ],
+
+        documentos: [
+            { rotulo: "Entradas",            arquivo: "03. Entradas 09.2026.pdf" },
+            { rotulo: "Resumo Acumulador",   arquivo: "05. Resumo Acumulador 09.2026.pdf" },
+            { rotulo: "Simples Nacional",    arquivo: "07. Simples Nacional 09.2026.pdf" },
+            { rotulo: "Memória Cálculo",     arquivo: "07.1 Simples Nacional - Memória de Cálculo 09.2026.pdf" },
+            { rotulo: "PGDAS Declaração",    arquivo: "08.1 PGDASD-DECLARACAO-58300713202609001.pdf", destaque: true },
+            { rotulo: "PGDAS Recibo",        arquivo: "08.3 PGDASD-RECIBO-58300713202609001.pdf" }
+        ],
+
+        escritorio: {
+            razao: "Jaqueline Ferreira Assessoria Contábil Ltda | CRC SC-013019/O-4",
+            responsavel: "Responsável Técnica: Jaqueline do Prado Ferreira | CRC SC-048028/O-0",
+            local: "Videira - SC | contato@jaquelineferreiracontadora.com.br | WhatsApp (49) 9.9980-3552",
+            rodape: "Dashboard Fiscal Confidencial - Uso Exclusivo do Cliente"
+        }
+    };
+
+    /* ---------- FORMATAÇÃO ---------- */
+    const fmt = function (v) {
+        return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+    };
+    // "fracao" recebe um valor entre 0 e 1 (ex.: 0.6931 -> 69,31%)
+    const pct = function (fracao, casas) {
+        if (casas === undefined) casas = 2;
+        return (fracao * 100).toLocaleString("pt-BR", {
+            minimumFractionDigits: casas, maximumFractionDigits: casas
+        }) + "%";
+    };
+    const esc = function (t) {
+        const d = document.createElement("div");
+        d.textContent = String(t);
+        return d.innerHTML;
+    };
+    const nomeMes = function (mesAno) { return mesAno.split("/")[0].toLowerCase(); };
+
+    /* ---------- CÁLCULOS ---------- */
+    function calcular() {
+        const hist = CONFIG.faturamentoHistorico;
+        const atual = hist[hist.length - 1];
+        const anterior = hist.length > 1 ? hist[hist.length - 2] : null;
+
+        const das = CONFIG.das.valor;
+        const inss = CONFIG.inss ? CONFIG.inss.valor : 0;
+        const receitaLiquida = atual.valor - das - inss;
+        const resultado = receitaLiquida - CONFIG.despesasOperacionais;
+
+        return {
+            faturamento: atual.valor,
+            anterior: anterior,
+            variacaoMes: anterior ? atual.valor / anterior.valor - 1 : null,
+            receitaLiquida: receitaLiquida,
+            resultado: resultado,
+            margem: atual.valor ? resultado / atual.valor : 0,
+            rbtPct: CONFIG.rbt12.valor / CONFIG.rbt12.limite
+        };
+    }
+
+    /* ---------- RENDERIZAÇÃO ---------- */
+    function renderCabecalho() {
+        document.title = "Dashboard Fiscal - " + CONFIG.empresa.nome;
+        document.getElementById("cabecalho").innerHTML =
+            '<div class="header-left">' +
+                '<h1>🏢 ' + esc(CONFIG.empresa.nome) + '</h1>' +
+                '<p>CNPJ: ' + esc(CONFIG.empresa.cnpj) + ' | ' + esc(CONFIG.competencia.mesAno) + '</p>' +
+            '</div>' +
+            '<div class="header-regime">' + esc(CONFIG.empresa.regime.linha1) + '<br>' + esc(CONFIG.empresa.regime.linha2) + '</div>';
+    }
+
+    function renderKPIs(c) {
+        const sub = c.variacaoMes === null ? "" :
+            '<div class="kpi-sub ' + (c.variacaoMes >= 0 ? "pos" : "warn") + '">' +
+            (c.variacaoMes >= 0 ? "↑ " : "↓ ") + pct(Math.abs(c.variacaoMes)) +
+            " vs " + esc(nomeMes(c.anterior.mes)) + "</div>";
+
+        document.getElementById("kpis").innerHTML =
+            '<div class="kpi-card fat"><div class="kpi-label">Faturamento</div>' +
+                '<div class="kpi-value">' + fmt(c.faturamento) + '</div>' + sub + '</div>' +
+            '<div class="kpi-card das"><div class="kpi-label">DAS a Recolher</div>' +
+                '<div class="kpi-value">' + fmt(CONFIG.das.valor) + '</div>' +
+                '<div class="kpi-sub warn">Venc. ' + esc(CONFIG.das.vencimento) + '</div></div>' +
+            '<div class="kpi-card rbt"><div class="kpi-label">RBT12 Acumulado</div>' +
+                '<div class="kpi-value">' + fmt(CONFIG.rbt12.valor) + '</div>' +
+                '<div class="kpi-sub">' + pct(c.rbtPct, 1) + ' do limite</div></div>' +
+            '<div class="kpi-card carga"><div class="kpi-label">Carga Tributária</div>' +
+                '<div class="kpi-value">' + pct(CONFIG.cargaTributaria.valor) + '</div>' +
+                '<div class="kpi-sub">' + esc(CONFIG.cargaTributaria.rotulo) + '</div></div>' +
+            '<div class="kpi-card resultado"><div class="kpi-label">Resultado Operacional</div>' +
+                '<div class="kpi-value">' + fmt(c.resultado) + '</div>' +
+                '<div class="kpi-sub pos">Margem: ' + pct(c.margem) + '</div></div>';
+    }
+
+    function renderPagamentos() {
+        const dasTemPagamento = CONFIG.das.valor > 0 && !!CONFIG.das.codigoBarras;
+        const dasHtml =
+            '<div class="payment-item">' +
+                '<div class="payment-type">DAS Simples Nacional</div>' +
+                '<div class="payment-value">' + fmt(CONFIG.das.valor) + '</div>' +
+                (dasTemPagamento ?
+                    '<div class="payment-info">Código de Barras (cópia para pagamento):</div>' +
+                    '<div class="payment-code">' + esc(CONFIG.das.codigoBarras) + '</div>' +
+                    '<button class="btn-copy das" data-codigo="' + esc(CONFIG.das.codigoBarras) + '">📋 Copiar Código de Barras</button>'
+                    : '<div class="payment-info">Sem DAS a pagar neste mês.</div>') +
+            '</div>';
+
+        const inssHtml = !CONFIG.inss ? "" :
+            '<div class="payment-item">' +
+                '<div class="payment-type">INSS DCTFWeb</div>' +
+                '<div class="payment-value">' + fmt(CONFIG.inss.valor) + '</div>' +
+                '<div class="payment-info">Código de Barras (cópia para pagamento):</div>' +
+                '<div class="payment-code">' + esc(CONFIG.inss.codigoBarras) + '</div>' +
+                '<button class="btn-copy inss" data-codigo="' + esc(CONFIG.inss.codigoBarras) + '">📋 Copiar Código de Barras</button>' +
+            '</div>';
+
+        document.getElementById("pagamentos").innerHTML =
+            '<div class="panel-title">💳 Painel Financeiro - ' + esc(CONFIG.competencia.mesAno) +
+                '<div class="competencia-badge">Vencimento ' + esc(CONFIG.das.vencimento) + '</div></div>' +
+            '<div class="payment-grid">' + dasHtml + inssHtml + '</div>';
+
+        document.querySelectorAll("[data-codigo]").forEach(function (btn) {
+            btn.addEventListener("click", function () { copiarCodigo(btn.getAttribute("data-codigo"), btn); });
+        });
+    }
+
+    function renderApuracao(c) {
+        const linhas = [
+            ["Receita Bruta de Serviços", fmt(c.faturamento), ""],
+            ["Deduções (Impostos)", "-" + fmt(CONFIG.das.valor), ""]
+        ];
+        if (CONFIG.inss) linhas.push(["Deduções (INSS)", "-" + fmt(CONFIG.inss.valor), ""]);
+        linhas.push(["Receita Líquida", fmt(c.receitaLiquida), ""]);
+        linhas.push(["Despesas Operacionais", "-" + fmt(CONFIG.despesasOperacionais), ""]);
+        linhas.push(["Lucro Líquido (Resultado)", fmt(c.resultado), "resultado"]);
+
+        document.getElementById("apuracao").innerHTML =
+            '<div class="panel-title">📊 Apuração de Resultado - ' + esc(CONFIG.competencia.mesAno) + '</div>' +
+            '<div class="apuracao-grid">' +
+            linhas.map(function (l) {
+                return '<div class="apuracao-row ' + l[2] + '">' +
+                    '<div class="apuracao-label">' + esc(l[0]) + '</div>' +
+                    '<div class="apuracao-value">' + esc(l[1]) + '</div></div>';
+            }).join("") +
+            '</div>';
+    }
+
+    function renderSaude(c) {
+        const r = c.rbtPct;
+        const rbt = r > 1 ? ["critical", "✗ Acima do limite"] :
+                    r >= CONFIG.rbt12.limiarAtencao ? ["warn", "⚠ Próximo do limite"] :
+                    ["ok", "✓ OK - Dentro do Limite"];
+        const ind = CONFIG.indicadores;
+        const ob = ind.statusObrigacional;
+
+        document.getElementById("saude").innerHTML =
+            '<div class="panel-title">💉 Indicadores de Saúde Fiscal</div>' +
+            '<div class="health-grid">' +
+                '<div class="health-card"><div class="health-label">Limite RBT12</div>' +
+                    '<div class="health-value">' + pct(r, 1) + '</div>' +
+                    '<div class="health-status ' + rbt[0] + '">' + rbt[1] + '</div></div>' +
+                '<div class="health-card"><div class="health-label">Margem Operacional</div>' +
+                    '<div class="health-value">' + pct(c.margem) + '</div>' +
+                    '<div class="health-status ' + ind.margem.classe + '">' + esc(ind.margem.texto) + '</div></div>' +
+                '<div class="health-card"><div class="health-label">Status Obrigacional</div>' +
+                    '<div class="health-value">' + esc(ob.valor) + '</div>' +
+                    '<div class="health-status ' + ob.classe + '">' + esc(ob.texto) + '</div></div>' +
+            '</div>';
+    }
+
+    function renderComparativo() {
+        const hist = CONFIG.faturamentoHistorico;
+        const cards = hist.map(function (item, i) {
+            const atual = i === hist.length - 1;
+            let variacao = '<div class="comp-variance">Mês base</div>';
+            if (i > 0) {
+                const prev = hist[i - 1];
+                const v = item.valor / prev.valor - 1;
+                variacao = '<div class="comp-variance ' + (v >= 0 ? "up" : "down") + '">' +
+                    (v >= 0 ? "↑ +" : "↓ -") + pct(Math.abs(v)) + " vs " + esc(nomeMes(prev.mes)) + '</div>';
+            }
+            return '<div class="comp-card"' + (atual ? ' style="border: 2px solid #C58A94;"' : '') + '>' +
+                '<div class="comp-month">' + esc(item.mes) + '</div>' +
+                '<div class="comp-value">' + fmt(item.valor) + '</div>' +
+                variacao + '</div>';
+        }).join("");
+
+        document.getElementById("comparativo").innerHTML =
+            '<div class="panel-title">' + (hist.length > 1 ? '📈 Comparativo Faturamento - Últimos ' + hist.length + ' Meses' : '📈 Faturamento do Mês') + '</div>' +
+            '<div class="comparative-grid">' + cards + '</div>';
+    }
+
+    function renderObrigacoes() {
+        document.getElementById("obrigacoes").innerHTML =
+            '<div class="panel-title">✅ Status de Obrigações (' + esc(CONFIG.competencia.mesAno) + ')</div>' +
+            '<div class="fiscal-grid">' +
+            CONFIG.obrigacoes.map(function (o) {
+                return '<div class="fiscal-card"><div class="fiscal-icon">✔️</div>' +
+                    '<div class="fiscal-label">' + esc(o.label) + '</div>' +
+                    '<div class="fiscal-status">' + esc(o.status) + '</div></div>';
+            }).join("") +
+            '</div>';
+    }
+
+    function renderDocumentos() {
+        document.getElementById("documentos").innerHTML =
+            '<div class="panel-title">📄 Documentos - ' + esc(CONFIG.competencia.mesAno) + '</div>' +
+            '<div class="docs-grid">' +
+            CONFIG.documentos.map(function (d) {
+                return '<a href="' + esc(encodeURI(d.arquivo)) + '" target="_blank" class="doc-link' +
+                    (d.destaque ? " highlight" : "") + '">' + esc(d.rotulo) + '</a>';
+            }).join("") +
+            '</div>';
+    }
+
+    function renderStatusFiscal(c) {
+        const carga = CONFIG.cargaTributaria;
+        const itens = [
+            ["Simples Nacional", CONFIG.statusFiscal.situacaoSimples],
+            ["Inscrição Estadual", CONFIG.statusFiscal.inscricaoEstadual],
+            ["Alíquota Efetiva", pct(carga.valor) + " (" + carga.rotulo + ")"],
+            ["Situação RBT12", pct(c.rbtPct, 1) + " - " + CONFIG.rbt12.situacao]
+        ];
+        document.getElementById("status-fiscal").innerHTML =
+            '<div class="panel-title">🔍 Status Fiscal Completo</div>' +
+            '<div class="status-fiscal-grid">' +
+            itens.map(function (i) {
+                return '<div class="status-item"><div class="status-icon">✅</div>' +
+                    '<div class="status-content"><div class="status-label">' + esc(i[0]) + '</div>' +
+                    '<div class="status-value">' + esc(i[1]) + '</div></div></div>';
+            }).join("") +
+            '</div>';
+    }
+
+    function renderCertidoes() {
+        document.getElementById("certidoes").innerHTML =
+            '<div class="panel-title">📋 Situação das Certidões</div>' +
+            '<div class="certidoes-grid">' +
+            CONFIG.certidoes.map(function (cert) {
+                const ok = cert.status === "Regular";
+                return '<div class="cert-card' + (ok ? "" : " pendente") + '">' +
+                    '<div class="cert-icon">' + (ok ? "✅" : "⚠️") + '</div>' +
+                    '<div class="cert-label">' + esc(cert.label) + '</div>' +
+                    '<div class="cert-status' + (ok ? "" : " pendente") + '">' + esc(cert.status) + '</div></div>';
+            }).join("") +
+            '</div>';
+    }
+
+    function renderRodape() {
+        const e = CONFIG.escritorio;
+        document.getElementById("rodape").innerHTML =
+            '<div class="footer-line"><strong>' + esc(e.razao.split(" | ")[0]) + '</strong> | ' + esc(e.razao.split(" | ")[1]) + '</div>' +
+            '<div class="footer-line">' + esc(e.responsavel) + '</div>' +
+            '<div class="footer-line">' + esc(e.local) + '</div>' +
+            '<div class="footer-line" style="margin-top: 8px; font-size: 10px;">' +
+                esc(e.rodape) + ' | ' + esc(CONFIG.competencia.mesAno) + '</div>';
+    }
+
+    /* ---------- CÓPIA DO CÓDIGO DE BARRAS ---------- */
+    function copiarCodigo(texto, btn) {
+        navigator.clipboard.writeText(texto).then(function () {
+            const orig = btn.innerText;
+            btn.innerText = "✓ Código Copiado!";
+            btn.style.backgroundColor = "#10B981";
+            setTimeout(function () {
+                btn.innerText = orig;
+                btn.style.backgroundColor = "";
+            }, 2500);
+        });
+    }
+
+    /* ---------- GRÁFICOS ---------- */
+    function initCharts(c) {
+        const soma = CONFIG.composicaoDAS.reduce(function (a, b) { return a + b.valor; }, 0);
+        if (Math.abs(soma - CONFIG.das.valor) > 0.01) {
+            console.warn("Composição do DAS (" + soma.toFixed(2) + ") não bate com o DAS (" + CONFIG.das.valor.toFixed(2) + ")");
+        }
+
+        const cores = ["#C58A94", "#C5A059", "#8B5CF6", "#6366F1", "#F59E0B", "#10B981"];
+
+        new Chart(document.getElementById("rosca"), {
+            type: "doughnut",
+            data: {
+                labels: CONFIG.composicaoDAS.map(function (x) { return x.label; }),
+                datasets: [{
+                    data: CONFIG.composicaoDAS.map(function (x) { return x.valor; }),
+                    backgroundColor: CONFIG.composicaoDAS.map(function (x, i) { return cores[i % cores.length]; }),
+                    borderColor: "#fff",
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: "bottom", labels: { font: { size: 11 }, padding: 12 } },
+                    tooltip: {
+                        callbacks: {
+                            label: function (ctx) {
+                                const total = ctx.dataset.data.reduce(function (a, b) { return a + b; }, 0);
+                                return "R$ " + ctx.parsed.toFixed(2) + " (" + ((ctx.parsed / total) * 100).toFixed(1) + "%)";
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        new Chart(document.getElementById("barras"), {
+            type: "bar",
+            data: {
+                labels: ["Faturamento", "Despesas"],
+                datasets: [{
+                    data: [c.faturamento, CONFIG.despesasOperacionais],
+                    backgroundColor: ["#C58A94", "#C5A059"],
+                    borderRadius: 4,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: "y",
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { callbacks: { label: function (ctx) { return "R$ " + ctx.parsed.x.toFixed(2); } } }
+                },
+                scales: { x: { beginAtZero: true } }
+            }
+        });
+    }
+
+    /* ---------- INICIALIZAÇÃO ---------- */
+    function renderizar() {
+        const c = calcular();
+        renderCabecalho();
+        renderKPIs(c);
+        renderPagamentos();
+        renderApuracao(c);
+        renderSaude(c);
+        renderComparativo();
+        renderObrigacoes();
+        renderDocumentos();
+        renderStatusFiscal(c);
+        renderCertidoes();
+        renderRodape();
+        initCharts(c);
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", renderizar);
+    } else {
+        renderizar();
+    }
+    </script>
+
+    <div class="container">
+        <!-- 1. HEADER -->
+        <div class="header" id="cabecalho"></div>
+
+        <!-- 2. KPIs -->
+        <div class="kpis-grid" id="kpis"></div>
+
+        <!-- 3. PAINEL FINANCEIRO -->
+        <div class="panel" id="pagamentos"></div>
+
+        <!-- 4. GRÁFICOS -->
+        <div class="charts-grid">
+            <div class="chart-container">
+                <div class="chart-title">Composição do DAS</div>
+                <canvas id="rosca"></canvas>
+            </div>
+            <div class="chart-container">
+                <div class="chart-title">Faturamento vs Despesas</div>
+                <canvas id="barras"></canvas>
+            </div>
+        </div>
+
+        <!-- 5. APURAÇÃO DE RESULTADO -->
+        <div class="panel" id="apuracao"></div>
+
+        <!-- 6. INDICADORES DE SAÚDE FISCAL -->
+        <div class="panel" id="saude"></div>
+
+        <!-- 7. COMPARATIVO FATURAMENTO -->
+        <div class="panel" id="comparativo"></div>
+
+        <!-- 8. STATUS DE OBRIGAÇÕES -->
+        <div class="panel" id="obrigacoes"></div>
+
+        <!-- 9. DOCUMENTOS -->
+        <div class="panel" id="documentos"></div>
+
+        <!-- 10. STATUS FISCAL -->
+        <div class="panel" id="status-fiscal"></div>
+
+        <!-- 11. CERTIDÕES -->
+        <div class="panel" id="certidoes"></div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer" id="rodape"></div>
+
+</body>
+</html>
