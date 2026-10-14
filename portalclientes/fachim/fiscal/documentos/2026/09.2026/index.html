@@ -1,1 +1,412 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Fiscal Setembro/2026 - FACHIM PSICOLOGIA LTDA</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #F9FAFB; color: #1F2937; display: flex; }
 
+        /* SIDEBAR */
+        .sidebar-docs {
+            width: 220px;
+            background: white;
+            border-right: 1px solid #E5E7EB;
+            padding: 16px;
+            height: 100vh;
+            overflow-y: auto;
+            position: fixed;
+            left: 0;
+            top: 0;
+            box-shadow: 1px 0 3px rgba(0,0,0,0.05);
+        }
+
+        .sidebar-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #C58A94;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #C5A059;
+        }
+
+        .doc-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 10px;
+            margin-bottom: 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            color: #111827;
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .doc-item:hover {
+            background: #F3F4F6;
+            color: #C58A94;
+        }
+
+        .doc-item-icon {
+            margin-right: 8px;
+            font-size: 14px;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 220px;
+        }
+
+        .container { max-width: 100%; margin: 0; padding: 20px; }
+
+        /* HEADER */
+        .header {
+            background: white; border: 1px solid #E5E7EB; border-radius: 8px; padding: 24px;
+            margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .header-left h1 { font-size: 18px; font-weight: 700; color: #111827; margin-bottom: 4px; }
+        .header-left p { font-size: 13px; color: #6B7280; margin: 2px 0; }
+        .header-right { font-size: 40px; font-weight: 700; color: #E5E7EB; text-align: center; min-width: 80px; }
+
+        /* SEÇÃO RESUMO GERAL */
+        .section-title {
+            font-size: 15px; font-weight: 600; color: #111827; margin: 24px 0 16px 0;
+            padding-bottom: 8px; border-bottom: 2px solid #E5E7EB;
+        }
+
+        /* KPI CARDS - 5 COLUNAS */
+        .kpis-grid {
+            display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px;
+            margin-bottom: 24px;
+        }
+        .kpi-card {
+            background: white; border: 1px solid #E5E7EB; border-left: 5px solid;
+            border-radius: 6px; padding: 18px; box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+        }
+        .kpi-card.folha { border-left-color: #C58A94; }
+        .kpi-card.encargos { border-left-color: #F59E0B; }
+        .kpi-card.liquido { border-left-color: #8B5CF6; }
+        .kpi-card.empregados { border-left-color: #6366F1; }
+        .kpi-card.contribuintes { border-left-color: #10B981; }
+        .kpi-label { font-size: 11px; color: #6B7280; text-transform: uppercase; font-weight: 600; margin-bottom: 8px; }
+        .kpi-value { font-size: 22px; font-weight: 700; color: #111827; margin-bottom: 4px; }
+        .kpi-sub { font-size: 12px; color: #6B7280; }
+        .kpi-sub.pos { color: #10B981; }
+        .kpi-sub.warn { color: #F59E0B; }
+
+        /* PAINEL */
+        .panel {
+            background: white; border: 1px solid #E5E7EB; border-radius: 8px;
+            padding: 24px; margin-bottom: 24px;
+        }
+        .panel-title {
+            font-size: 15px; font-weight: 600; color: #111827; margin-bottom: 16px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .competencia-badge {
+            background: #FEF3C7; color: #92400E; padding: 4px 12px;
+            border-radius: 16px; font-size: 11px; font-weight: 600;
+        }
+        .payment-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;
+        }
+        .payment-item {
+            border: 1px solid #E5E7EB; border-radius: 6px; padding: 16px;
+            background: #F9FAFB;
+        }
+        .payment-type { font-size: 13px; color: #6B7280; font-weight: 600; margin-bottom: 12px; }
+        .payment-value { font-size: 24px; font-weight: 700; color: #111827; margin-bottom: 8px; }
+        .payment-info { font-size: 12px; color: #6B7280; margin-bottom: 10px; line-height: 1.4; }
+        .payment-code { font-size: 11px; background: #F3F4F6; padding: 8px; border-radius: 4px;
+            color: #374151; margin-bottom: 12px; word-break: break-all; font-family: monospace; }
+        .btn-copy {
+            width: 100%; padding: 10px; border: none; border-radius: 6px; cursor: pointer;
+            font-size: 12px; font-weight: 600; transition: all 0.2s;
+        }
+        .btn-copy.inss { background: #C58A94; color: white; }
+        .btn-copy.inss:hover { background: #AE7681; }
+        .btn-copy.fgts { background: #C5A059; color: white; }
+        .btn-copy.fgts:hover { background: #B89146; }
+
+        /* CHARTS */
+        .charts-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;
+        }
+        .chart-container {
+            background: white; border: 1px solid #E5E7EB; border-radius: 8px;
+            padding: 20px; position: relative; height: 280px;
+        }
+        .chart-title { font-size: 14px; font-weight: 600; color: #111827; margin-bottom: 12px; }
+        canvas { max-height: 240px; }
+
+        /* TABELAS */
+        .table-container {
+            background: white; border: 1px solid #E5E7EB; border-radius: 8px;
+            padding: 20px; margin-bottom: 24px; overflow-x: auto;
+        }
+        table {
+            width: 100%; border-collapse: collapse; font-size: 13px;
+        }
+        thead {
+            background: #F9FAFB; border-bottom: 2px solid #E5E7EB;
+        }
+        th {
+            padding: 12px; text-align: left; font-weight: 600; color: #111827;
+        }
+        td {
+            padding: 12px; border-bottom: 1px solid #E5E7EB;
+        }
+        tbody tr:hover {
+            background: #F9FAFB;
+        }
+        .text-right { text-align: right; }
+
+        /* ACOMPANHAMENTO */
+        .fiscal-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px;
+        }
+        .fiscal-card {
+            background: white; border: 1px solid #E5E7EB; border-radius: 6px;
+            padding: 16px; text-align: center;
+        }
+        .fiscal-icon { font-size: 24px; margin-bottom: 8px; }
+        .fiscal-label { font-size: 12px; font-weight: 600; color: #111827; }
+        .fiscal-status { font-size: 11px; color: #6B7280; margin-top: 4px; }
+
+        /* CERTIDÕES */
+        .certidoes-grid {
+            display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 24px;
+        }
+        .cert-card {
+            background: white; border: 1px solid #E5E7EB; border-radius: 6px;
+            padding: 14px; text-align: center;
+        }
+        .cert-icon { font-size: 28px; margin-bottom: 6px; }
+        .cert-label { font-size: 11px; font-weight: 600; color: #111827; }
+        .cert-status { font-size: 10px; color: #6B7280; margin-top: 4px; }
+
+        /* RODAPÉ */
+        .footer {
+            background: white; border-top: 1px solid #E5E7EB; padding: 16px;
+            font-size: 11px; color: #6B7280; text-align: center; margin-top: 24px;
+        }
+        .footer-line { margin: 4px 0; }
+
+        @media (max-width: 1024px) {
+            .kpis-grid { grid-template-columns: repeat(2, 1fr); }
+            .fiscal-grid { grid-template-columns: repeat(2, 1fr); }
+            .charts-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 640px) {
+            .kpis-grid { grid-template-columns: 1fr; }
+            .fiscal-grid { grid-template-columns: 1fr; }
+            .certidoes-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    
+        .panel { background:white; border:1px solid #E5E7EB; border-radius:8px; padding:20px; margin-bottom:20px; }
+        .panel-title { font-size:14px; font-weight:700; color:#111827; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
+        .badge { font-size:11px; background:#FEF2F2; color:#991B1B; padding:4px 10px; border-radius:12px; font-weight:600; }
+        .kpis { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:20px; }
+        .kpi { background:white; border:1px solid #E5E7EB; border-left:4px solid #C5A059; border-radius:6px; padding:16px; }
+        .kpi-label { font-size:11px; color:#6B7280; text-transform:uppercase; font-weight:600; margin-bottom:6px; }
+        .kpi-value { font-size:22px; font-weight:700; color:#111827; }
+        .kpi-sub { font-size:11px; color:#6B7280; margin-top:4px; }
+        .row { display:flex; justify-content:space-between; gap:12px; padding:10px 12px; border-bottom:1px solid #E5E7EB; font-size:13px; }
+        .row:last-child { border-bottom:none; }
+        .row.total { background:#F3F4F6; font-weight:700; }
+        .row .obs { color:#6B7280; font-size:11px; }
+        .aviso { background:#FFFBEB; border-left:4px solid #F59E0B; color:#92400E; padding:12px 14px; border-radius:6px; font-size:12px; margin-bottom:10px; }
+        .ok { background:#ECFDF5; border-left:4px solid #10B981; color:#065F46; padding:12px 14px; border-radius:6px; font-size:12px; margin-bottom:20px; }
+
+        .payment-code { font-size:12px; background:#F3F4F6; padding:8px; border-radius:4px; color:#374151; margin-bottom:10px; word-break:break-all; font-family:monospace; }
+        .btn-copy { width:100%; padding:8px; border:none; border-radius:6px; cursor:pointer; font-size:11px; font-weight:600; transition:all 0.2s; }
+        .btn-copy.das { background:#C5A059; color:white; }
+        .btn-copy.das:hover { background:#B89146; }
+        .btn-copy.inss { background:#0D9488; color:white; }
+        .btn-copy.inss:hover { background:#0A7A6E; }
+        .doc-link.highlight { display:block; text-align:center; padding:8px; background:#F3E8E8; border-left:3px solid #C5A059; color:#8B5A6B; border-radius:6px; font-size:12px; text-decoration:none; font-weight:600; }
+    </style>
+</head>
+<body>
+    <aside class="sidebar-docs">
+        <a href="../../../../index.html" style="display:block; padding:10px; margin-bottom:14px; background:#C58A94; color:white; border-radius:4px; text-decoration:none; text-align:center; font-size:11px; font-weight:600;">← Voltar ao Menu</a>
+        <div class="sidebar-title">📁 Documentos</div>
+        <a class="doc-item" href="01.%20Protocolo%20Servi%C3%A7os%20Prestados%2009.2026.pdf" target="_blank">
+            <span class="doc-item-icon">🧾</span>
+            <span>01. Protocolo serviços prestados</span>
+        </a>
+        <a class="doc-item" href="02.%20Protocolo%20Servi%C3%A7os%20Tomados%2009.2026.pdf" target="_blank">
+            <span class="doc-item-icon">🧾</span>
+            <span>02. Protocolo serviços tomados</span>
+        </a>
+        <a class="doc-item" href="03.%20Entradas%2009.2026.pdf" target="_blank">
+            <span class="doc-item-icon">📥</span>
+            <span>03. Entradas (tomados)</span>
+        </a>
+        <a class="doc-item" href="04.%20Servi%C3%A7os%2009.2026.pdf" target="_blank">
+            <span class="doc-item-icon">🧾</span>
+            <span>04. Serviços prestados</span>
+        </a>
+        <a class="doc-item" href="05.%20Resumo%20Acumulador%2009.2026.pdf" target="_blank">
+            <span class="doc-item-icon">📊</span>
+            <span>05. Resumo Acumulador</span>
+        </a>
+        <a class="doc-item" href="06.%20Faturamento%2012%20meses%2009.2026.pdf" target="_blank">
+            <span class="doc-item-icon">📈</span>
+            <span>06. Faturamento 12 meses</span>
+        </a>
+        <a class="doc-item" href="07.%20Demonstrativo%20CSLL%2009.2026%20-%20Trimestral.pdf" target="_blank">
+            <span class="doc-item-icon">📋</span>
+            <span>07. Demonstrativo CSLL</span>
+        </a>
+        <a class="doc-item" href="07.1%20Demonstrativo%20IRPJ%2009.2026%20-%20Trimestral.pdf" target="_blank">
+            <span class="doc-item-icon">📋</span>
+            <span>07.1 Demonstrativo IRPJ</span>
+        </a>
+        <a class="doc-item" href="07.2%20Demonstrativo%20ISS%2009.2026.pdf" target="_blank">
+            <span class="doc-item-icon">📋</span>
+            <span>07.2 Demonstrativo ISS</span>
+        </a>
+        <a class="doc-item" href="08.%20EFD%20Contribui%C3%A7%C3%B5es%2009.2026.pdf" target="_blank">
+            <span class="doc-item-icon">📑</span>
+            <span>08. EFD Contribuições</span>
+        </a>
+        <a class="doc-item" href="09.%20DARF%20Trimestral%2009.2026%20-%20Guia%20Pagamento.pdf" target="_blank">
+            <span class="doc-item-icon">💳</span>
+            <span>09. DARF Trimestral (guia)</span>
+        </a>
+        <a class="doc-item" href="09.1%20ISS%2009.2026%20-%20Guia%20Pagamento.pdf" target="_blank">
+            <span class="doc-item-icon">💳</span>
+            <span>09.1 Guia ISS</span>
+        </a>
+        <a class="doc-item" href="09.2%20DeclaracaoCompleta_51187625000145_092026_40_.pdf" target="_blank">
+            <span class="doc-item-icon">✅</span>
+            <span>09.2 DCTFWeb (completa)</span>
+        </a>
+        <a class="doc-item" href="09.3%20Recibo_51187625000145_092026_40_0000050000535543995.pdf" target="_blank">
+            <span class="doc-item-icon">✅</span>
+            <span>09.3 DCTFWeb (recibo)</span>
+        </a>
+    </aside>
+
+    <div class="main-content">
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <h1>Fiscal - Setembro/2026</h1>
+                <p>FACHIM PSICOLOGIA LTDA | CNPJ 51.187.625/0001-45</p>
+            </div>
+            <div class="header-regime">Lucro Presumido<br>PIS/COFINS cumulativo</div>
+        </div>
+
+
+
+
+        <div class="kpis">
+            <div class="kpi">
+                <div class="kpi-label">Receita de serviços</div>
+                <div class="kpi-value">R$ 7.560,00</div>
+                <div class="kpi-sub">1 NFS-e (nº 31), 01/09/2026</div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-label">DARF trimestral</div>
+                <div class="kpi-value">R$ 1.077,37</div>
+                <div class="kpi-sub">Vencimento 30/10/2026</div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-label">ISS a recolher</div>
+                <div class="kpi-value">R$ 226,80</div>
+                <div class="kpi-sub">Vencimento 26/10/2026</div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">💳 DARF - 3º Trimestre/2026 <span class="badge">Vence 30/10/2026</span></div>
+            <div class="row"><span>IRPJ - Lucro Presumido (código 2089-01)</span><span>R$ 689,05</span></div>
+            <div class="row"><span>CSLL - Lucro Presumido, entidade não financeira (código 2372-01)</span><span>R$ 388,32</span></div>
+            <div class="row total"><span>Total do documento</span><span>R$ 1.077,37</span></div>
+            <div class="row"><span class="obs">Número do documento</span><span class="obs">07.16.26287.6313409-0</span></div>
+            <div class="row"><span class="obs">Recibo da DCTFWeb (transmitida em 07/10/2026)</span><span class="obs">50000535543995</span></div>
+            <div style="margin-top:12px;">
+                <div class="obs" style="font-size:11px;color:#6B7280;margin-bottom:6px;">Linha digitável (copiar para pagamento):</div>
+                <div class="payment-code">85870000010 3 77370385263 9 03071626287 0 63134090407 9</div>
+                <button class="btn-copy das" onclick="copiarCodigo('85870000010 3 77370385263 9 03071626287 0 63134090407 9', this)">📋 Copiar Código de Barras</button>
+                <a class="doc-link highlight" style="display:block;margin-top:8px;" href="09.%20DARF%20Trimestral%2009.2026%20-%20Guia%20Pagamento.pdf" target="_blank">📄 Abrir guia (PDF)</a>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">📊 Apuração por tributo - Setembro/2026</div>
+            <div class="row"><span><strong>IRPJ</strong>: base R$ 6.609,66 (32% de R$ 20.655,18), alíquota 15%</span><span></span></div>
+            <div class="row"><span class="obs">Débitos R$ 991,45 - retenções R$ 302,40</span><span>R$ 689,05</span></div>
+            <div class="row"><span><strong>CSLL</strong>: base R$ 6.609,66, alíquota 9%</span><span></span></div>
+            <div class="row"><span class="obs">Débitos R$ 594,87 - retenções R$ 206,55</span><span>R$ 388,32</span></div>
+            <div class="row"><span><strong>ISS</strong>: 3% sobre R$ 7.560,00 (guia emitida 14/10/2026, vence 26/10/2026)</span><span>R$ 226,80</span></div>
+            <div style="margin-top:12px;">
+                <div class="obs" style="font-size:11px;color:#6B7280;margin-bottom:6px;">Linha digitável da guia de ISS (copiar para pagamento):</div>
+                <div class="payment-code">00190.00009 01179.556269 00211.421177 5 16110000022680</div>
+                <button class="btn-copy inss" onclick="copiarCodigo('00190.00009 01179.556269 00211.421177 5 16110000022680', this)">📋 Copiar Código de Barras</button>
+                <a class="doc-link highlight" style="display:block;margin-top:8px;" href="09.1%20ISS%2009.2026%20-%20Guia%20Pagamento.pdf" target="_blank">📄 Abrir guia (PDF)</a>
+            </div>
+            <div class="row"><span><strong>PIS/COFINS</strong> (regime cumulativo): PIS R$ 49,14 e COFINS R$ 226,80, ambos compensados com as retenções</span><span>R$ 0,00</span></div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">🧾 Movimento do período (01/09/2026 a 30/09/2026)</div>
+            <div class="row"><span>Serviços prestados com documento fiscal (código 914)</span><span>R$ 7.560,00</span></div>
+            <div class="row"><span class="obs">NFS-e nº 31, 01/09/2026, cliente: NINA ABA PSICOLOGIA LTDA</span><span></span></div>
+            <div class="row"><span>Serviços tomados (código 801)</span><span>R$ 700,00</span></div>
+            <div class="row"><span class="obs">NFS-e recebida nº 47, 30/09/2026, prestador: JAQUELINE FERREIRA ASSESSORIA CONTÁBIL LTDA. ISS de R$ 14,07 (protocolo de serviços tomados)</span><span></span></div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">📈 Relatório de Faturamento (10/2025 a 09/2026)</div>
+            <div class="row"><span>Outubro/2025</span><span>R$ 1.273,32</span></div>
+            <div class="row"><span>Novembro/2025</span><span>R$ 1.556,28</span></div>
+            <div class="row"><span>Dezembro/2025</span><span>R$ 1.061,10</span></div>
+            <div class="row"><span>Janeiro/2026</span><span>R$ 1.273,32</span></div>
+            <div class="row"><span>Fevereiro/2026</span><span>R$ 0,00</span></div>
+            <div class="row"><span>Março/2026</span><span>R$ 636,66</span></div>
+            <div class="row"><span>Abril/2026</span><span>R$ 636,66</span></div>
+            <div class="row"><span>Maio/2026</span><span>R$ 2.192,94</span></div>
+            <div class="row"><span>Junho/2026</span><span>R$ 1.768,50</span></div>
+            <div class="row"><span>Julho/2026</span><span>R$ 4.815,18</span></div>
+            <div class="row"><span>Agosto/2026</span><span>R$ 8.280,00</span></div>
+            <div class="row"><span>Setembro/2026</span><span>R$ 7.560,00</span></div>
+            <div class="row total"><span>Total acumulado (12 meses)</span><span>R$ 31.053,96</span></div>
+        </div>
+
+        <div class="ok">Fonte dos valores: Protocolos de serviços prestados e tomados e guia de ISS (Prefeitura de Videira), Demonstrativos de CSLL, IRPJ e ISS, EFD-Contribuições, DCTFWeb, Resumo por Acumulador, Acompanhamento de Serviços e de Entradas, Relatório de Faturamento e DARF (competência 09/2026).</div>
+
+        <div class="footer">
+            <div class="footer-line">Jaqueline Ferreira Assessoria Contábil Ltda | CRC SC-013019/O-4</div>
+            <div class="footer-line">Responsável Técnica: Jaqueline do Prado Ferreira | CRC SC-048028/O-0</div>
+            <div class="footer-line">Videira - SC | contato@jaquelineferreiracontadora.com.br | WhatsApp (49) 9.9980-3552</div>
+        </div>
+    </div>
+    </div>
+
+    <script>
+    function copiarCodigo(codigo, btn) {
+        const texto = codigo.replace(/\s+/g, '');
+        const original = btn.textContent;
+        const feedback = function () {
+            btn.textContent = '✅ Copiado!';
+            setTimeout(function () { btn.textContent = original; }, 2000);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(texto).then(feedback).catch(function () {});
+        } else {
+            const ta = document.createElement('textarea');
+            ta.value = texto; document.body.appendChild(ta); ta.select();
+            try { document.execCommand('copy'); feedback(); } catch (e) {}
+            document.body.removeChild(ta);
+        }
+    }
+    </script>
+</body>
+</html>
