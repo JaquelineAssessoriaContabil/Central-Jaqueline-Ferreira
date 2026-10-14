@@ -1,1 +1,313 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MELISSA SCHWARTZ PSICOLOGIA LTDA - Portal do Cliente</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
+body {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #faf8f7;
+  color: #3a3a3a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding: 40px 20px;
+  overflow-x: hidden;
+}
+
+/* CABEÇALHO */
+.header-card {
+  background: #ffffff;
+  width: 100%;
+  max-width: 950px;
+  padding: 28px 32px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-left: 4px solid #C5A059;
+  margin-bottom: 40px;
+  text-align: center;
+}
+.header-info h1 {
+  font-size: 22px;
+  color: #2d2d2d;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  margin-bottom: 6px;
+}
+.header-info p {
+  font-size: 13px;
+  color: #7a7a7a;
+}
+
+/* CONTAINER DOS MESES */
+.months-container {
+  width: 100%;
+  max-width: 950px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+/* CARD DO MÊS */
+.month-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f0e8e3;
+  padding: 28px;
+  transition: all 0.3s ease-out;
+}
+.month-card.atual {
+  border-left: 6px solid #C5A059;
+  box-shadow: 0 4px 16px rgba(197, 160, 89, 0.1);
+}
+.month-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #f0e8e3;
+}
+.month-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #2d2d2d;
+  letter-spacing: -0.5px;
+}
+.month-badge {
+  display: inline-block;
+  background: #fef5f2;
+  color: #a88170;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: 1px solid #f0e8e3;
+  letter-spacing: 0.4px;
+}
+.month-badge.atual {
+  background: #fbeee8;
+  color: #C5A059;
+  border-color: #f2eceb;
+}
+
+/* GRID DE CARDS */
+.menu-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+}
+.portal-card {
+  background: #ffffff;
+  text-decoration: none;
+  color: inherit;
+  padding: 28px 18px 20px 18px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+  border: 1px solid #f0e8e3;
+  text-align: center;
+  transition: all 0.25s ease-out;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.portal-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 14px rgba(197, 160, 89, 0.08);
+  border-color: #e8dcd7;
+}
+.icon-circle {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  background: #fef5f2;
+  color: #C5A059;
+  transition: all 0.25s ease-out;
+}
+.icon-circle svg {
+  width: 26px;
+  height: 26px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.portal-card:hover .icon-circle {
+  transform: scale(1.05);
+  background: #fdf0ea;
+}
+.portal-card h2 {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #2d2d2d;
+}
+.portal-card p {
+  font-size: 12px;
+  color: #7a7a7a;
+  line-height: 1.4;
+  margin-bottom: 14px;
+  flex-grow: 1;
+}
+.card-button {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  background: #e8dcd7;
+  color: #8b7355;
+  transition: all 0.25s ease-out;
+}
+.portal-card:hover .card-button {
+  background: #dcc9c1;
+  color: #7a6447;
+}
+
+/* RODAPÉ */
+.footer-institucional {
+  text-align: center;
+  width: 100%;
+  max-width: 950px;
+  border-top: 1px solid #e8dcd7;
+  padding-top: 20px;
+  margin-top: 20px;
+}
+.footer-institucional p {
+  font-size: 12px;
+  color: #8a8a8a;
+  line-height: 1.6;
+}
+.footer-confidencial {
+  font-size: 11px !important;
+  color: #a39390 !important;
+  margin-top: 8px;
+}
+
+/* RESPONSIVO */
+@media (max-width: 680px) {
+  .menu-container { grid-template-columns: 1fr; gap: 10px; }
+  .month-card { padding: 20px; }
+  .month-title { font-size: 20px; }
+}
+</style>
+</head>
+<body>
+
+<!--
+  ============================================================
+  TEMPLATE MESTRE - PORTAL DO CLIENTE
+  Para criar o portal de uma empresa:
+  1. Duplique este arquivo para a pasta da empresa (ex.: portalclientes/nome-empresa/index.html)
+  2. Altere SOMENTE o bloco CONFIG abaixo
+  3. Não altere o CSS nem a estrutura do HTML
+  ============================================================
+-->
+
+<script>
+const CONFIG = {
+  empresa: {
+    nome: "MELISSA SCHWARTZ PSICOLOGIA LTDA",
+    cnpj: "67.753.162/0001-71",
+    subtitulo: "Painel de Atendimento Contábil"
+  },
+
+  // Mês que recebe o destaque "Mês Atual". Formato: "Mês/AAAA"
+  mesAtual: "Setembro/2026",
+
+  // Meses exibidos, do mais recente para o mais antigo
+  meses: [
+    "Setembro/2026"
+  ],
+
+  // Cards exibidos em cada mês. "link" pode ser uma página (ex.: "fiscal.html") ou âncora (ex.: "#dp")
+  cards: [
+    { titulo: "Fiscal",          descricao: "Faturamento, impostos e apuração.", icone: "grafico",   link: "fiscal.html" },
+    { titulo: "Depto. Pessoal",  descricao: "Resumo da folha e encargos.",       icone: "pessoa",    link: "#dp" },
+    { titulo: "Financeiro",      descricao: "Fluxo de caixa e análises.",        icone: "tabela",    link: "#financeiro" },
+    { titulo: "Contabilidade",   descricao: "Balancetes e relatórios.",          icone: "documento", link: "#contabilidade" }
+  ],
+
+  escritorio: {
+    razao: "Jaqueline Ferreira Assessoria Contábil Ltda | CRC SC-013019/O-4",
+    responsavel: "Responsável Técnica: Jaqueline do Prado Ferreira | CRC SC-048028/O-0",
+    local: "Videira - SC | contato@jaquelineferreiracontadora.com.br | WhatsApp (49) 9.9980-3552"
+  }
+};
+
+// Ícones (SVG) usados nos cards
+const ICONES = {
+  grafico: '<path d="M3 3v18h18"></path><path d="M7 11l3-3 3 3 3-3 3 3"></path><circle cx="9" cy="8" r="1.5"></circle><circle cx="15" cy="6" r="1.5"></circle>',
+  pessoa: '<circle cx="12" cy="8" r="3"></circle><path d="M6 14c0-2 2.5-4 6-4s6 2 6 4v4H6z"></path>',
+  tabela: '<rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="9" y1="9" x2="9" y2="15"></line><line x1="12" y1="9" x2="12" y2="15"></line><line x1="15" y1="9" x2="15" y2="15"></line>',
+  documento: '<path d="M7 3h10c1.1 0 2 .9 2 2v14c0 1.1-.9 2-2 2H7c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2z"></path><line x1="9" y1="6" x2="15" y2="6"></line><line x1="9" y1="10" x2="15" y2="10"></line><line x1="9" y1="14" x2="15" y2="14"></line><line x1="9" y1="18" x2="13" y2="18"></line>'
+};
+
+function escapar(texto) {
+  const div = document.createElement("div");
+  div.textContent = texto;
+  return div.innerHTML;
+}
+
+function renderizar() {
+  document.title = CONFIG.empresa.nome + " - Portal do Cliente";
+
+  document.getElementById("cabecalho").innerHTML =
+    '<div class="header-info">' +
+      '<h1>' + escapar(CONFIG.empresa.nome) + '</h1>' +
+      '<p>CNPJ: ' + escapar(CONFIG.empresa.cnpj) + ' • ' + escapar(CONFIG.empresa.subtitulo) + '</p>' +
+    '</div>';
+
+  const cardsHtml = CONFIG.cards.map(function (c) {
+    return '<a href="' + escapar(c.link) + '" class="portal-card">' +
+      '<div class="icon-circle"><svg viewBox="0 0 24 24">' + ICONES[c.icone] + '</svg></div>' +
+      '<h2>' + escapar(c.titulo) + '</h2>' +
+      '<p>' + escapar(c.descricao) + '</p>' +
+      '<div class="card-button">Acessar</div>' +
+    '</a>';
+  }).join("");
+
+  document.getElementById("meses").innerHTML = CONFIG.meses.map(function (mes) {
+    const atual = mes === CONFIG.mesAtual;
+    return '<div class="month-card' + (atual ? ' atual' : '') + '">' +
+      '<div class="month-header">' +
+        '<div class="month-title">' + escapar(mes) + '</div>' +
+        (atual ? '<div class="month-badge atual">Mês Atual</div>' : '') +
+      '</div>' +
+      '<div class="menu-container">' + cardsHtml + '</div>' +
+    '</div>';
+  }).join("");
+
+  document.getElementById("rodape").innerHTML =
+    '<p>' + escapar(CONFIG.escritorio.razao) + '</p>' +
+    '<p>' + escapar(CONFIG.escritorio.responsavel) + '</p>' +
+    '<p>' + escapar(CONFIG.escritorio.local) + '</p>' +
+    '<p class="footer-confidencial">Dashboard de Acesso Confidencial - Uso Exclusivo do Cliente</p>';
+}
+
+document.addEventListener("DOMContentLoaded", renderizar);
+</script>
+
+<div class="header-card" id="cabecalho"></div>
+
+<div class="months-container" id="meses"></div>
+
+<div class="footer-institucional" id="rodape"></div>
+
+</body>
+</html>
