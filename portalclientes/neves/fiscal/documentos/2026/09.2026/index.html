@@ -254,10 +254,14 @@
         das: {
             valor: 0.00,
             vencimento: "20/10/2026",
-            codigoBarras: ""
+            codigoBarras: "",
+            arquivo: "08. DAS 09.2026 - Guia Pagamento.pdf"
         },
 
         inss: {
+            titulo: "INSS - Contribuinte Individual (11%)",
+            vencimento: "20/10/2026",
+            arquivo: "01. INSS 09.2026 - Guia Pagamento.pdf",
             valor: 178.31,
             codigoBarras: "858800000016783103852627930716262796886961783972"
         },
@@ -344,7 +348,7 @@
         const anterior = hist.length > 1 ? hist[hist.length - 2] : null;
 
         const das = CONFIG.das.valor;
-        const inss = CONFIG.inss ? CONFIG.inss.valor : 0;
+        const inss = 0; // INSS não é descontado da apuração (aparece só no painel de pagamentos)
         const receitaLiquida = atual.valor - das - inss;
         const resultado = receitaLiquida - CONFIG.despesasOperacionais;
 
@@ -393,32 +397,38 @@
                 '<div class="kpi-sub pos">Margem: ' + pct(c.margem) + '</div></div>';
     }
 
-    function renderPagamentos() {
-        const dasTemPagamento = CONFIG.das.valor > 0 && !!CONFIG.das.codigoBarras;
-        const dasHtml =
-            '<div class="payment-item">' +
-                '<div class="payment-type">DAS Simples Nacional</div>' +
-                '<div class="payment-value">' + fmt(CONFIG.das.valor) + '</div>' +
-                (dasTemPagamento ?
-                    '<div class="payment-info">Código de Barras (cópia para pagamento):</div>' +
-                    '<div class="payment-code">' + esc(CONFIG.das.codigoBarras) + '</div>' +
-                    '<button class="btn-copy das" data-codigo="' + esc(CONFIG.das.codigoBarras) + '">📋 Copiar Código de Barras</button>'
-                    : '<div class="payment-info">Sem DAS a pagar neste mês.</div>') +
-            '</div>';
+    function cardPagamento(titulo, valor, vencimento, codigo, arquivo, classeBtn) {
+        return '<div class="payment-item">' +
+            '<div class="payment-type">' + esc(titulo) + '</div>' +
+            '<div class="payment-value">' + fmt(valor) + '</div>' +
+            '<div class="payment-info">Vencimento ' + esc(vencimento) + '</div>' +
+            '<div class="payment-info">Código de Barras (cópia para pagamento):</div>' +
+            '<div class="payment-code">' + esc(codigo) + '</div>' +
+            '<button class="btn-copy ' + classeBtn + '" data-codigo="' + esc(codigo) + '">📋 Copiar Código de Barras</button>' +
+            '<a class="doc-link highlight" style="display:block;margin-top:8px;" href="' + esc(encodeURI(arquivo)) + '" target="_blank">📄 Abrir guia (PDF)</a>' +
+        '</div>';
+    }
 
-        const inssHtml = !CONFIG.inss ? "" :
-            '<div class="payment-item">' +
-                '<div class="payment-type">INSS DCTFWeb</div>' +
-                '<div class="payment-value">' + fmt(CONFIG.inss.valor) + '</div>' +
-                '<div class="payment-info">Código de Barras (cópia para pagamento):</div>' +
-                '<div class="payment-code">' + esc(CONFIG.inss.codigoBarras) + '</div>' +
-                '<button class="btn-copy inss" data-codigo="' + esc(CONFIG.inss.codigoBarras) + '">📋 Copiar Código de Barras</button>' +
-            '</div>';
+    function renderPagamentos() {
+        const temDAS = CONFIG.das.valor > 0 && !!CONFIG.das.codigoBarras;
+        const dasHtml = temDAS ?
+            cardPagamento("DAS Simples Nacional", CONFIG.das.valor, CONFIG.das.vencimento, CONFIG.das.codigoBarras, CONFIG.das.arquivo, "das") :
+            '<div class="payment-item"><div class="payment-type">DAS Simples Nacional</div>' +
+            '<div class="payment-value">' + fmt(CONFIG.das.valor) + '</div>' +
+            '<div class="payment-info">Sem DAS a pagar neste mês.</div></div>';
+
+        const inss = CONFIG.inss;
+        const inssHtml = inss ?
+            cardPagamento(inss.titulo || "INSS DCTFWeb", inss.valor, inss.vencimento || CONFIG.das.vencimento, inss.codigoBarras, inss.arquivo, "inss") : "";
+
+        const outrasHtml = (CONFIG.outrasGuias || []).map(function (g) {
+            return cardPagamento(g.titulo, g.valor, g.vencimento, g.codigoBarras, g.arquivo, "inss");
+        }).join("");
 
         document.getElementById("pagamentos").innerHTML =
             '<div class="panel-title">💳 Painel Financeiro - ' + esc(CONFIG.competencia.mesAno) +
                 '<div class="competencia-badge">Vencimento ' + esc(CONFIG.das.vencimento) + '</div></div>' +
-            '<div class="payment-grid">' + dasHtml + inssHtml + '</div>';
+            '<div class="payment-grid">' + dasHtml + inssHtml + outrasHtml + '</div>';
 
         document.querySelectorAll("[data-codigo]").forEach(function (btn) {
             btn.addEventListener("click", function () { copiarCodigo(btn.getAttribute("data-codigo"), btn); });
@@ -430,7 +440,6 @@
             ["Receita Bruta de Serviços", fmt(c.faturamento), ""],
             ["Deduções (Impostos)", "-" + fmt(CONFIG.das.valor), ""]
         ];
-        if (CONFIG.inss) linhas.push(["Deduções (INSS)", "-" + fmt(CONFIG.inss.valor), ""]);
         linhas.push(["Receita Líquida", fmt(c.receitaLiquida), ""]);
         linhas.push(["Despesas Operacionais", "-" + fmt(CONFIG.despesasOperacionais), ""]);
         linhas.push(["Lucro Líquido (Resultado)", fmt(c.resultado), "resultado"]);
