@@ -1,315 +1,320 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ANGELICA BRESCIANI POLEZO - MEI - Portal do Cliente</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Fiscal Agosto/2026 - ANGELICA BRESCIANI POLEZO - MEI</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #F9FAFB; color: #1F2937; display: flex; }
 
-body {
-  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: #faf8f7;
-  color: #3a3a3a;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
-  padding: 40px 20px;
-  overflow-x: hidden;
-}
+        /* SIDEBAR */
+        .sidebar-docs {
+            width: 220px;
+            background: white;
+            border-right: 1px solid #E5E7EB;
+            padding: 16px;
+            height: 100vh;
+            overflow-y: auto;
+            position: fixed;
+            left: 0;
+            top: 0;
+            box-shadow: 1px 0 3px rgba(0,0,0,0.05);
+        }
 
-/* CABEÇALHO */
-.header-card {
-  background: #ffffff;
-  width: 100%;
-  max-width: 950px;
-  padding: 28px 32px;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  border-left: 4px solid #C5A059;
-  margin-bottom: 40px;
-  text-align: center;
-}
-.header-info h1 {
-  font-size: 22px;
-  color: #2d2d2d;
-  font-weight: 600;
-  letter-spacing: -0.3px;
-  margin-bottom: 6px;
-}
-.header-info p {
-  font-size: 13px;
-  color: #7a7a7a;
-}
+        .sidebar-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #C58A94;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #C5A059;
+        }
 
-/* CONTAINER DOS MESES */
-.months-container {
-  width: 100%;
-  max-width: 950px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  margin-bottom: 40px;
-}
+        .doc-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 10px;
+            margin-bottom: 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            color: #111827;
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
 
-/* CARD DO MÊS */
-.month-card {
-  background: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  border: 1px solid #f0e8e3;
-  padding: 28px;
-  transition: all 0.3s ease-out;
-}
-.month-card.atual {
-  border-left: 6px solid #C5A059;
-  box-shadow: 0 4px 16px rgba(197, 160, 89, 0.1);
-}
-.month-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 24px;
-  padding-bottom: 16px;
-  border-bottom: 2px solid #f0e8e3;
-}
-.month-title {
-  font-size: 24px;
-  font-weight: 700;
-  color: #2d2d2d;
-  letter-spacing: -0.5px;
-}
-.month-badge {
-  display: inline-block;
-  background: #fef5f2;
-  color: #a88170;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  padding: 5px 12px;
-  border-radius: 20px;
-  border: 1px solid #f0e8e3;
-  letter-spacing: 0.4px;
-}
-.month-badge.atual {
-  background: #fbeee8;
-  color: #C5A059;
-  border-color: #f2eceb;
-}
+        .doc-item:hover {
+            background: #F3F4F6;
+            color: #C58A94;
+        }
 
-/* GRID DE CARDS */
-.menu-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 14px;
-}
-.portal-card {
-  background: #ffffff;
-  text-decoration: none;
-  color: inherit;
-  padding: 28px 18px 20px 18px;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.03);
-  border: 1px solid #f0e8e3;
-  text-align: center;
-  transition: all 0.25s ease-out;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.portal-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 14px rgba(197, 160, 89, 0.08);
-  border-color: #e8dcd7;
-}
-.icon-circle {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 12px;
-  background: #fef5f2;
-  color: #C5A059;
-  transition: all 0.25s ease-out;
-}
-.icon-circle svg {
-  width: 26px;
-  height: 26px;
-  stroke: currentColor;
-  fill: none;
-  stroke-width: 1.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.portal-card:hover .icon-circle {
-  transform: scale(1.05);
-  background: #fdf0ea;
-}
-.portal-card h2 {
-  font-size: 15px;
-  font-weight: 600;
-  margin-bottom: 8px;
-  color: #2d2d2d;
-}
-.portal-card p {
-  font-size: 12px;
-  color: #7a7a7a;
-  line-height: 1.4;
-  margin-bottom: 14px;
-  flex-grow: 1;
-}
-.card-button {
-  width: 100%;
-  padding: 10px;
-  border-radius: 6px;
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-  background: #e8dcd7;
-  color: #8b7355;
-  transition: all 0.25s ease-out;
-}
-.portal-card:hover .card-button {
-  background: #dcc9c1;
-  color: #7a6447;
-}
+        .doc-item-icon {
+            margin-right: 8px;
+            font-size: 14px;
+        }
 
-/* RODAPÉ */
-.footer-institucional {
-  text-align: center;
-  width: 100%;
-  max-width: 950px;
-  border-top: 1px solid #e8dcd7;
-  padding-top: 20px;
-  margin-top: 20px;
-}
-.footer-institucional p {
-  font-size: 12px;
-  color: #8a8a8a;
-  line-height: 1.6;
-}
-.footer-confidencial {
-  font-size: 11px !important;
-  color: #a39390 !important;
-  margin-top: 8px;
-}
+        .main-content {
+            flex: 1;
+            margin-left: 220px;
+        }
 
-/* RESPONSIVO */
-@media (max-width: 680px) {
-  .menu-container { grid-template-columns: 1fr; gap: 10px; }
-  .month-card { padding: 20px; }
-  .month-title { font-size: 20px; }
-}
+        .container { max-width: 100%; margin: 0; padding: 20px; }
+
+        /* HEADER */
+        .header {
+            background: white; border: 1px solid #E5E7EB; border-radius: 8px; padding: 24px;
+            margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .header-left h1 { font-size: 18px; font-weight: 700; color: #111827; margin-bottom: 4px; }
+        .header-left p { font-size: 13px; color: #6B7280; margin: 2px 0; }
+        .header-right { font-size: 40px; font-weight: 700; color: #E5E7EB; text-align: center; min-width: 80px; }
+
+        /* SEÇÃO RESUMO GERAL */
+        .section-title {
+            font-size: 15px; font-weight: 600; color: #111827; margin: 24px 0 16px 0;
+            padding-bottom: 8px; border-bottom: 2px solid #E5E7EB;
+        }
+
+        /* KPI CARDS - 5 COLUNAS */
+        .kpis-grid {
+            display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px;
+            margin-bottom: 24px;
+        }
+        .kpi-card {
+            background: white; border: 1px solid #E5E7EB; border-left: 5px solid;
+            border-radius: 6px; padding: 18px; box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+        }
+        .kpi-card.folha { border-left-color: #C58A94; }
+        .kpi-card.encargos { border-left-color: #F59E0B; }
+        .kpi-card.liquido { border-left-color: #8B5CF6; }
+        .kpi-card.empregados { border-left-color: #6366F1; }
+        .kpi-card.contribuintes { border-left-color: #10B981; }
+        .kpi-label { font-size: 11px; color: #6B7280; text-transform: uppercase; font-weight: 600; margin-bottom: 8px; }
+        .kpi-value { font-size: 22px; font-weight: 700; color: #111827; margin-bottom: 4px; }
+        .kpi-sub { font-size: 12px; color: #6B7280; }
+        .kpi-sub.pos { color: #10B981; }
+        .kpi-sub.warn { color: #F59E0B; }
+
+        /* PAINEL */
+        .panel {
+            background: white; border: 1px solid #E5E7EB; border-radius: 8px;
+            padding: 24px; margin-bottom: 24px;
+        }
+        .panel-title {
+            font-size: 15px; font-weight: 600; color: #111827; margin-bottom: 16px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .competencia-badge {
+            background: #FEF3C7; color: #92400E; padding: 4px 12px;
+            border-radius: 16px; font-size: 11px; font-weight: 600;
+        }
+        .payment-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;
+        }
+        .payment-item {
+            border: 1px solid #E5E7EB; border-radius: 6px; padding: 16px;
+            background: #F9FAFB;
+        }
+        .payment-type { font-size: 13px; color: #6B7280; font-weight: 600; margin-bottom: 12px; }
+        .payment-value { font-size: 24px; font-weight: 700; color: #111827; margin-bottom: 8px; }
+        .payment-info { font-size: 12px; color: #6B7280; margin-bottom: 10px; line-height: 1.4; }
+        .payment-code { font-size: 11px; background: #F3F4F6; padding: 8px; border-radius: 4px;
+            color: #374151; margin-bottom: 12px; word-break: break-all; font-family: monospace; }
+        .btn-copy {
+            width: 100%; padding: 10px; border: none; border-radius: 6px; cursor: pointer;
+            font-size: 12px; font-weight: 600; transition: all 0.2s;
+        }
+        .btn-copy.inss { background: #C58A94; color: white; }
+        .btn-copy.inss:hover { background: #AE7681; }
+        .btn-copy.fgts { background: #C5A059; color: white; }
+        .btn-copy.fgts:hover { background: #B89146; }
+
+        /* CHARTS */
+        .charts-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;
+        }
+        .chart-container {
+            background: white; border: 1px solid #E5E7EB; border-radius: 8px;
+            padding: 20px; position: relative; height: 280px;
+        }
+        .chart-title { font-size: 14px; font-weight: 600; color: #111827; margin-bottom: 12px; }
+        canvas { max-height: 240px; }
+
+        /* TABELAS */
+        .table-container {
+            background: white; border: 1px solid #E5E7EB; border-radius: 8px;
+            padding: 20px; margin-bottom: 24px; overflow-x: auto;
+        }
+        table {
+            width: 100%; border-collapse: collapse; font-size: 13px;
+        }
+        thead {
+            background: #F9FAFB; border-bottom: 2px solid #E5E7EB;
+        }
+        th {
+            padding: 12px; text-align: left; font-weight: 600; color: #111827;
+        }
+        td {
+            padding: 12px; border-bottom: 1px solid #E5E7EB;
+        }
+        tbody tr:hover {
+            background: #F9FAFB;
+        }
+        .text-right { text-align: right; }
+
+        /* ACOMPANHAMENTO */
+        .fiscal-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px;
+        }
+        .fiscal-card {
+            background: white; border: 1px solid #E5E7EB; border-radius: 6px;
+            padding: 16px; text-align: center;
+        }
+        .fiscal-icon { font-size: 24px; margin-bottom: 8px; }
+        .fiscal-label { font-size: 12px; font-weight: 600; color: #111827; }
+        .fiscal-status { font-size: 11px; color: #6B7280; margin-top: 4px; }
+
+        /* CERTIDÕES */
+        .certidoes-grid {
+            display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 24px;
+        }
+        .cert-card {
+            background: white; border: 1px solid #E5E7EB; border-radius: 6px;
+            padding: 14px; text-align: center;
+        }
+        .cert-icon { font-size: 28px; margin-bottom: 6px; }
+        .cert-label { font-size: 11px; font-weight: 600; color: #111827; }
+        .cert-status { font-size: 10px; color: #6B7280; margin-top: 4px; }
+
+        /* RODAPÉ */
+        .footer {
+            background: white; border-top: 1px solid #E5E7EB; padding: 16px;
+            font-size: 11px; color: #6B7280; text-align: center; margin-top: 24px;
+        }
+        .footer-line { margin: 4px 0; }
+
+        @media (max-width: 1024px) {
+            .kpis-grid { grid-template-columns: repeat(2, 1fr); }
+            .fiscal-grid { grid-template-columns: repeat(2, 1fr); }
+            .charts-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 640px) {
+            .kpis-grid { grid-template-columns: 1fr; }
+            .fiscal-grid { grid-template-columns: 1fr; }
+            .certidoes-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    
+        .panel { background:white; border:1px solid #E5E7EB; border-radius:8px; padding:20px; margin-bottom:20px; }
+        .panel-title { font-size:14px; font-weight:700; color:#111827; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
+        .badge { font-size:11px; background:#FEF3C7; color:#92400E; padding:4px 10px; border-radius:12px; font-weight:600; }
+        .badge.pago { background:#ECFDF5; color:#065F46; }
+        .kpis { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:20px; }
+        .kpi { background:white; border:1px solid #E5E7EB; border-left:4px solid #C5A059; border-radius:6px; padding:16px; }
+        .kpi-label { font-size:11px; color:#6B7280; text-transform:uppercase; font-weight:600; margin-bottom:6px; }
+        .kpi-value { font-size:22px; font-weight:700; color:#111827; }
+        .kpi-sub { font-size:11px; color:#6B7280; margin-top:4px; }
+        .row { display:flex; justify-content:space-between; gap:12px; padding:10px 12px; border-bottom:1px solid #E5E7EB; font-size:13px; }
+        .row:last-child { border-bottom:none; }
+        .row.total { background:#F3F4F6; font-weight:700; }
+        .row .obs { color:#6B7280; font-size:11px; }
+        .ok { background:#ECFDF5; border-left:4px solid #10B981; color:#065F46; padding:12px 14px; border-radius:6px; font-size:12px; margin-bottom:20px; }
+        @media (max-width:900px){ .kpis{grid-template-columns:1fr;} .sidebar-docs{position:static;width:100%;height:auto;} .main-content{margin-left:0;} body{flex-direction:column;} }
 </style>
 </head>
 <body>
+    <aside class="sidebar-docs">
+        <a href="../../../../index.html" style="display:block; padding:10px; margin-bottom:14px; background:#C58A94; color:white; border-radius:4px; text-decoration:none; text-align:center; font-size:11px; font-weight:600;">← Voltar ao Menu</a>
+        <div class="sidebar-title">📁 Documentos</div>
+        <a class="doc-item" href="Demonstrativo%20Simei%2008.2026.pdf" target="_blank">
+            <span class="doc-item-icon">📋</span>
+            <span>Demonstrativo Simei</span>
+        </a>
+        <a class="doc-item" href="Relat%C3%B3rio%20de%20Faturamento%2008.2026%20-%2033.750%2C00%20at%C3%A9%20dezembro.pdf" target="_blank">
+            <span class="doc-item-icon">📊</span>
+            <span>Relatório de Faturamento</span>
+        </a>
+        <a class="doc-item" href="Servi%C3%A7os%2008.2026.pdf" target="_blank">
+            <span class="doc-item-icon">🧾</span>
+            <span>Serviços prestados</span>
+        </a>
+        <a class="doc-item" href="Guia%2008.2026%20-%20Mei%20Ang%C3%A9lica%20Bresciani%20Polezo.pdf" target="_blank">
+            <span class="doc-item-icon">💳</span>
+            <span>Guia DAS MEI (agosto)</span>
+        </a>
+    </aside>
 
-<!--
-  ============================================================
-  TEMPLATE MESTRE - PORTAL DO CLIENTE
-  Para criar o portal de uma empresa:
-  1. Duplique este arquivo para a pasta da empresa (ex.: portalclientes/nome-empresa/index.html)
-  2. Altere SOMENTE o bloco CONFIG abaixo
-  3. Não altere o CSS nem a estrutura do HTML
-  ============================================================
--->
+    <div class="main-content">
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <h1>Fiscal - Agosto/2026</h1>
+                <p>ANGELICA BRESCIANI POLEZO - MEI | CNPJ 68.844.953/0001-70</p>
+            </div>
+            <div class="header-regime">MEI<br>Simples Nacional</div>
+        </div>
 
-<script>
-const CONFIG = {
-  empresa: {
-    nome: "ANGELICA BRESCIANI POLEZO - MEI",
-    cnpj: "68.844.953/0001-70",
-    subtitulo: "Painel de Atendimento Contábil"
-  },
+        <div class="ok"><strong>DAS de agosto pago.</strong> Vencimento era 21/09/2026.</div>
 
-  // Mês que recebe o destaque "Mês Atual". Formato: "Mês/AAAA"
-  mesAtual: "Setembro/2026",
+        <div class="kpis">
+            <div class="kpi">
+                <div class="kpi-label">Receita de serviços</div>
+                <div class="kpi-value">R$ 4.880,00</div>
+                <div class="kpi-sub">1 NFS-e (nº 1), 31/08/2026</div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-label">DAS a recolher</div>
+                <div class="kpi-value">R$ 86,05</div>
+                <div class="kpi-sub">Pago · vencimento 21/09/2026</div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-label">Faturamento acumulado</div>
+                <div class="kpi-value">R$ 4.880,00</div>
+                <div class="kpi-sub">Relatório 01/10/2025 a 31/08/2026</div>
+            </div>
+        </div>
 
-  // Meses exibidos, do mais recente para o mais antigo
-  meses: [
-    "Setembro/2026"
-  ],
+        <div class="panel">
+            <div class="panel-title">💳 DAS MEI - Agosto/2026 <span class="badge pago">Pago · venc. 21/09/2026</span></div>
+            <div class="row"><span>INSS - Simples Nacional MEI (código 0151)</span><span>R$ 81,05</span></div>
+            <div class="row"><span>ISS - Simples Nacional MEI Agronômica/SC (código 0125)</span><span>R$ 5,00</span></div>
+            <div class="row total"><span>Total do documento</span><span>R$ 86,05</span></div>
+            <div class="row"><span class="obs">Número do documento</span><span class="obs">07.08.26240.1483257-9</span></div>
+        </div>
 
-  // Cards exibidos em cada mês. "link" pode ser uma página (ex.: "fiscal.html") ou âncora (ex.: "#dp")
-  cards: [
-    { titulo: "Fiscal",        descricao: "Faturamento, impostos e apuração.", icone: "grafico",   link: "fiscal.html" },
-    { titulo: "Financeiro",    descricao: "Notas e boletos honorários contabilidade.",        icone: "tabela",    link: "financeiro.html" },
-    { titulo: "Contabilidade", descricao: "Balancetes e relatórios.",          icone: "documento", link: "contabilidade.html" },
-    { titulo: "Societário",    descricao: "Documentos da empresa e do titular.", icone: "socios",  link: "societario.html" }
-  ],
+        <div class="panel">
+            <div class="panel-title">📊 Demonstrativo do SIMEI - Agosto/2026</div>
+            <div class="row"><span>Débitos</span><span>R$ 86,05</span></div>
+            <div class="row"><span>SIMEI diferido do período anterior</span><span>R$ 0,00</span></div>
+            <div class="row"><span>SIMEI diferido do período</span><span>R$ 0,00</span></div>
+            <div class="row total"><span>SIMEI a recolher</span><span>R$ 86,05</span></div>
+        </div>
 
-  escritorio: {
-    razao: "Jaqueline Ferreira Assessoria Contábil Ltda | CRC SC-013019/O-4",
-    responsavel: "Responsável Técnica: Jaqueline do Prado Ferreira | CRC SC-048028/O-0",
-    local: "Videira - SC | contato@jaquelineferreiracontadora.com.br | WhatsApp (49) 9.9980-3552"
-  }
-};
+        <div class="panel">
+            <div class="panel-title">🧾 Movimento do período (01/08/2026 a 31/08/2026)</div>
+            <div class="row"><span>Serviços prestados com documento fiscal (código 900)</span><span>R$ 4.880,00</span></div>
+            <div class="row"><span class="obs">NFS-e nº 1, 31/08/2026, cliente: CABANA TRUCK CENTER LTDA</span><span></span></div>
+            <div class="row"><span class="obs">Serviços tomados: sem documentos no período</span><span></span></div>
+        </div>
 
-// Ícones (SVG) usados nos cards
-const ICONES = {
-  grafico: '<path d="M3 3v18h18"></path><path d="M7 11l3-3 3 3 3-3 3 3"></path><circle cx="9" cy="8" r="1.5"></circle><circle cx="15" cy="6" r="1.5"></circle>',
-  pessoa: '<circle cx="12" cy="8" r="3"></circle><path d="M6 14c0-2 2.5-4 6-4s6 2 6 4v4H6z"></path>',
-  tabela: '<rect x="3" y="3" width="18" height="18" rx="2"></rect><line x1="9" y1="9" x2="9" y2="15"></line><line x1="12" y1="9" x2="12" y2="15"></line><line x1="15" y1="9" x2="15" y2="15"></line>',
-  documento: '<path d="M7 3h10c1.1 0 2 .9 2 2v14c0 1.1-.9 2-2 2H7c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2z"></path><line x1="9" y1="6" x2="15" y2="6"></line><line x1="9" y1="10" x2="15" y2="10"></line><line x1="9" y1="14" x2="15" y2="14"></line><line x1="9" y1="18" x2="13" y2="18"></line>',
-  calendario: '<rect x="4" y="4" width="16" height="16" rx="2"></rect><line x1="4" y1="10" x2="20" y2="10"></line><line x1="9" y1="14" x2="9" y2="20"></line><line x1="15" y1="14" x2="15" y2="20"></line>',
-  socios: '<circle cx="8" cy="8" r="3"></circle><circle cx="16" cy="8" r="3"></circle><path d="M6 14c0-1.5 1.5-3 5-3s5 1.5 5 3v3H6z"></path><path d="M14 14c0-1.5 1.5-3 4-3s4 1.5 4 3v3h-8z"></path>'
-};
+        <div class="panel">
+            <div class="panel-title">📈 Relatório de Faturamento (10/2025 a 08/2026)</div>
+            <div class="row"><span>Agosto/2026 (serviços)</span><span>R$ 4.880,00</span></div>
+            <div class="row"><span class="obs">Outubro/2025 a julho/2026</span><span>R$ 0,00</span></div>
+            <div class="row total"><span>Total acumulado</span><span>R$ 4.880,00</span></div>
+            <div class="row"><span class="obs">Limite de emissão de notas até dezembro/2026 (informado pela contadora)</span><span>R$ 33.750,00</span></div>
+        </div>
 
-function escapar(texto) {
-  const div = document.createElement("div");
-  div.textContent = texto;
-  return div.innerHTML;
-}
+        <div class="ok">Fonte dos valores: Demonstrativo do SIMEI, Acompanhamento de Serviços, Relatório de Faturamento e Documento de Arrecadação do Simples Nacional (competência 08/2026). Pagamento do DAS informado pela contadora.</div>
 
-function renderizar() {
-  document.title = CONFIG.empresa.nome + " - Portal do Cliente";
-
-  document.getElementById("cabecalho").innerHTML =
-    '<div class="header-info">' +
-      '<h1>' + escapar(CONFIG.empresa.nome) + '</h1>' +
-      '<p>CNPJ: ' + escapar(CONFIG.empresa.cnpj) + ' • ' + escapar(CONFIG.empresa.subtitulo) + '</p>' +
-    '</div>';
-
-  const cardsHtml = CONFIG.cards.map(function (c) {
-    return '<a href="' + escapar(c.link) + '" class="portal-card">' +
-      '<div class="icon-circle"><svg viewBox="0 0 24 24">' + ICONES[c.icone] + '</svg></div>' +
-      '<h2>' + escapar(c.titulo) + '</h2>' +
-      '<p>' + escapar(c.descricao) + '</p>' +
-      '<div class="card-button">Acessar</div>' +
-    '</a>';
-  }).join("");
-
-  document.getElementById("meses").innerHTML = CONFIG.meses.map(function (mes) {
-    const atual = mes === CONFIG.mesAtual;
-    return '<div class="month-card' + (atual ? ' atual' : '') + '">' +
-      '<div class="month-header">' +
-        '<div class="month-title">' + escapar(mes) + '</div>' +
-        (atual ? '<div class="month-badge atual">Mês Atual</div>' : '') +
-      '</div>' +
-      '<div class="menu-container">' + cardsHtml + '</div>' +
-    '</div>';
-  }).join("");
-
-  document.getElementById("rodape").innerHTML =
-    '<p>' + escapar(CONFIG.escritorio.razao) + '</p>' +
-    '<p>' + escapar(CONFIG.escritorio.responsavel) + '</p>' +
-    '<p>' + escapar(CONFIG.escritorio.local) + '</p>' +
-    '<p class="footer-confidencial">Dashboard de Acesso Confidencial - Uso Exclusivo do Cliente</p>';
-}
-
-document.addEventListener("DOMContentLoaded", renderizar);
-</script>
-
-<div class="header-card" id="cabecalho"></div>
-
-<div class="months-container" id="meses"></div>
-
-<div class="footer-institucional" id="rodape"></div>
-
+        <div class="footer">
+            <div class="footer-line">Jaqueline Ferreira Assessoria Contábil Ltda | CRC SC-013019/O-4</div>
+            <div class="footer-line">Responsável Técnica: Jaqueline do Prado Ferreira | CRC SC-048028/O-0</div>
+            <div class="footer-line">Videira - SC | contato@jaquelineferreiracontadora.com.br | WhatsApp (49) 9.9980-3552</div>
+        </div>
+    </div>
+    </div>
 </body>
 </html>
