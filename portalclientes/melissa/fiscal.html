@@ -1,1 +1,253 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Fiscal - MELISSA SCHWARTZ PSICOLOGIA LTDA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #faf8f7;
+            color: #3a3a3a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            padding: 30px 20px;
+            position: relative;
+        }
+
+        .voltar-btn {
+            align-self: center;
+            background: #ffffff;
+            color: #C5A059;
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 4px;
+            border: 1px solid #e8dcd7;
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            transition: all 0.25s ease-out;
+        }
+        .voltar-btn:hover {
+            background: #fef9f5;
+            border-color: #C5A059;
+        }
+
+        .header-card {
+            background: #ffffff;
+            width: 100%;
+            max-width: 900px;
+            padding: 16px 20px;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+            border-left: 4px solid #C5A059;
+            margin-bottom: 28px;
+            text-align: center;
+        }
+        .header-info h1 {
+            font-size: 18px;
+            color: #2d2d2d;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .header-info p {
+            font-size: 12px;
+            color: #8a8a8a;
+            font-weight: 400;
+        }
+
+        .meses-container {
+            width: 100%;
+            max-width: 900px;
+            margin-bottom: 30px;
+        }
+        .meses-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #2d2d2d;
+            margin-bottom: 14px;
+        }
+
+        /* GRID DE MESES */
+        .meses-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .mes-card {
+            background: #ffffff;
+            text-decoration: none;
+            color: inherit;
+            padding: 14px 16px;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            border: 1px solid #f0e8e3;
+            text-align: center;
+            transition: all 0.25s ease-out;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+        }
+        .mes-card:hover {
+            transform: translateY(-1px);
+            border-color: #C5A059;
+            box-shadow: 0 2px 6px rgba(197, 160, 89, 0.08);
+        }
+
+        /* MÊS ATUAL */
+        .mes-card.atual {
+            border: 2px solid #C5A059;
+            box-shadow: 0 2px 8px rgba(197, 160, 89, 0.12);
+        }
+        .mes-card.atual:hover {
+            box-shadow: 0 4px 10px rgba(197, 160, 89, 0.18);
+        }
+
+        .mes-nome {
+            font-size: 13px;
+            font-weight: 600;
+            color: #2d2d2d;
+        }
+        .mes-ano {
+            font-size: 10px;
+            color: #a0a0a0;
+            font-weight: 400;
+        }
+        .mes-badge {
+            display: inline-block;
+            background: #C5A059;
+            color: #ffffff;
+            font-size: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 12px;
+            margin-top: 4px;
+            letter-spacing: 0.4px;
+        }
+
+        /* FOOTER */
+        .footer-institucional {
+            text-align: center;
+            width: 100%;
+            max-width: 900px;
+            border-top: 1px solid #e8dcd7;
+            padding-top: 16px;
+            margin-top: 20px;
+        }
+        .footer-institucional p {
+            font-size: 11px;
+            color: #8a8a8a;
+            line-height: 1.5;
+            font-weight: 400;
+        }
+        .footer-confidencial {
+            font-size: 10px !important;
+            color: #a39390 !important;
+            margin-top: 6px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!--
+      ============================================================
+      TEMPLATE MESTRE - CARD FISCAL
+      Para cada empresa:
+      1. Duplique este arquivo para a pasta da empresa (ex.: portalclientes/nome-empresa/fiscal.html)
+      2. Altere SOMENTE o bloco CONFIG abaixo
+      3. Não altere o CSS nem a estrutura do HTML
+      4. Os PDFs/páginas de cada mês devem estar em:
+         fiscal/documentos/AAAA/MM.AAAA/index.html
+      ============================================================
+    -->
+
+    <script>
+    const CONFIG = {
+        empresa: {
+            nome: "MELISSA SCHWARTZ PSICOLOGIA LTDA",
+            subtitulo: "Selecione o mês para visualizar"
+        },
+
+        // Mês marcado como "Atual". Use o mesmo formato de "meses".
+        mesAtual: { mes: "Setembro", ano: 2026 },
+
+        // Meses exibidos, do mais recente para o mais antigo.
+        // "pasta" gera o caminho: fiscal/documentos/AAAA/MM.AAAA/index.html
+        meses: [
+            { mes: "Setembro", ano: 2026, numero: "09" },
+            { mes: "Agosto",   ano: 2026, numero: "08" },
+            { mes: "Julho",    ano: 2026, numero: "07" },
+            { mes: "Junho",    ano: 2026, numero: "06" },
+        ],
+
+        voltarPara: "index.html",
+
+        escritorio: {
+            razao: "Jaqueline Ferreira Assessoria Contábil Ltda | CRC SC-013019/O-4",
+            responsavel: "Responsável Técnica: Jaqueline do Prado Ferreira | CRC SC-048028/O-0",
+            local: "Videira - SC | contato@jaquelineferreiracontadora.com.br | WhatsApp (49) 9.9980-3552"
+        }
+    };
+
+    function escapar(texto) {
+        const div = document.createElement("div");
+        div.textContent = String(texto);
+        return div.innerHTML;
+    }
+
+    function renderizar() {
+        document.title = "Painel Fiscal - " + CONFIG.empresa.nome;
+
+        document.getElementById("voltar").setAttribute("href", CONFIG.voltarPara);
+
+        document.getElementById("cabecalho").innerHTML =
+            '<div class="header-info">' +
+                '<h1>Fiscal</h1>' +
+                '<p>' + escapar(CONFIG.empresa.nome) + ' • ' + escapar(CONFIG.empresa.subtitulo) + '</p>' +
+            '</div>';
+
+        document.getElementById("meses").innerHTML = CONFIG.meses.map(function (m) {
+            const atual = m.mes === CONFIG.mesAtual.mes && m.ano === CONFIG.mesAtual.ano;
+            const caminho = "fiscal/documentos/" + m.ano + "/" + m.numero + "." + m.ano + "/index.html";
+            return '<a href="' + escapar(caminho) + '" class="mes-card' + (atual ? ' atual' : '') + '">' +
+                '<div class="mes-nome">' + escapar(m.mes) + '</div>' +
+                '<div class="mes-ano">' + escapar(m.ano) + '</div>' +
+                (atual ? '<div class="mes-badge">Atual</div>' : '') +
+            '</a>';
+        }).join("");
+
+        document.getElementById("rodape").innerHTML =
+            '<p>' + escapar(CONFIG.escritorio.razao) + '</p>' +
+            '<p>' + escapar(CONFIG.escritorio.responsavel) + '</p>' +
+            '<p>' + escapar(CONFIG.escritorio.local) + '</p>' +
+            '<p class="footer-confidencial">Dashboard de Acesso Confidencial - Uso Exclusivo do Cliente</p>';
+    }
+
+    document.addEventListener("DOMContentLoaded", renderizar);
+    </script>
+
+    <a href="index.html" id="voltar" class="voltar-btn">← Voltar ao Portal</a>
+
+    <div class="header-card" id="cabecalho"></div>
+
+    <div class="meses-container">
+        <h2 class="meses-title">Meses Disponíveis</h2>
+        <div class="meses-layout" id="meses"></div>
+    </div>
+
+    <div class="footer-institucional" id="rodape"></div>
+
+</body>
+</html>
