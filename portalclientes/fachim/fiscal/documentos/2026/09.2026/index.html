@@ -229,6 +229,12 @@
         .btn-copy.inss { background:#0D9488; color:white; }
         .btn-copy.inss:hover { background:#0A7A6E; }
         .doc-link.highlight { display:block; text-align:center; padding:8px; background:#F3E8E8; border-left:3px solid #C5A059; color:#8B5A6B; border-radius:6px; font-size:12px; text-decoration:none; font-weight:600; }
+    
+        .pay-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+        .pay-col { border:1px solid #E5E7EB; border-radius:8px; padding:14px; background:#FFFFFF; }
+        .pay-head { font-size:13px; font-weight:700; color:#111827; display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; }
+        .pay-val { font-size:22px; font-weight:700; color:#111827; margin-top:6px; }
+        .pay-info { font-size:11px; color:#6B7280; margin-top:2px; }
     </style>
 </head>
 <body>
@@ -331,12 +337,6 @@
             <div class="row total"><span>Total do documento</span><span>R$ 1.077,37</span></div>
             <div class="row"><span class="obs">Número do documento</span><span class="obs">07.16.26287.6313409-0</span></div>
             <div class="row"><span class="obs">Recibo da DCTFWeb (transmitida em 07/10/2026)</span><span class="obs">50000535543995</span></div>
-            <div style="margin-top:12px;">
-                <div class="obs" style="font-size:11px;color:#6B7280;margin-bottom:6px;">Linha digitável (copiar para pagamento):</div>
-                <div class="payment-code">85870000010 3 77370385263 9 03071626287 0 63134090407 9</div>
-                <button class="btn-copy das" onclick="copiarCodigo('85870000010 3 77370385263 9 03071626287 0 63134090407 9', this)">📋 Copiar Código de Barras</button>
-                <a class="doc-link highlight" style="display:block;margin-top:8px;" href="09.%20DARF%20Trimestral%2009.2026%20-%20Guia%20Pagamento.pdf" target="_blank">📄 Abrir guia (PDF)</a>
-            </div>
         </div>
 
         <div class="panel">
@@ -346,13 +346,33 @@
             <div class="row"><span><strong>CSLL</strong>: base R$ 6.609,66, alíquota 9%</span><span></span></div>
             <div class="row"><span class="obs">Débitos R$ 594,87 - retenções R$ 206,55</span><span>R$ 388,32</span></div>
             <div class="row"><span><strong>ISS</strong>: 3% sobre R$ 7.560,00 (guia emitida 14/10/2026, vence 26/10/2026)</span><span>R$ 226,80</span></div>
-            <div style="margin-top:12px;">
+            <div class="row"><span><strong>PIS/COFINS</strong> (regime cumulativo): PIS R$ 49,14 e COFINS R$ 226,80, ambos compensados com as retenções</span><span>R$ 0,00</span></div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">💳 Pagamentos - Setembro/2026</div>
+            <div class="pay-grid">
+                <div class="pay-col">
+                    <div class="pay-head">DARF - 3º Trimestre/2026 <span class="badge">Vence 30/10/2026</span></div>
+                    <div class="pay-val">R$ 1.077,37</div>
+                    <div class="pay-info">IRPJ R$ 689,05 + CSLL R$ 388,32</div>
+            <div style="margin-top:10px;">
+                <div class="obs" style="font-size:11px;color:#6B7280;margin-bottom:6px;">Linha digitável (copiar para pagamento):</div>
+                <div class="payment-code">85870000010 3 77370385263 9 03071626287 0 63134090407 9</div>
+                <div style="display:flex; flex-direction:column; gap:8px;"><button style="margin:0;" class="btn-copy das" onclick="copiarCodigo('85870000010 3 77370385263 9 03071626287 0 63134090407 9', this)">📋 Copiar Código de Barras</button><a class="doc-link highlight" style="display:block;margin:0;" href="09.%20DARF%20Trimestral%2009.2026%20-%20Guia%20Pagamento.pdf" target="_blank">📄 Abrir guia (PDF)</a></div>
+            </div>
+                </div>
+                <div class="pay-col">
+                    <div class="pay-head">ISS - Prefeitura de Videira <span class="badge">Vence 26/10/2026</span></div>
+                    <div class="pay-val">R$ 226,80</div>
+                    <div class="pay-info">Guia única emitida em 14/10/2026</div>
+            <div style="margin-top:10px;">
                 <div class="obs" style="font-size:11px;color:#6B7280;margin-bottom:6px;">Linha digitável da guia de ISS (copiar para pagamento):</div>
                 <div class="payment-code">00190.00009 01179.556269 00211.421177 5 16110000022680</div>
-                <button class="btn-copy inss" onclick="copiarCodigo('00190.00009 01179.556269 00211.421177 5 16110000022680', this)">📋 Copiar Código de Barras</button>
-                <a class="doc-link highlight" style="display:block;margin-top:8px;" href="09.1%20ISS%2009.2026%20-%20Guia%20Pagamento.pdf" target="_blank">📄 Abrir guia (PDF)</a>
+                <div style="display:flex; flex-direction:column; gap:8px;"><button style="margin:0;" class="btn-copy inss" onclick="copiarCodigo('00190.00009 01179.556269 00211.421177 5 16110000022680', this)">📋 Copiar Código de Barras</button><a class="doc-link highlight" style="display:block;margin:0;" href="09.1%20ISS%2009.2026%20-%20Guia%20Pagamento.pdf" target="_blank">📄 Abrir guia (PDF)</a></div>
             </div>
-            <div class="row"><span><strong>PIS/COFINS</strong> (regime cumulativo): PIS R$ 49,14 e COFINS R$ 226,80, ambos compensados com as retenções</span><span>R$ 0,00</span></div>
+                </div>
+            </div>
         </div>
 
         <div class="panel">
