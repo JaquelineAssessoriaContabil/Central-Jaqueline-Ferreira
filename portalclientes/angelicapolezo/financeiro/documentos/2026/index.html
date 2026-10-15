@@ -1,1 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financeiro - ANGELICA BRESCIANI POLEZO - MEI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #faf8f7; color: #3a3a3a; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 30px 20px; }
+        .voltar-btn { align-self: center; background: #ffffff; color: #C5A059; text-decoration: none; padding: 8px 14px; border-radius: 4px; border: 1px solid #e8dcd7; font-size: 11px; font-weight: 600; margin-bottom: 20px; }
+        .header-card { background: #ffffff; width: 100%; max-width: 900px; padding: 16px 20px; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.03); border-left: 4px solid #C5A059; margin-bottom: 28px; text-align: center; }
+        .header-card h1 { font-size: 18px; color: #2d2d2d; font-weight: 600; margin-bottom: 4px; }
+        .header-card p { font-size: 12px; color: #8a8a8a; }
+        .section-title { width: 100%; max-width: 900px; font-size: 16px; font-weight: 700; color: #2d2d2d; margin-bottom: 14px; }
+        .bol-list { width: 100%; max-width: 900px; display: flex; flex-direction: column; gap: 16px; margin-bottom: 30px; }
+        .bol-card { background: #ffffff; border: 1px solid #f0e8e3; border-radius: 10px; padding: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); }
+        .bol-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+        .bol-title { font-size: 15px; font-weight: 600; color: #2d2d2d; }
+        .bol-info { font-size: 12px; color: #7a7a7a; margin-top: 4px; }
+        .bol-valor { font-size: 20px; font-weight: 700; color: #2d2d2d; }
+        .bol-label { font-size: 11px; color: #7a7a7a; margin-bottom: 6px; }
+        .payment-code { font-size: 12px; background: #F3F4F6; padding: 8px; border-radius: 4px; color: #374151; margin-bottom: 10px; word-break: break-all; font-family: monospace; }
+        .btn-copy { width: 100%; padding: 9px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; background: #C5A059; color: #ffffff; transition: all 0.2s; font-family: inherit; }
+        .btn-copy:hover { background: #B89146; }
+        .doc-link { display: block; margin-top: 8px; text-align: center; padding: 9px; background: #F3E8E8; border-left: 3px solid #C5A059; color: #8B5A6B; border-radius: 6px; font-size: 12px; text-decoration: none; font-weight: 600; }
+        .footer { text-align: center; width: 100%; max-width: 900px; border-top: 1px solid #e8dcd7; padding-top: 16px; margin-top: 10px; }
+        .footer p { font-size: 11px; color: #8a8a8a; line-height: 1.5; }
+        .bol-venc { display: inline-block; font-size: 15px; font-weight: 700; color: #8B5A6B; background: #F3E8E8; border-left: 3px solid #C5A059; padding: 6px 10px; border-radius: 6px; margin-bottom: 6px; }
+    </style>
+</head>
+<body>
 
+    <a href="index.html" class="voltar-btn">← Voltar ao Portal</a>
+
+    <div class="header-card">
+        <h1>Financeiro</h1>
+        <p>ANGELICA BRESCIANI POLEZO - MEI • Boletos de honorários contábeis</p>
+    </div>
+
+    <div class="section-title">Boletos disponíveis</div>
+    <div class="bol-list">
+        <div class="bol-card">
+            <div class="bol-top">
+                <div>
+                    <div class="bol-title">Honorários Contábeis 12/2026</div>
+                    <div class="bol-venc">📅 Vencimento 15/01/2027</div>
+                    <div class="bol-info">Após o vencimento: R$ 0,97 de multa e 2% de juros ao mês</div>
+                </div>
+                <div class="bol-valor">R$ 97,00</div>
+            </div>
+            <div class="bol-label">Linha digitável (copiar para pagamento):</div>
+            <div class="payment-code">46191.11000 00000.000042 97841.661016 4 16920000009700</div>
+            <button class="btn-copy" onclick="copiarCodigo('46191.11000 00000.000042 97841.661016 4 16920000009700', this)">📋 Copiar Código de Barras</button>
+            <a class="doc-link" href="financeiro/documentos/2026/Honor%C3%A1rios%20Cont%C3%A1beis%2012.2026%20-%20Boleto%2015.01.2027.pdf" target="_blank">📄 Abrir boleto (PDF)</a>
+        </div>
+        <div class="bol-card">
+            <div class="bol-top">
+                <div>
+                    <div class="bol-title">Honorários Contábeis 11/2026</div>
+                    <div class="bol-venc">📅 Vencimento 15/12/2026</div>
+                    <div class="bol-info">Após o vencimento: R$ 0,97 de multa e 2% de juros ao mês</div>
+                </div>
+                <div class="bol-valor">R$ 97,00</div>
+            </div>
+            <div class="bol-label">Linha digitável (copiar para pagamento):</div>
+            <div class="payment-code">46191.11000 00000.000042 97834.649010 3 16610000009700</div>
+            <button class="btn-copy" onclick="copiarCodigo('46191.11000 00000.000042 97834.649010 3 16610000009700', this)">📋 Copiar Código de Barras</button>
+            <a class="doc-link" href="financeiro/documentos/2026/Honor%C3%A1rios%20Cont%C3%A1beis%2011.2026%20-%20Boleto%2015.12.2026.pdf" target="_blank">📄 Abrir boleto (PDF)</a>
+        </div>
+        <div class="bol-card">
+            <div class="bol-top">
+                <div>
+                    <div class="bol-title">Honorários Contábeis 10/2026</div>
+                    <div class="bol-venc">📅 Vencimento 15/11/2026</div>
+                    
+                </div>
+                <div class="bol-valor">R$ 97,00</div>
+            </div>
+            <div class="bol-label">Linha digitável (copiar para pagamento):</div>
+            <div class="payment-code">46191.11000 00000.000042 93709.658012 4 16310000009700</div>
+            <button class="btn-copy" onclick="copiarCodigo('46191.11000 00000.000042 93709.658012 4 16310000009700', this)">📋 Copiar Código de Barras</button>
+            <a class="doc-link" href="financeiro/documentos/2026/Honor%C3%A1rios%20Cont%C3%A1beis%2010.2026%20-%20Boleto%2015.11.2026.pdf" target="_blank">📄 Abrir boleto (PDF)</a>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Jaqueline Ferreira Assessoria Contábil Ltda | CRC SC-013019/O-4</p>
+        <p>Responsável Técnica: Jaqueline do Prado Ferreira | CRC SC-048028/O-0</p>
+        <p>Videira - SC | contato@jaquelineferreiracontadora.com.br | WhatsApp (49) 9.9980-3552</p>
+        <p style="font-size:10px;color:#a39390;margin-top:6px;">Dashboard de Acesso Confidencial - Uso Exclusivo do Cliente</p>
+    </div>
+
+    <script>
+    function copiarCodigo(codigo, btn) {
+        const texto = codigo.replace(/\s+/g, '');
+        const original = btn.textContent;
+        const feedback = function () {
+            btn.textContent = '✅ Copiado!';
+            setTimeout(function () { btn.textContent = original; }, 2000);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(texto).then(feedback).catch(function () {});
+        } else {
+            const ta = document.createElement('textarea');
+            ta.value = texto; document.body.appendChild(ta); ta.select();
+            try { document.execCommand('copy'); feedback(); } catch (e) {}
+            document.body.removeChild(ta);
+        }
+    }
+    </script>
+</body>
+</html>
