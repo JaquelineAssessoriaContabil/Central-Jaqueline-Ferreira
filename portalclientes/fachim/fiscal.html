@@ -1,1 +1,279 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Fiscal - FACHIM PSICOLOGIA LTDA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
+        body {
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #faf8f7;
+            color: #3a3a3a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            padding: 30px 20px;
+            position: relative;
+        }
+
+        .voltar-btn {
+            align-self: center;
+            background: #ffffff;
+            color: #C5A059;
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 4px;
+            border: 1px solid #e8dcd7;
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            transition: all 0.25s ease-out;
+        }
+
+        .voltar-btn:hover {
+            background: #fef9f5;
+            border-color: #C5A059;
+        }
+
+        .header-card {
+            background: #ffffff;
+            width: 100%;
+            max-width: 900px;
+            padding: 16px 20px;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+            border-left: 4px solid #C5A059;
+            margin-bottom: 28px;
+            text-align: center;
+        }
+
+        .header-info h1 {
+            font-size: 18px;
+            color: #2d2d2d;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .header-info p {
+            font-size: 12px;
+            color: #8a8a8a;
+            font-weight: 400;
+        }
+
+        .meses-container {
+            width: 100%;
+            max-width: 900px;
+            margin-bottom: 30px;
+        }
+
+        .meses-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #2d2d2d;
+            margin-bottom: 14px;
+        }
+
+        /* LAYOUT COLUNA ÚNICA */
+        .meses-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            max-width: 950px;
+        }
+
+        /* TODOS OS MESES IGUAL */
+        .mes-destaque {
+            display: contents;
+        }
+
+        .mes-card-destaque {
+            background: #ffffff;
+            text-decoration: none;
+            color: inherit;
+            padding: 14px 16px;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            border: 2px solid #E74C3C;
+            text-align: center;
+            transition: all 0.25s ease-out;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+        }
+
+        .mes-card-destaque:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(231, 76, 60, 0.1);
+        }
+
+        .mes-nome-destaque {
+            font-size: 13px;
+            font-weight: 600;
+            color: #2d2d2d;
+        }
+
+        .mes-ano-destaque {
+            font-size: 10px;
+            color: #a0a0a0;
+            font-weight: 400;
+        }
+
+        .mes-badge-destaque {
+            display: inline-block;
+            background: #C5A059;
+            color: white;
+            font-size: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: 12px;
+            margin-top: 4px;
+            letter-spacing: 0.4px;
+        }
+
+        /* OUTROS MESES */
+        .outros-meses {
+            display: contents;
+        }
+
+        .mes-card {
+            background: #ffffff;
+            text-decoration: none;
+            color: inherit;
+            padding: 14px 16px;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            border: 1px solid #f0e8e3;
+            text-align: center;
+            transition: all 0.25s ease-out;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+        }
+
+        .mes-card:hover {
+            transform: translateY(-1px);
+            border-color: #C5A059;
+            box-shadow: 0 2px 6px rgba(197, 160, 89, 0.08);
+        }
+
+        .mes-nome {
+            font-size: 13px;
+            font-weight: 600;
+            color: #2d2d2d;
+        }
+
+        .mes-ano {
+            font-size: 10px;
+            color: #a0a0a0;
+            font-weight: 400;
+        }
+
+        /* FOOTER */
+        .footer-institucional {
+            text-align: center;
+            width: 100%;
+            max-width: 900px;
+            border-top: 1px solid #e8dcd7;
+            padding-top: 16px;
+            margin-top: 20px;
+        }
+
+        .footer-institucional p {
+            font-size: 11px;
+            color: #8a8a8a;
+            line-height: 1.5;
+            font-weight: 400;
+        }
+
+        .footer-confidencial {
+            font-size: 10px !important;
+            color: #a39390 !important;
+            margin-top: 6px;
+        }
+
+        /* RESPONSIVO */
+        @media (max-width: 680px) {
+            .meses-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .outros-meses {
+                grid-column: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <a href="index.html" class="voltar-btn">← Voltar ao Portal</a>
+
+    <!-- HEADER -->
+    <div class="header-card">
+        <div class="header-info">
+            <h1>Fiscal</h1>
+            <p>FACHIM PSICOLOGIA LTDA • Selecione o mês para visualizar</p>
+        </div>
+    </div>
+
+    <!-- MESES -->
+    <div class="meses-container">
+        <h2 class="meses-title">Meses Disponíveis</h2>
+
+        <div class="meses-layout">
+
+            <!-- COLUNA ESQUERDA - SETEMBRO DESTAQUE -->
+            <div class="mes-destaque">
+                <a href="fiscal/documentos/2026/09.2026/index.html" class="mes-card-destaque">
+                    <div class="mes-nome-destaque">Setembro</div>
+                    <div class="mes-ano-destaque">2026</div>
+                    <div class="mes-badge-destaque">Atual</div>
+                </a>
+            </div>
+
+            <!-- COLUNA DIREITA - OUTROS MESES -->
+            <div class="outros-meses">
+                <a href="fiscal/documentos/2026/08.2026/index.html" class="mes-card">
+                    <div class="mes-nome">Agosto</div>
+                    <div class="mes-ano">2026</div>
+                </a>
+
+                <a href="fiscal/documentos/2026/07.2026/index.html" class="mes-card">
+                    <div class="mes-nome">Julho</div>
+                    <div class="mes-ano">2026</div>
+                </a>
+
+                <a href="fiscal/documentos/2026/06.2026/index.html" class="mes-card">
+                    <div class="mes-nome">Junho</div>
+                    <div class="mes-ano">2026</div>
+                </a>
+
+                <a href="fiscal/documentos/2026/05.2026/index.html" class="mes-card">
+                    <div class="mes-nome">Maio</div>
+                    <div class="mes-ano">2026</div>
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer-institucional">
+        <p>Jaqueline Ferreira Assessoria Contábil Ltda | CRC SC-013019/O-4</p>
+        <p>Responsável Técnica: Jaqueline do Prado Ferreira | CRC SC-048028/O-0</p>
+        <p>Videira - SC | contato@jaquelineferreiracontadora.com.br | WhatsApp (49) 9.9980-3552</p>
+        <p class="footer-confidencial">Dashboard de Acesso Confidencial - Uso Exclusivo do Cliente</p>
+    </div>
+
+</body>
+</html>
