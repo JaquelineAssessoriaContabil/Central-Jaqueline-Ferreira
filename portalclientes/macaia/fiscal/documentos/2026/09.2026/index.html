@@ -214,10 +214,43 @@
             .certidoes-grid { grid-template-columns: repeat(2, 1fr); }
             .docs-grid { grid-template-columns: 1fr; }
         }
+
+        /* SIDEBAR DE DOCUMENTOS */
+        .sidebar-docs { position: fixed; top: 0; left: 0; bottom: 0; width: 220px; background: white; border-right: 1px solid #E5E7EB; padding: 20px 14px; overflow-y: auto; z-index: 10; }
+        .sidebar-back { display: block; padding: 10px; margin-bottom: 16px; background: #C58A94; color: white; border-radius: 4px; text-decoration: none; text-align: center; font-size: 11px; font-weight: 600; }
+        .sidebar-back:hover { background: #b37684; }
+        .sidebar-title { font-size: 12px; font-weight: 700; color: #111827; margin: 6px 0 10px; }
+        .doc-item { display: flex; align-items: center; gap: 8px; padding: 9px 10px; margin-bottom: 6px; background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 6px; text-decoration: none; color: #374151; font-size: 12px; font-weight: 500; transition: all 0.2s; }
+        .doc-item:hover { background: #F3F4F6; border-color: #D1D5DB; }
+        .doc-item.highlight { background: #F3E8E8; border-left: 3px solid #C5A059; color: #8B5A6B; }
+        .main-content { margin-left: 220px; }
     </style>
 </head>
 <body>
-    <div class="container">
+    <aside class="sidebar-docs">
+        <a href="../../../../fiscal.html" class="sidebar-back">← Voltar ao Menu</a>
+        <div class="sidebar-title">📁 Documentos - Setembro/2026</div>
+        <a class="doc-item" href="01.%20Protocolo%20Servi%C3%A7os%20Prestados%2009.2026.pdf" target="_blank">📄 Protocolo Serviços Prestados</a>
+        <a class="doc-item" href="01.%20Protocolo%20Servi%C3%A7os%20Tomados%2008.2026%20-%20Complementar.pdf" target="_blank">📄 Protocolo Tomados 08 (Compl.)</a>
+        <a class="doc-item" href="02.%20Protocolo%20Servi%C3%A7os%20Tomados%2009.2026.pdf" target="_blank">📄 Protocolo Serviços Tomados</a>
+        <a class="doc-item" href="03.%20Entradas%2009.2026.pdf" target="_blank">📄 Entradas</a>
+        <a class="doc-item" href="04.%20Servi%C3%A7os%2009.2026.pdf" target="_blank">📄 Serviços</a>
+        <a class="doc-item" href="05.%20Resumo%20Acumulador%2009.2026.pdf" target="_blank">📄 Resumo Acumulador</a>
+        <a class="doc-item" href="06.%20Faturamento%2012%20meses%20-%2009.2026.pdf" target="_blank">📄 Faturamento 12 meses</a>
+        <a class="doc-item" href="07.%20Simples%20Nacional%2009.2026.pdf" target="_blank">📄 Simples Nacional</a>
+        <a class="doc-item" href="07.1%20Simples%20Nacional%20-%20Mem%C3%B3ria%20de%20C%C3%A1lculo%2009.2026.pdf" target="_blank">📄 Memória de Cálculo</a>
+        <a class="doc-item" href="07.2%20Simples%20Nacional%20-%20RBA%20-%20Folha%2012%20meses%2009.2026.pdf" target="_blank">📄 RBA - Folha 12 meses</a>
+        <a class="doc-item" href="07.3%20Simples%20Nacional%20-%20Al%C3%ADquota%20Efetiva%20per%C3%ADodo%20seguinte%2009.2026.pdf" target="_blank">📄 Alíquota Efetiva</a>
+        <a class="doc-item highlight" href="08.%20DAS%2009.2026%20-%20Guia%20pagamento.pdf" target="_blank">📄 DAS - Guia</a>
+        <a class="doc-item" href="08.1%20PGDASD-DECLARACAO-33075903202609001.pdf" target="_blank">📄 PGDAS Declaração</a>
+        <a class="doc-item" href="08.2%20PGDASD-EXTRATO-07202627907084033.pdf" target="_blank">📄 PGDAS Extrato</a>
+        <a class="doc-item" href="08.3%20PGDASD-RECIBO-33075903202609001.pdf" target="_blank">📄 PGDAS Recibo</a>
+        <a class="doc-item" href="09.%20Sintegra%2009.2026.pdf" target="_blank">📄 Sintegra</a>
+        <a class="doc-item" href="09.1%20Destda%2009.2026.pdf" target="_blank">📄 Destda</a>
+    </aside>
+
+    <div class="main-content"><div class="container">
+
         <!-- 1. HEADER -->
         <div class="header">
             <div class="header-left">
@@ -414,29 +447,6 @@
             </div>
         </div>
 
-        <!-- 9. DOCUMENTOS (2 COLUNAS) -->
-        <div class="panel">
-            <div class="panel-title">
-                📄 Documentos - Setembro/2026
-            </div>
-            <div class="docs-grid">
-                <a href="https://jaquelineferreiracontadora.com.br/portalclientes/macaia/fiscal/documentos/2026/09.2026/08.%20DAS%2009.2026%20-%20Guia%20pagamento.pdf" target="_blank" class="doc-link highlight">📋 DAS Guia Pagamento</a>
-                <a href="https://jaquelineferreiracontadora.com.br/portalclientes/macaia/fiscal/documentos/2026/09.2026/01.%20Protocolo%20Serviços%20Prestados%2009.2026.pdf" target="_blank" class="doc-link">Protocolo Prestados</a>
-                <a href="https://jaquelineferreiracontadora.com.br/portalclientes/macaia/fiscal/documentos/2026/09.2026/02.%20Protocolo%20Serviços%20Tomados%2009.2026.pdf" target="_blank" class="doc-link">Protocolo Tomados</a>
-                <a href="https://jaquelineferreiracontadora.com.br/portalclientes/macaia/fiscal/documentos/2026/09.2026/05.%20Resumo%20Acumulador%2009.2026.pdf" target="_blank" class="doc-link">Resumo Acumulador</a>
-                <a href="https://jaquelineferreiracontadora.com.br/portalclientes/macaia/fiscal/documentos/2026/09.2026/06.%20Faturamento%2012%20meses%20-%2009.2026.pdf" target="_blank" class="doc-link">Faturamento 12 Meses</a>
-                <a href="https://jaquelineferreiracontadora.com.br/portalclientes/macaia/fiscal/documentos/2026/09.2026/07.%20Simples%20Nacional%2009.2026.pdf" target="_blank" class="doc-link">Simples Nacional</a>
-                <a href="https://jaquelineferreiracontadora.com.br/portalclientes/macaia/fiscal/documentos/2026/09.2026/07.1%20Simples%20Nacional%20-%20Memória%20de%20Cálculo%2009.2026.pdf" target="_blank" class="doc-link">Memória Cálculo</a>
-                <a href="https://jaquelineferreiracontadora.com.br/portalclientes/macaia/fiscal/documentos/2026/09.2026/07.2%20Simples%20Nacional%20-%20RBA%20-%20Folha%2012%20meses%2009.2026.pdf" target="_blank" class="doc-link">RBA Folha 12m</a>
-                <a href="https://jaquelineferreiracontadora.com.br/portalclientes/macaia/fiscal/documentos/2026/09.2026/07.3%20Simples%20Nacional%20-%20Alíquota%20Efetiva%20período%20seguinte%2009.2026.pdf" target="_blank" class="doc-link">Alíquota Efetiva</a>
-                <a href="https://jaquelineferreiracontadora.com.br/portalclientes/macaia/fiscal/documentos/2026/09.2026/08.1%20PGDASD-DECLARACAO-33075903202609001.pdf" target="_blank" class="doc-link">PGDAS Declaração</a>
-                <a href="https://jaquelineferreiracontadora.com.br/portalclientes/macaia/fiscal/documentos/2026/09.2026/08.2%20PGDASD-EXTRATO-07202627907084033.pdf" target="_blank" class="doc-link">PGDAS Extrato</a>
-                <a href="https://jaquelineferreiracontadora.com.br/portalclientes/macaia/fiscal/documentos/2026/09.2026/08.3%20PGDASD-RECIBO-33075903202609001.pdf" target="_blank" class="doc-link">PGDAS Recibo</a>
-                <a href="https://jaquelineferreiracontadora.com.br/portalclientes/macaia/fiscal/documentos/2026/09.2026/09.%20Sintegra%2009.2026.pdf" target="_blank" class="doc-link">Sintegra</a>
-                <a href="https://jaquelineferreiracontadora.com.br/portalclientes/macaia/fiscal/documentos/2026/09.2026/09.1%20Destda%2009.2026.pdf" target="_blank" class="doc-link">Destda</a>
-            </div>
-        </div>
-
         <!-- 10. STATUS FISCAL -->
         <div class="panel">
             <div class="panel-title">
@@ -517,6 +527,7 @@
         <div class="footer-line" style="margin-top: 8px; font-size: 10px;">
             Dashboard Fiscal Confidencial - Uso Exclusivo do Cliente | Setembro/2026
         </div>
+    </div>
     </div>
 
     <script>
