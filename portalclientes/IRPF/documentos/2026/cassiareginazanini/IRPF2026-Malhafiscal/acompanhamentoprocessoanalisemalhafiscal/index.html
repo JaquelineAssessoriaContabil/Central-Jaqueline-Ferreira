@@ -1,1 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acompanhamento - CASSIA REGINA ZANINI</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #F9FAFB; color: #1F2937; }
+        .sidebar-docs { position: fixed; top: 0; left: 0; bottom: 0; width: 220px; background: white; border-right: 1px solid #E5E7EB; padding: 20px 14px; overflow-y: auto; z-index: 10; }
+        .sidebar-back { display: block; padding: 10px; margin-bottom: 16px; background: #C58A94; color: white; border-radius: 4px; text-decoration: none; text-align: center; font-size: 11px; font-weight: 600; }
+        .sidebar-back:hover { background: #b37684; }
+        .sidebar-title { font-size: 12px; font-weight: 700; color: #111827; margin: 6px 0 10px; }
+        .doc-item { display: block; padding: 9px 10px; margin-bottom: 6px; background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 6px; text-decoration: none; color: #374151; font-size: 12px; font-weight: 500; transition: all 0.2s; }
+        .doc-item:hover { background: #F3F4F6; border-color: #D1D5DB; }
+        .doc-item.highlight { background: #F3E8E8; border-left: 3px solid #C5A059; color: #8B5A6B; }
+        .main-content { margin-left: 220px; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .header { background: white; border: 1px solid #E5E7EB; border-radius: 8px; padding: 24px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+        .header h1 { font-size: 18px; font-weight: 700; color: #111827; margin-bottom: 4px; }
+        .header p { font-size: 13px; color: #6B7280; margin: 2px 0; }
+        .header-regime { background: linear-gradient(135deg, #C58A94 0%, #C5A059 100%); color: white; padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 600; text-align: center; }
+        .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+        .kpi { background: white; border: 1px solid #E5E7EB; border-left: 4px solid #C5A059; border-radius: 8px; padding: 16px; }
+        .kpi.rosa { border-left-color: #C58A94; }
+        .kpi.verde { border-left-color: #10B981; }
+        .kpi-label { font-size: 11px; color: #6B7280; text-transform: uppercase; font-weight: 600; margin-bottom: 6px; }
+        .kpi-value { font-size: 20px; font-weight: 700; color: #111827; }
+        .kpi-sub { font-size: 11px; color: #6B7280; margin-top: 4px; }
+        .panel { background: white; border: 1px solid #E5E7EB; border-radius: 8px; padding: 20px; margin-bottom: 24px; }
+        .panel-title { font-size: 14px; font-weight: 700; color: #111827; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+        .badge { background: #FEF3C7; color: #92400E; padding: 4px 12px; border-radius: 16px; font-size: 11px; font-weight: 600; }
+        .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        .row { display: flex; justify-content: space-between; gap: 12px; padding: 10px 12px; border-bottom: 1px solid #E5E7EB; font-size: 13px; }
+        .row:last-child { border-bottom: none; }
+        .row span:first-child { color: #6B7280; }
+        .row span:last-child { font-weight: 600; text-align: right; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th { background: #F9FAFB; border-bottom: 2px solid #E5E7EB; padding: 10px; text-align: left; font-weight: 600; color: #111827; }
+        td { padding: 10px; border-bottom: 1px solid #E5E7EB; }
+        .r { text-align: right; }
+        .total td { background: #FEF3C7; font-weight: 700; }
+        .payment-code { font-size: 11px; background: #F3F4F6; padding: 8px; border-radius: 4px; color: #374151; margin: 10px 0 12px; word-break: break-all; font-family: monospace; }
+        .btn-copy { width: 100%; padding: 10px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; color: white; background: #0D9488; }
+        .doc-link { display: block; margin-top: 8px; padding: 10px; text-align: center; text-decoration: none; background: #F3E8E8; border-left: 3px solid #C5A059; border-radius: 6px; color: #8B5A6B; font-size: 12px; font-weight: 600; }
+        .check { display: flex; gap: 10px; align-items: center; padding: 8px 0; font-size: 13px; border-bottom: 1px solid #E5E7EB; }
+        .check:last-child { border-bottom: none; }
+        .ok { color: #10B981; font-weight: 700; }
+        .pend { color: #F59E0B; font-weight: 700; }
+        .obs { font-size: 12px; color: #6B7280; line-height: 1.6; margin-top: 12px; }
+        .footer { background: white; border-top: 1px solid #E5E7EB; padding: 16px; font-size: 11px; color: #6B7280; text-align: center; margin-top: 24px; }
+        .footer-line { margin: 4px 0; }
+        @media (max-width: 1000px) { .kpis { grid-template-columns: repeat(2, 1fr); } .grid2 { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <aside class="sidebar-docs">
+        <a href="../index.html" class="sidebar-back">← Voltar à malha</a>
+        <div class="sidebar-title">📁 Documentos</div>
+        <a class="doc-item highlight" href="Consulta%2021.10.2026.png" target="_blank">🖼️ Consulta 21/10/2026</a>
+    </aside>
 
+    <div class="main-content"><div class="container">
+        <div class="header">
+            <div class="header-left"><h1>Acompanhamento do processo - Malha fiscal</h1><p>CASSIA REGINA ZANINI | IRPF 2026</p></div>
+            <div class="header-regime">Consulta de 21/10/2026</div>
+        </div>
+        <div class="panel">
+            <div class="panel-title">🔎 Resultado da consulta no e-CAC</div>
+            <div class="check"><span class="ok">○</span> Serviço "Apresentar Documentos Antecipadamente" (Malha Fiscal IRPF)</div>
+            <div class="check"><span class="ok">○</span> Resposta do sistema: "O serviço não está disponível para esse exercício. Aguarde a liberação do serviço pela RFB."</div>
+            <div class="obs">Quando o serviço for liberado, a antecipação será protocolada e os documentos enviados em até 3 dias úteis.</div>
+            <div style="margin-top:14px"><a href="Consulta%2021.10.2026.png" target="_blank"><img src="Consulta%2021.10.2026.png" alt="Consulta 21/10/2026" style="max-width:100%;border:1px solid #E5E7EB;border-radius:6px"></a></div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-line">Jaqueline Ferreira Assessoria Contábil Ltda | CRC SC-013019/O-4</div>
+            <div class="footer-line">Responsável Técnica: Jaqueline do Prado Ferreira | CRC SC-048028/O-0</div>
+            <div class="footer-line">Videira - SC | contato@jaquelineferreiracontadora.com.br | WhatsApp (49) 9.9980-3552</div>
+        </div>
+    </div></div>
+</body>
+</html>
