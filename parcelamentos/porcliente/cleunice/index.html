@@ -336,6 +336,20 @@
       .parcelas-table { font-size: 0.85rem; }
       .parcelas-table th, .parcelas-table td { padding: 0.75rem; }
     }
+    .btn-pdf {
+      display: block;
+      text-align: center;
+      margin-top: 0.75rem;
+      padding: 0.9rem 1rem;
+      border: 2px solid var(--gold);
+      border-radius: 6px;
+      color: #8a6a2f;
+      font-weight: 700;
+      text-decoration: none;
+      background: white;
+      transition: background 0.3s;
+    }
+    .btn-pdf:hover { background: #f9f3f1; }
   </style>
 </head>
 <body>
@@ -386,6 +400,7 @@
           <button class="btn-copy" onclick="copiarCodigoBarras('858200000015362503852634030717263020584186600570')">
             📋 Copiar Código de Barras
           </button>
+          <a class="btn-pdf" href="guias/pgfn-2026-10.pdf" download>📄 Baixar guia (PDF)</a>
         </div>
 
         <!-- IRPF -->
@@ -401,6 +416,7 @@
           <button class="btn-copy" onclick="copiarCodigoBarras('858500000045938103852632030701263026583804750801')">
             📋 Copiar Código de Barras
           </button>
+          <a class="btn-pdf" href="guias/irpf-2026-10.pdf" download>📄 Baixar guia (PDF)</a>
         </div>
 
         <!-- SIMPLIFICADO -->
@@ -416,6 +432,7 @@
           <button class="btn-copy" onclick="copiarCodigoBarras('858000000020097503852638030703263023583958460056')">
             📋 Copiar Código de Barras
           </button>
+          <a class="btn-pdf" href="guias/simplificado-2026-10.pdf" download>📄 Baixar guia (PDF)</a>
         </div>
       </div>
     </div>
