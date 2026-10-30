@@ -1,1 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Fiscal Outubro/2026 - JONATHAN GABRIEL GONÇALVES FERMINO - MEI</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #F9FAFB; color: #1F2937; display: flex; }
 
+        /* SIDEBAR */
+        .sidebar-docs {
+            width: 220px; background: white; border-right: 1px solid #E5E7EB; padding: 16px;
+            height: 100vh; overflow-y: auto; position: fixed; left: 0; top: 0;
+            box-shadow: 1px 0 3px rgba(0,0,0,0.05);
+        }
+        .sidebar-title {
+            font-size: 12px; font-weight: 700; color: #C58A94; text-transform: uppercase;
+            margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid #C5A059;
+        }
+        .doc-item {
+            display: flex; align-items: center; padding: 8px 10px; margin-bottom: 6px;
+            border-radius: 4px; font-size: 11px; color: #111827; text-decoration: none;
+            transition: all 0.2s; cursor: pointer;
+        }
+        .doc-item:hover { background: #F3F4F6; color: #C58A94; }
+        .doc-item.highlight { background: #F3E8E8; color: #8B5A6B; font-weight: 600; }
+        .doc-item-icon { margin-right: 8px; font-size: 14px; }
+
+        .main-content { flex: 1; margin-left: 220px; }
+        .container { max-width: 100%; margin: 0; padding: 20px; }
+
+        /* HEADER */
+        .header {
+            background: white; border: 1px solid #E5E7EB; border-radius: 8px; padding: 24px;
+            margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .header-left h1 { font-size: 18px; font-weight: 700; color: #111827; margin-bottom: 4px; }
+        .header-left p { font-size: 13px; color: #6B7280; margin: 2px 0; }
+        .header-regime {
+            font-size: 12px; font-weight: 700; color: #C58A94; text-align: center;
+            border: 2px solid #C5A059; border-radius: 8px; padding: 8px 12px; line-height: 1.4;
+        }
+
+        /* KPIs */
+        .kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+        .kpi { background: white; border: 1px solid #E5E7EB; border-left: 4px solid #C5A059; border-radius: 6px; padding: 16px; }
+        .kpi.verde { border-left-color: #10B981; }
+        .kpi.rosa { border-left-color: #C58A94; }
+        .kpi-label { font-size: 11px; color: #6B7280; text-transform: uppercase; font-weight: 600; margin-bottom: 6px; }
+        .kpi-value { font-size: 22px; font-weight: 700; color: #111827; }
+        .kpi-sub { font-size: 11px; color: #6B7280; margin-top: 4px; }
+
+        /* PAINÉIS */
+        .panel { background: white; border: 1px solid #E5E7EB; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+        .panel-title {
+            font-size: 14px; font-weight: 700; color: #111827; margin-bottom: 14px;
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
+        }
+        .badge { font-size: 11px; background: #FEF3C7; color: #92400E; padding: 4px 10px; border-radius: 12px; font-weight: 600; }
+        .badge.pago { background: #ECFDF5; color: #065F46; }
+        .row { display: flex; justify-content: space-between; gap: 12px; padding: 10px 12px; border-bottom: 1px solid #E5E7EB; font-size: 13px; }
+        .row:last-child { border-bottom: none; }
+        .row.total { background: #F3F4F6; font-weight: 700; }
+        .row .obs { color: #6B7280; font-size: 11px; }
+        .ok { background: #ECFDF5; border-left: 4px solid #10B981; color: #065F46; padding: 12px 14px; border-radius: 6px; font-size: 12px; margin-bottom: 20px; }
+
+        .footer {
+            background: white; border-top: 1px solid #E5E7EB; padding: 16px;
+            font-size: 11px; color: #6B7280; text-align: center; margin-top: 24px;
+        }
+        .footer-line { margin: 4px 0; }
+
+        @media (max-width: 768px) {
+            body { flex-direction: column; padding-bottom: 20px; }
+            .sidebar-docs {
+                position: static; width: 100%; height: auto; border-right: none; border-bottom: 1px solid #E5E7EB;
+                display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 10px;
+            }
+            .sidebar-title { display: none; }
+            .sidebar-docs > a { margin: 0; }
+            .doc-item { margin: 0; padding: 6px 8px; }
+            .main-content { margin-left: 0; width: 100%; }
+            .container { padding: 14px; }
+            .header { flex-direction: column; align-items: flex-start; gap: 12px; padding: 18px; }
+            .kpis { grid-template-columns: 1fr 1fr; }
+            .kpi-value { font-size: 18px; }
+        }
+        @media (max-width: 420px) {
+            .kpis { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <aside class="sidebar-docs">
+        <a href="../../../../index.html" style="display:block; padding:10px; margin-bottom:14px; background:#C58A94; color:white; border-radius:4px; text-decoration:none; text-align:center; font-size:11px; font-weight:600;">← Voltar ao Menu</a>
+        <div class="sidebar-title">📁 Documentos</div>
+        <a class="doc-item" href="06.%20Faturamento%2012%20meses%2010.2026.pdf" target="_blank">
+            <span class="doc-item-icon">📈</span>
+            <span>06. Faturamento 12 meses</span>
+        </a>
+        <a class="doc-item" href="05.%20Resumo%20Acumulador%2010.2026.pdf" target="_blank">
+            <span class="doc-item-icon">📊</span>
+            <span>05. Resumo Acumulador</span>
+        </a>
+        <a class="doc-item" href="04.%20Servi%C3%A7os%2010.2026.pdf" target="_blank">
+            <span class="doc-item-icon">🧾</span>
+            <span>04. Serviços prestados</span>
+        </a>
+        <a class="doc-item" href="03.%20Entradas%2010.2026.pdf" target="_blank">
+            <span class="doc-item-icon">📥</span>
+            <span>03. Entradas (tomados)</span>
+        </a>
+        <a class="doc-item" href="07.%20Demonstrativo%20Simei%2010.2026.pdf" target="_blank">
+            <span class="doc-item-icon">📋</span>
+            <span>07. Demonstrativo SIMEI</span>
+        </a>
+        <a class="doc-item highlight" href="08.%20DAS%20Mei%2010.2026%20-%20Guia%20Pagamento.pdf" target="_blank">
+            <span class="doc-item-icon">💳</span>
+            <span>08. Guia DAS MEI</span>
+        </a>
+    </aside>
+
+    <div class="main-content">
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <h1>Fiscal - Outubro/2026</h1>
+                <p>JONATHAN GABRIEL GONÇALVES FERMINO - MEI | CNPJ 67.103.003/0001-21</p>
+            </div>
+            <div class="header-regime">MEI<br>Simples Nacional</div>
+        </div>
+
+        <div class="kpis">
+            <div class="kpi">
+                <div class="kpi-label">Receita de serviços</div>
+                <div class="kpi-value">R$ 4.833,17</div>
+                <div class="kpi-sub">1 NFS-e (nº 5), 29/10/2026</div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-label">DAS a recolher</div>
+                <div class="kpi-value">R$ 86,05</div>
+                <div class="kpi-sub">Vencimento 23/11/2026</div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-label">Serviços tomados</div>
+                <div class="kpi-value">R$ 97,00</div>
+                <div class="kpi-sub">1 NFS-e recebida (nº 63), 30/10/2026</div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">💳 DAS MEI - Outubro/2026 <span class="badge">Vence 23/11/2026</span></div>
+            <div style="margin:4px 0 14px;">
+                <div class="obs" style="font-size:11px;color:#6B7280;margin-bottom:6px;">Código de barras (copiar para pagamento):</div>
+                <div class="payment-code" style="font-family:monospace;background:#F3F4F6;padding:8px 10px;border-radius:6px;font-size:12px;">85880000000 8 86050328263 9 27070826303 1 84322162042 1</div>
+                <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;">
+                    <button style="flex:1 1 200px;padding:9px;border:none;border-radius:6px;background:#C5A059;color:white;font-weight:600;cursor:pointer;" class="btn-copy das" onclick="copiarCodigo('858800000008860503282639270708263031843221620421', this)">📋 Copiar Código de Barras</button>
+                    <a style="flex:1 1 200px;text-align:center;padding:9px;border-radius:6px;background:#F3E8E8;color:#8B5A6B;font-weight:600;text-decoration:none;" class="doc-link highlight" href="08.%20DAS%20Mei%2010.2026%20-%20Guia%20Pagamento.pdf" target="_blank">📄 Abrir guia (PDF)</a>
+                </div>
+            </div>
+            <div class="row"><span>INSS - Simples Nacional MEI (código 0151)</span><span>R$ 81,05</span></div>
+            <div class="row"><span>ISS - Simples Nacional MEI Rio do Sul/SC (código 0125)</span><span>R$ 5,00</span></div>
+            <div class="row total"><span>Total do documento</span><span>R$ 86,05</span></div>
+            <div class="row"><span class="obs">SIMEI a recolher (Demonstrativo do SIMEI, competência 10/2026)</span><span>R$ 86,05</span></div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">🧾 Movimento do período (01/10/2026 a 31/10/2026)</div>
+            <div class="row"><span>Serviços prestados com documento fiscal (Resumo Acumulador, código 900)</span><span>R$ 4.833,17</span></div>
+            <div class="row"><span>Serviços tomados sem retenção (Resumo Acumulador, código 801)</span><span>R$ 97,00</span></div>
+            <div class="row"><span class="obs">Cliente da NFS-e nº 5: CABANA TRUCK CENTER LTDA</span><span></span></div>
+            <div class="row"><span class="obs">Fornecedor da NFS-e recebida nº 63: JAQUELINE FERREIRA ASSESSORIA CONTÁBIL LTDA</span><span></span></div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">📈 Relatório de Faturamento (06/2026 a 09/2026)</div>
+            <div class="row"><span>Junho/2026</span><span>R$ 4.870,00</span></div>
+            <div class="row"><span>Julho/2026</span><span>R$ 4.850,00</span></div>
+            <div class="row"><span>Agosto/2026</span><span>R$ 4.970,00</span></div>
+            <div class="row"><span>Setembro/2026</span><span>R$ 4.945,00</span></div>
+            <div class="row total"><span>Total do relatório (até 30/09/2026)</span><span>R$ 19.635,00</span></div>
+            <div class="row"><span class="obs">Outubro/2026 ainda não consta no relatório de faturamento. Valor de outubro: serviços prestados (NFS-e nº 5), R$ 4.833,17.</span><span></span></div>
+        </div>
+
+        <div class="ok">Fonte dos valores: Resumo por Acumulador, Acompanhamento de Serviços, Acompanhamento de Entradas, Relatório de Faturamento, Demonstrativo do SIMEI e Documento de Arrecadação do Simples Nacional (competência 10/2026).</div>
+
+        <div class="footer">
+            <div class="footer-line">Jaqueline Ferreira Assessoria Contábil Ltda | CRC SC-013019/O-4</div>
+            <div class="footer-line">Responsável Técnica: Jaqueline do Prado Ferreira | CRC SC-048028/O-0</div>
+            <div class="footer-line">Videira - SC | contato@jaquelineferreiracontadora.com.br | WhatsApp (49) 9.9980-3552</div>
+        </div>
+    </div>
+    </div>
+    <script>
+    function copiarCodigo(codigo, btn) {
+        const texto = codigo.replace(/\s+/g, '');
+        const original = btn.textContent;
+        const feedback = function () {
+            btn.textContent = '✅ Copiado!';
+            setTimeout(function () { btn.textContent = original; }, 2000);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(texto).then(feedback).catch(function () {});
+        } else {
+            const ta = document.createElement('textarea');
+            ta.value = texto; document.body.appendChild(ta); ta.select();
+            try { document.execCommand('copy'); feedback(); } catch (e) {}
+            document.body.removeChild(ta);
+        }
+    }
+    </script>
+</body>
+</html>
