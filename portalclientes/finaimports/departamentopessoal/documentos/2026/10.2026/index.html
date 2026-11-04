@@ -1,1 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Departamento Pessoal Outubro/2026 - FINA IMPORTS LTDA</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #F9FAFB; color: #1F2937; display: flex; }
 
+        .sidebar-docs {
+            width: 220px; background: white; border-right: 1px solid #E5E7EB; padding: 16px;
+            height: 100vh; overflow-y: auto; position: fixed; left: 0; top: 0;
+            box-shadow: 1px 0 3px rgba(0,0,0,0.05);
+        }
+        .sidebar-title {
+            font-size: 12px; font-weight: 700; color: #C58A94; text-transform: uppercase;
+            margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid #C5A059;
+        }
+        .doc-item {
+            display: flex; align-items: center; padding: 8px 10px; margin-bottom: 6px;
+            border-radius: 4px; font-size: 11px; color: #111827; text-decoration: none; transition: all 0.2s;
+        }
+        .doc-item:hover { background: #F3F4F6; color: #C58A94; }
+        .doc-item.highlight { background: #F3E8E8; border-left: 3px solid #C5A059; color: #8B5A6B; font-weight: 600; }
+        .doc-item-icon { margin-right: 8px; font-size: 14px; }
+
+        .main-content { flex: 1; margin-left: 220px; }
+        .container { max-width: 100%; margin: 0; padding: 20px; }
+
+        .header {
+            background: white; border: 1px solid #E5E7EB; border-radius: 8px; padding: 24px;
+            margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .header-left h1 { font-size: 20px; font-weight: 700; color: #111827; margin-bottom: 4px; line-height: 1.25; }
+        .header-left p { font-size: 13px; color: #6B7280; margin: 2px 0; }
+        .header-regime { font-size: 12px; color: #6B7280; text-align: right; }
+
+        .kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+        .kpi { background: white; border: 1px solid #E5E7EB; border-left: 4px solid #C5A059; border-radius: 6px; padding: 16px; }
+        .kpi-label { font-size: 11px; color: #6B7280; text-transform: uppercase; font-weight: 600; margin-bottom: 6px; }
+        .kpi-value { font-size: 22px; font-weight: 700; color: #111827; }
+        .kpi-sub { font-size: 11px; color: #6B7280; margin-top: 4px; }
+
+        .panel { background: white; border: 1px solid #E5E7EB; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+        .panel-title { font-size: 14px; font-weight: 700; color: #111827; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+        .badge { font-size: 11px; background: #FEF2F2; color: #991B1B; padding: 4px 10px; border-radius: 12px; font-weight: 600; }
+        .row { display: flex; justify-content: space-between; gap: 12px; padding: 10px 12px; border-bottom: 1px solid #E5E7EB; font-size: 13px; }
+        .row:last-child { border-bottom: none; }
+        .row.total { background: #F3F4F6; font-weight: 700; }
+        .obs { color: #6B7280; font-size: 11px; }
+
+        .payment-code { font-size: 12px; background: #F3F4F6; padding: 8px; border-radius: 4px; color: #374151; margin-bottom: 10px; word-break: break-all; font-family: monospace; }
+        .btn-copy { width: 100%; padding: 8px; border: none; border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: 600; transition: all 0.2s; background: #C5A059; color: white; }
+        .btn-copy:hover { background: #B89146; }
+        .doc-link.highlight {
+            display: block; text-align: center; padding: 8px; background: #F3E8E8; border-left: 3px solid #C5A059;
+            color: #8B5A6B; border-radius: 6px; font-size: 12px; text-decoration: none; font-weight: 600; margin-top: 10px;
+        }
+
+        .footer { background: white; border-top: 1px solid #E5E7EB; padding: 16px; font-size: 11px; color: #6B7280; text-align: center; margin-top: 24px; }
+        .footer-line { margin: 4px 0; }
+    </style>
+</head>
+<body>
+    <aside class="sidebar-docs">
+        <a href="../../../../departamentopessoal.html" style="display:block; padding:10px; margin-bottom:14px; background:#C58A94; color:white; border-radius:4px; text-decoration:none; text-align:center; font-size:11px; font-weight:600;">← Voltar ao Depto. Pessoal</a>
+        <div class="sidebar-title">📁 Documentos</div>
+        <a class="doc-item highlight" href="01.%20INSS%2010.2026%20-%20Guia%20Pagamento.pdf" target="_blank">
+            <span class="doc-item-icon">💳</span>
+            <span>INSS - Guia de pagamento</span>
+        </a>
+        <a class="doc-item" href="01.1%20DeclaracaoCompleta_60909490000175_102026_40_.pdf" target="_blank">
+            <span class="doc-item-icon">🧾</span>
+            <span>DCTFWeb - Declaração completa</span>
+        </a>
+        <a class="doc-item" href="01.2%20Recibo_60909490000175_102026_40_0000050000545660188.pdf" target="_blank">
+            <span class="doc-item-icon">🧾</span>
+            <span>DCTFWeb - Recibo de entrega</span>
+        </a>
+        <a class="doc-item" href="03.%20Extrato%20Folha%2010.2026.pdf" target="_blank">
+            <span class="doc-item-icon">🧾</span>
+            <span>Extrato da folha</span>
+        </a>
+        <a class="doc-item" href="04.%20Resumo%20Folha%2010.2026.pdf" target="_blank">
+            <span class="doc-item-icon">🧾</span>
+            <span>Resumo da folha</span>
+        </a>
+        <a class="doc-item" href="05.%20Recibo%20de%20Pagamento%2010.2026%20-%20Marlene%20Ribeiro.pdf" target="_blank">
+            <span class="doc-item-icon">🧾</span>
+            <span>Recibo de pagamento - Marlene</span>
+        </a>
+    </aside>
+
+    <div class="main-content">
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <h1>Departamento Pessoal - Outubro/2026</h1>
+                <p>FINA IMPORTS LTDA | CNPJ 60.909.490/0001-75</p>
+            </div>
+            <div class="header-regime">Folha mensal<br>1 sócia com pró-labore</div>
+        </div>
+
+        <div class="kpis">
+            <div class="kpi">
+                <div class="kpi-label">Pró-labore</div>
+                <div class="kpi-value">R$ 1.621,00</div>
+                <div class="kpi-sub">Sócia administradora</div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-label">INSS (11%)</div>
+                <div class="kpi-value">R$ 178,31</div>
+                <div class="kpi-sub">Vencimento 19/11/2026</div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-label">Valor líquido</div>
+                <div class="kpi-value">R$ 1.442,69</div>
+                <div class="kpi-sub">Após o desconto do INSS</div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">💳 Pagamento - Outubro/2026 <span class="badge">Vence 19/11/2026</span></div>
+            <div class="row"><span>INSS - Guia de pagamento (código 1099)</span><span>R$ 178,31</span></div>
+            <div class="row"><span class="obs">Número do documento</span><span class="obs">07.16.26308.0523219-3</span></div>
+            <div style="margin-top:12px;">
+                <div class="obs" style="margin-bottom:6px;">Código de barras (copiar para pagamento):</div>
+                <div class="payment-code">85870000001 4 78310385263 5 23071626308 9 05232193990 8</div>
+                <button class="btn-copy" onclick="copiarCodigo('858700000014783103852635230716263089052321939908', this)">📋 Copiar Código de Barras</button>
+            </div>
+            <a class="doc-link highlight" href="01.%20INSS%2010.2026%20-%20Guia%20Pagamento.pdf" target="_blank">📄 Abrir guia (PDF)</a>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">📊 Folha - Outubro/2026</div>
+            <div class="row"><span>Pró-labore (rubrica 100)</span><span>R$ 1.621,00</span></div>
+            <div class="row"><span>INSS sobre o pró-labore (11%)</span><span>- R$ 178,31</span></div>
+            <div class="row total"><span>Valor líquido</span><span>R$ 1.442,69</span></div>
+            <div class="row"><span class="obs">Base de cálculo do INSS</span><span class="obs">R$ 1.621,00</span></div>
+            <div class="row"><span class="obs">Base de cálculo do IRRF</span><span class="obs">R$ 1.013,80 (faixa 0,00, sem IRRF retido)</span></div>
+            <div class="row"><span class="obs">FGTS</span><span class="obs">Não incide (sócia administradora)</span></div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">✅ Obrigações entregues - Outubro/2026</div>
+            <div class="row"><span>DCTFWeb (INSS segurados, código 1099-01)</span><span>Entregue em 04/11/2026</span></div>
+            <div class="row"><span class="obs">Recibo de entrega</span><span class="obs">0000050000545660188</span></div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-line">Jaqueline Ferreira Assessoria Contábil Ltda | CRC SC-013019/O-4</div>
+            <div class="footer-line">Responsável Técnica: Jaqueline do Prado Ferreira | CRC SC-048028/O-0</div>
+            <div class="footer-line">Videira - SC | contato@jaquelineferreiracontadora.com.br | WhatsApp (49) 9.9980-3552</div>
+        </div>
+    </div>
+    </div>
+
+    <script>
+    function copiarCodigo(codigo, btn) {
+        const texto = codigo.replace(/\s+/g, '');
+        const original = btn.textContent;
+        const feedback = function () {
+            btn.textContent = '✅ Copiado!';
+            setTimeout(function () { btn.textContent = original; }, 2000);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(texto).then(feedback).catch(function () {});
+        } else {
+            const ta = document.createElement('textarea');
+            ta.value = texto; document.body.appendChild(ta); ta.select();
+            try { document.execCommand('copy'); feedback(); } catch (e) {}
+            document.body.removeChild(ta);
+        }
+    }
+    </script>
+</body>
+</html>
