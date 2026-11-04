@@ -1,1 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Departamento Pessoal Junho/2026 - FINA IMPORTS LTDA</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #F9FAFB; color: #1F2937; }
+        .sidebar-docs { position: fixed; top: 0; left: 0; bottom: 0; width: 220px; background: white; border-right: 1px solid #E5E7EB; padding: 20px 14px; overflow-y: auto; z-index: 10; }
+        .sidebar-back { display: block; padding: 10px; margin-bottom: 16px; background: #C58A94; color: white; border-radius: 4px; text-decoration: none; text-align: center; font-size: 11px; font-weight: 600; }
+        .sidebar-title { font-size: 12px; font-weight: 700; color: #111827; margin: 6px 0 10px; }
+        .doc-item { display: flex; align-items: center; gap: 8px; padding: 9px 10px; margin-bottom: 6px; background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 6px; text-decoration: none; color: #374151; font-size: 12px; font-weight: 500; }
+        .doc-item.highlight { background: #F3E8E8; border-left: 3px solid #C5A059; color: #8B5A6B; }
+        .main-content { margin-left: 220px; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        .header { background: white; border: 1px solid #E5E7EB; border-radius: 8px; padding: 24px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; }
+        .header-left h1 { font-size: 18px; font-weight: 700; color: #111827; margin-bottom: 4px; }
+        .header-left p { font-size: 13px; color: #6B7280; margin: 2px 0; }
+        .header-regime { background: linear-gradient(135deg, #C58A94 0%, #C5A059 100%); color: white; padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 600; }
+        .kpis-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+        .kpi { background: white; border: 1px solid #E5E7EB; border-left: 4px solid #C5A059; border-radius: 8px; padding: 16px; }
+        .kpi.rosa { border-left-color: #C58A94; }
+        .kpi.verde { border-left-color: #10B981; }
+        .kpi-label { font-size: 11px; color: #6B7280; text-transform: uppercase; font-weight: 600; margin-bottom: 6px; }
+        .kpi-value { font-size: 20px; font-weight: 700; color: #111827; }
+        .kpi-sub { font-size: 11px; color: #6B7280; margin-top: 4px; }
+        .panel { background: white; border: 1px solid #E5E7EB; border-radius: 8px; padding: 20px; margin-bottom: 24px; }
+        .panel-title { font-size: 14px; font-weight: 700; color: #111827; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+        .badge-venc { background: #FEF3C7; color: #92400E; padding: 4px 12px; border-radius: 16px; font-size: 11px; font-weight: 600; }
+        .row { display: flex; justify-content: space-between; gap: 12px; padding: 10px 12px; border-bottom: 1px solid #E5E7EB; font-size: 13px; }
+        .row:last-child { border-bottom: none; }
+        .row.total { background: #F3F4F6; font-weight: 700; }
+        .obs { color: #6B7280; font-size: 11px; }
+        .payment-code { font-size: 12px; background: #F3F4F6; padding: 8px; border-radius: 4px; color: #374151; margin-bottom: 10px; word-break: break-all; font-family: monospace; }
+        .btn-copy { width: 100%; padding: 10px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; color: white; background: #0D9488; }
+        .doc-link { display: block; margin-top: 8px; padding: 10px; text-align: center; text-decoration: none; background: #F3E8E8; border-left: 3px solid #C5A059; border-radius: 6px; color: #8B5A6B; font-size: 12px; font-weight: 600; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th { background: #F9FAFB; border-bottom: 2px solid #E5E7EB; padding: 10px; text-align: left; font-weight: 600; color: #111827; }
+        td { padding: 10px; border-bottom: 1px solid #E5E7EB; }
+        .text-right { text-align: right; }
+        .total-row td { background: #FEF3C7; font-weight: 700; }
+        .obrig-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        .obrig-card { border: 1px solid #E5E7EB; border-radius: 6px; padding: 14px; text-align: center; background: white; }
+        .obrig-card.ok { border-top: 3px solid #10B981; }
+        .obrig-card.pend { border-top: 3px solid #F59E0B; }
+        .obrig-card.na { border-top: 3px solid #9CA3AF; }
+        .obrig-label { font-size: 12px; font-weight: 600; color: #111827; }
+        .obrig-status { font-size: 11px; color: #6B7280; margin-top: 4px; }
+        .footer { background: white; border-top: 1px solid #E5E7EB; padding: 16px; font-size: 11px; color: #6B7280; text-align: center; margin-top: 24px; }
+        .footer-line { margin: 4px 0; }
+    </style>
+</head>
+<body>
+    <aside class="sidebar-docs">
+        <a href="../../../../departamentopessoal.html" class="sidebar-back">← Voltar ao Menu</a>
+        <div class="sidebar-title">📁 Documentos - Junho/2026</div>
+        <a class="doc-item highlight" href="01.%20INSS%2006.2026%20-%20Guia%20Pagamento.pdf" target="_blank">📄 Guia INSS</a>
+        <a class="doc-item" href="01.1%20DeclaracaoCompleta_60909490000175_062026_40_.pdf" target="_blank">📄 DCTFWeb - Declaração</a>
+        <a class="doc-item" href="01.2%20Recibo_60909490000175_062026_40_0000050000499402316.pdf" target="_blank">📄 DCTFWeb - Recibo</a>
+        <a class="doc-item" href="03.%20Extrato%20Folha%2006.2026.pdf" target="_blank">📄 Extrato Folha</a>
+        <a class="doc-item" href="05.%20Recibo%20de%20Pagamento%2006.2026%20-%20Marlene%20Ribeiro.pdf" target="_blank">📄 Recibo de Pagamento</a>
+    </aside>
 
+    <div class="main-content"><div class="container">
+        <div class="header">
+            <div class="header-left">
+                <h1>🏢 FINA IMPORTS LTDA</h1>
+                <p>CNPJ: 60.909.490/0001-75 | Departamento Pessoal - Junho/2026</p>
+            </div>
+            <div class="header-regime">Folha mensal<br>1 sócia com pró-labore</div>
+        </div>
+
+        <div class="kpis-grid">
+            <div class="kpi"><div class="kpi-label">Colaboradores</div><div class="kpi-value">1</div><div class="kpi-sub">Administradora</div></div>
+            <div class="kpi rosa"><div class="kpi-label">Pró-labore bruto</div><div class="kpi-value">R$ 1.621,00</div><div class="kpi-sub">Admissão 01/07/2025</div></div>
+            <div class="kpi"><div class="kpi-label">INSS (11%)</div><div class="kpi-value">R$ 178,31</div><div class="kpi-sub">Vence 17/07/2026</div></div>
+            <div class="kpi verde"><div class="kpi-label">Líquido pago</div><div class="kpi-value">R$ 1.442,69</div><div class="kpi-sub">Pró-labore após INSS</div></div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">💳 Pagamento do mês <span class="badge-venc">Vencimento 17/07/2026</span></div>
+            <div class="row"><span>INSS - Guia de pagamento (código 1099)</span><span>R$ 178,31</span></div>
+            <div class="row"><span class="obs">Número do documento</span><span class="obs">07.16.26187.4495587-6</span></div>
+            <div style="margin-top:12px;">
+                <div class="obs" style="margin-bottom:6px;">Código de barras (copiar para pagamento):</div>
+                <div class="payment-code">858400000019 783103852619 980716261877 449558766569</div>
+                <button class="btn-copy" data-codigo="858400000019783103852619980716261877449558766569">📋 Copiar Código de Barras</button>
+            </div>
+            <a class="doc-link" href="01.%20INSS%2006.2026%20-%20Guia%20Pagamento.pdf" target="_blank">📄 Abrir guia (PDF)</a>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">🧾 Folha de Junho/2026</div>
+            <table>
+                <thead><tr><th>Código</th><th>Descrição</th><th>Referência</th><th class="text-right">Vencimentos</th><th class="text-right">Descontos</th></tr></thead>
+                <tbody>
+                    <tr><td>100</td><td>Pró-labore</td><td>220:00</td><td class="text-right">R$ 1.621,00</td><td class="text-right">-</td></tr>
+                    <tr><td>843</td><td>INSS segurado (11%)</td><td>11,00</td><td class="text-right">-</td><td class="text-right">R$ 178,31</td></tr>
+                    <tr class="total-row"><td colspan="3">Totais</td><td class="text-right">R$ 1.621,00</td><td class="text-right">R$ 178,31</td></tr>
+                    <tr class="total-row"><td colspan="4">Líquido a receber</td><td class="text-right">R$ 1.442,69</td></tr>
+                </tbody>
+            </table>
+            <div style="margin-top: 14px; font-size: 12px; color: #6B7280; line-height: 1.7;">
+                Base INSS: R$ 1.621,00 · Base FGTS: R$ 0,00 · Base IRRF: R$ 1.013,80 (IRRF retido: R$ 0,00)
+            </div>
+            
+            
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">✅ Obrigações de Junho/2026</div>
+            <div class="obrig-grid">
+                <div class="obrig-card ok"><div class="obrig-label">INSS - Guia</div><div class="obrig-status">R$ 178,31 · vencimento 17/07/2026</div></div>
+                <div class="obrig-card ok"><div class="obrig-label">DCTFWeb</div><div class="obrig-status">Entregue em 02/07/2026 · recibo 50000499402316</div></div>
+                <div class="obrig-card na"><div class="obrig-label">FGTS</div><div class="obrig-status">Não incide (sem base)</div></div>
+                <div class="obrig-card na"><div class="obrig-label">IRRF</div><div class="obrig-status">Não retido (base R$ 1.013,80)</div></div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-line">Jaqueline Ferreira Assessoria Contábil Ltda | CRC SC-013019/O-4</div>
+            <div class="footer-line">Responsável Técnica: Jaqueline do Prado Ferreira | CRC SC-048028/O-0</div>
+            <div class="footer-line">Videira - SC | contato@jaquelineferreiracontadora.com.br | WhatsApp (49) 9.9980-3552</div>
+        </div>
+    </div></div>
+
+    <script>
+    document.querySelectorAll(".btn-copy").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+            const codigo = btn.getAttribute("data-codigo").replace(/\s/g, "");
+            const orig = btn.innerText;
+            function ok() { btn.innerText = "✓ Copiado!"; btn.style.backgroundColor = "#10B981"; setTimeout(function () { btn.innerText = orig; btn.style.backgroundColor = ""; }, 2500); }
+            function falha() { btn.innerText = "Não copiou, copie manualmente"; setTimeout(function () { btn.innerText = orig; }, 2500); }
+            if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(codigo).then(ok, falha); } else { falha(); }
+        });
+    });
+    </script>
+</body>
+</html>
