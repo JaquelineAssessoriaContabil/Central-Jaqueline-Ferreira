@@ -217,7 +217,7 @@
 
         document.getElementById("meses").innerHTML = CONFIG.meses.map(function (m) {
             const atual = m.mes === CONFIG.mesAtual.mes && m.ano === CONFIG.mesAtual.ano;
-            const caminho = "financeiro/documentos/" + m.ano + "/" + m.numero + "." + m.ano + "/index.html";
+            const caminho = "financeiro/documentos/2026/index.html";
             return '<a href="' + escapar(caminho) + '" class="mes-card' + (atual ? ' atual' : '') + '">' +
                 '<div class="mes-nome">' + escapar(m.mes) + '</div>' +
                 '<div class="mes-ano">' + escapar(m.ano) + '</div>' +
