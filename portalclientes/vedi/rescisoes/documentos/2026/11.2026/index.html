@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rescisão - Andreza Martini - VEDI OPTICA E RELOJOARIA LTDA</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #F9FAFB; color: #1F2937; }
+        .sidebar-docs { position: fixed; top: 0; left: 0; bottom: 0; width: 220px; background: white; border-right: 1px solid #E5E7EB; padding: 20px 14px; overflow-y: auto; z-index: 10; }
+        .sidebar-back { display: block; padding: 10px; margin-bottom: 16px; background: #C58A94; color: white; border-radius: 4px; text-decoration: none; text-align: center; font-size: 11px; font-weight: 600; }
+        .sidebar-back:hover { background: #b37684; }
+        .sidebar-title { font-size: 12px; font-weight: 700; color: #111827; margin: 6px 0 10px; }
+        .doc-item { display: block; padding: 9px 10px; margin-bottom: 6px; background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 6px; text-decoration: none; color: #374151; font-size: 12px; font-weight: 500; transition: all 0.2s; }
+        .doc-item:hover { background: #F3F4F6; border-color: #D1D5DB; }
+        .doc-item.highlight { background: #F3E8E8; border-left: 3px solid #C5A059; color: #8B5A6B; }
+        .main-content { margin-left: 220px; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .header { background: white; border: 1px solid #E5E7EB; border-radius: 8px; padding: 24px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+        .header h1 { font-size: 18px; font-weight: 700; color: #111827; margin-bottom: 4px; }
+        .header p { font-size: 13px; color: #6B7280; margin: 2px 0; }
+        .header-regime { background: linear-gradient(135deg, #C58A94 0%, #C5A059 100%); color: white; padding: 8px 16px; border-radius: 6px; font-size: 12px; font-weight: 600; text-align: center; }
+        .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+        .kpi { background: white; border: 1px solid #E5E7EB; border-left: 4px solid #C5A059; border-radius: 8px; padding: 16px; }
+        .kpi.rosa { border-left-color: #C58A94; }
+        .kpi.verde { border-left-color: #10B981; }
+        .kpi-label { font-size: 11px; color: #6B7280; text-transform: uppercase; font-weight: 600; margin-bottom: 6px; }
+        .kpi-value { font-size: 20px; font-weight: 700; color: #111827; }
+        .kpi-sub { font-size: 11px; color: #6B7280; margin-top: 4px; }
+        .panel { background: white; border: 1px solid #E5E7EB; border-radius: 8px; padding: 20px; margin-bottom: 24px; }
+        .panel-title { font-size: 14px; font-weight: 700; color: #111827; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+        .badge { background: #FEF3C7; color: #92400E; padding: 4px 12px; border-radius: 16px; font-size: 11px; font-weight: 600; }
+        .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        .row { display: flex; justify-content: space-between; gap: 12px; padding: 10px 12px; border-bottom: 1px solid #E5E7EB; font-size: 13px; }
+        .row:last-child { border-bottom: none; }
+        .row span:first-child { color: #6B7280; }
+        .row span:last-child { font-weight: 600; text-align: right; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th { background: #F9FAFB; border-bottom: 2px solid #E5E7EB; padding: 10px; text-align: left; font-weight: 600; color: #111827; }
+        td { padding: 10px; border-bottom: 1px solid #E5E7EB; }
+        .r { text-align: right; }
+        .total td { background: #FEF3C7; font-weight: 700; }
+        .payment-code { font-size: 11px; background: #F3F4F6; padding: 8px; border-radius: 4px; color: #374151; margin: 10px 0 12px; word-break: break-all; font-family: monospace; }
+        .btn-copy { width: 100%; padding: 10px; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; color: white; background: #0D9488; }
+        .doc-link { display: block; margin-top: 8px; padding: 10px; text-align: center; text-decoration: none; background: #F3E8E8; border-left: 3px solid #C5A059; border-radius: 6px; color: #8B5A6B; font-size: 12px; font-weight: 600; }
+        .check { display: flex; gap: 10px; align-items: center; padding: 8px 0; font-size: 13px; border-bottom: 1px solid #E5E7EB; }
+        .check:last-child { border-bottom: none; }
+        .ok { color: #10B981; font-weight: 700; }
+        .pend { color: #F59E0B; font-weight: 700; }
+        .obs { font-size: 12px; color: #6B7280; line-height: 1.6; margin-top: 12px; }
+        .footer { background: white; border-top: 1px solid #E5E7EB; padding: 16px; font-size: 11px; color: #6B7280; text-align: center; margin-top: 24px; }
+        .footer-line { margin: 4px 0; }
+        @media (max-width: 1000px) { .kpis { grid-template-columns: repeat(2, 1fr); } .grid2 { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar-docs">
+        <a href="../../../../rescisoes.html" class="sidebar-back">← Voltar ao Menu</a>
+        <div class="sidebar-title">📁 Documentos</div>
+        <a class="doc-item highlight" href="Orienta%C3%A7%C3%B5es%20Rescis%C3%A3o%20Contratual%20-%20Andreza%20Martini.pdf" target="_blank">📄 Orientações para Rescisão</a>
+        <a class="doc-item" href="Termo%20de%20Rescis%C3%A3o%20do%20Contrato%20de%20Trabalho%20-%20Andreza%20Martini.pdf" target="_blank">📄 Termo de Rescisão (TRCT)</a>
+        <a class="doc-item" href="Termo%20de%20Homologa%C3%A7%C3%A3o%20de%20Rescis%C3%A3o%20do%20Contrato%20de%20Trabalho%20-%20Andreza%20Martini.pdf" target="_blank">📄 Termo de Homologação</a>
+        <a class="doc-item" href="Termo%20de%20Quita%C3%A7%C3%A3o%20de%20Rescis%C3%A3o%20do%20Contrato%20de%20Trabalho%20-%20Andreza%20Martini.pdf" target="_blank">📄 Termo de Quitação</a>
+        <a class="doc-item" href="Relat%C3%B3rio%20Anal%C3%ADtico%20do%20C%C3%A1lculo%20de%20Rescis%C3%A3o%20-%20Andreza%20Martini.pdf" target="_blank">📄 Relatório Analítico</a>
+        <a class="doc-item highlight" href="FGTS%20Rescis%C3%B3rio%20-%20Andreza%20Martini.pdf" target="_blank">📄 Guia FGTS (GFD)</a>
+        <a class="doc-item" href="FGTS%20Rescis%C3%B3rio%20-%20Detalhamento%20de%20Guia%20Andreza%20Martini.pdf" target="_blank">📄 FGTS Detalhamento</a>
+        <a class="doc-item" href="Saldo%20FGTS%20Andreza%20-%2006.11.2026%20Sem%20Outubro.pdf" target="_blank">📄 Saldo FGTS</a>
+        <a class="doc-item" href="Aviso%20Pr%C3%A9vio%20do%20Empregador%20Indenizado%20-%20Andreza%20Martini.pdf" target="_blank">📄 Aviso Prévio Indenizado</a>
+        <a class="doc-item" href="Requerimento%20Seguro%20Desemprego%20-%20Andreza%20Martini.pdf" target="_blank">📄 Requerimento Seguro-Desemprego</a>
+        <a class="doc-item" href="Carta%20de%20Refer%C3%AAncia%20-%20Andreza%20Martini.pdf" target="_blank">📄 Carta de Referência</a>
+    </aside>
+
+    <div class="main-content"><div class="container">
+
+        <div class="header">
+            <div>
+                <h1>Rescisão - Andreza Martini</h1>
+                <p>VEDI OPTICA E RELOJOARIA LTDA | CNPJ 85.375.731/0001-74 | Novembro/2026</p>
+            </div>
+            <div class="header-regime">Dispensa sem justa causa<br>Código SJ2</div>
+        </div>
+
+        <div class="kpis">
+            <div class="kpi verde">
+                <div class="kpi-label">Líquido a receber</div>
+                <div class="kpi-value">R$ 8.654,09</div>
+                <div class="kpi-sub">Bruto R$ 8.828,67 - descontos R$ 174,58</div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-label">Data de pagamento</div>
+                <div class="kpi-value">13/11/2026</div>
+                <div class="kpi-sub">Prazo legal: até 16/11/2026</div>
+            </div>
+            <div class="kpi rosa">
+                <div class="kpi-label">FGTS rescisório (GFD)</div>
+                <div class="kpi-value">R$ 1.963,49</div>
+                <div class="kpi-sub">Vence 16/11/2026</div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-label">Afastamento</div>
+                <div class="kpi-value">06/11/2026</div>
+                <div class="kpi-sub">Admissão 06/02/2025 · aviso indenizado de 33 dias</div>
+            </div>
+        </div>
+
+        <div class="grid2">
+            <div class="panel">
+                <div class="panel-title">📋 Dados contratuais</div>
+<div class="row"><span>Empregada</span><span>Andreza Martini</span></div>
+<div class="row"><span>Cargo</span><span>Vendedora</span></div>
+<div class="row"><span>Vínculo / categoria</span><span>Celetista · contrato por prazo indeterminado</span></div>
+<div class="row"><span>Admissão</span><span>06/02/2025</span></div>
+<div class="row"><span>Afastamento</span><span>06/11/2026</span></div>
+<div class="row"><span>Salário base</span><span>R$ 2.040,00</span></div>
+<div class="row"><span>Motivo</span><span>Despedida sem justa causa pelo empregador</span></div>
+<div class="row"><span>Aviso prévio</span><span>Indenizado · 33 dias</span></div>
+<div class="row"><span>Multa rescisória 40% FGTS</span><span>R$ 1.601,73 (GFD)</span></div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-title">✅ Conferência</div>
+                <div class="check"><span class="ok">✔</span> TRCT e relatório analítico batem entre si</div>
+                <div class="check"><span class="ok">✔</span> Total bruto R$ 8.828,67 e líquido R$ 8.654,09</div>
+                <div class="check"><span class="ok">✔</span> GFD: R$ 361,76 (rescisório) + R$ 1.601,73 (multa) = R$ 1.963,49</div>
+                <div class="check"><span class="ok">✔</span> Pagamento em 13/11/2026, dentro do prazo do art. 477 §6º CLT</div>
+                <div class="check"><span class="pend">!</span> Multa 40% no relatório (R$ 1.536,43) difere da GFD (R$ 1.601,73): diferença de R$ 65,30 em conferência</div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">🧾 Verbas rescisórias (TRCT)</div>
+            <table>
+                <thead>
+                    <tr><th>Verba</th><th>Base de cálculo</th><th>Tipo</th><th class="r">Valor</th></tr>
+                </thead>
+                <tbody>
+<tr><td>Saldo de salário (6 dias)</td><td>R$ 2.040,00 ÷ 30 × 6</td><td>Provento</td><td class="r">R$ 408,00</td></tr>
+<tr><td>Aviso prévio indenizado (33 dias)</td><td>R$ 2.040,00 ÷ 30 × 33</td><td>Provento</td><td class="r">R$ 2.244,00</td></tr>
+<tr><td>Indenização adicional (Art. 9º, Lei 7.238/84)</td><td>1 salário</td><td>Provento</td><td class="r">R$ 2.040,00</td></tr>
+<tr><td>13º salário proporcional (10/12)</td><td>R$ 2.040,00 ÷ 12 × 10</td><td>Provento</td><td class="r">R$ 1.700,00</td></tr>
+<tr><td>13º indenizado (1/12)</td><td>R$ 2.040,00 ÷ 12</td><td>Provento</td><td class="r">R$ 170,00</td></tr>
+<tr><td>Férias proporcionais (9/12)</td><td>R$ 2.040,00 ÷ 12 × 9</td><td>Provento</td><td class="r">R$ 1.530,00</td></tr>
+<tr><td>Férias indenizadas (1/12)</td><td>R$ 2.040,00 ÷ 12</td><td>Provento</td><td class="r">R$ 170,00</td></tr>
+<tr><td>1/3 constitucional de férias</td><td>Férias proporcionais e indenizadas</td><td>Provento</td><td class="r">R$ 566,67</td></tr>
+<tr><td>INSS sobre verbas rescisórias</td><td>Relatório analítico</td><td>Desconto</td><td class="r">R$ 30,60</td></tr>
+<tr><td>INSS sobre 13º salário</td><td>Relatório analítico</td><td>Desconto</td><td class="r">R$ 143,98</td></tr>
+<tr><td>IRRF</td><td>Conforme TRCT</td><td>Desconto</td><td class="r">R$ 0,00</td></tr>
+                    <tr class="total"><td colspan="3">Total bruto</td><td class="r">R$ 8.828,67</td></tr>
+                    <tr class="total"><td colspan="3">Total de descontos</td><td class="r">R$ 174,58</td></tr>
+                    <tr class="total"><td colspan="3">Valor líquido</td><td class="r">R$ 8.654,09</td></tr>
+                </tbody>
+            </table>
+            <div class="obs">Saldo de FGTS base (relatório analítico): R$ 3.479,31.</div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">💳 Pagamento do FGTS <span class="badge">Vencimento 16/11/2026</span></div>
+            <div class="grid2">
+                <div>
+                    <div class="row"><span>Guia</span><span>GFD - FGTS Digital</span></div>
+                    <div class="row"><span>Competência</span><span>11/2026 · Rescisório</span></div>
+                    <div class="row"><span>Identificador</span><span>0126110671407792-3</span></div>
+                    <div class="row"><span>Valor</span><span>R$ 1.963,49</span></div>
+                    <a class="doc-link" href="FGTS%20Rescis%C3%B3rio%20-%20Andreza%20Martini.pdf" target="_blank">📄 Abrir guia (PDF)</a>
+                </div>
+                <div>
+                    <div style="font-size:13px;color:#6B7280;">Pix Copia e Cola (Caixa):</div>
+                    <div class="payment-code" id="pix">00020101021226900014br.gov.bcb.pix2568pix-qrcode.caixa.gov.br/api/v2/cobv/19bc4d61e17e4bd8b232a0a64fba35005204000053039865802BR5923CAIXA ECONOMICA FEDERAL6008Brasilia62070503***6304C7D6</div>
+                    <button class="btn-copy" id="btn-pix">📋 Copiar Pix Copia e Cola</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-line">Jaqueline Ferreira Assessoria Contábil Ltda | CRC SC-013019/O-4</div>
+            <div class="footer-line">Responsável Técnica: Jaqueline do Prado Ferreira | CRC SC-048028/O-0</div>
+            <div class="footer-line">Videira - SC | contato@jaquelineferreiracontadora.com.br | WhatsApp (49) 9.9980-3552</div>
+        </div>
+
+    </div></div>
+
+    <script>
+    document.getElementById("btn-pix").addEventListener("click", function () {
+        const btn = this;
+        const texto = document.getElementById("pix").innerText.trim();
+        const orig = btn.innerText;
+        function ok() { btn.innerText = "✓ Copiado!"; btn.style.backgroundColor = "#10B981"; setTimeout(function () { btn.innerText = orig; btn.style.backgroundColor = ""; }, 2500); }
+        function falha() { btn.innerText = "Não copiou, copie manualmente"; setTimeout(function () { btn.innerText = orig; }, 2500); }
+        if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(texto).then(ok, falha); } else { falha(); }
+    });
+    </script>
+</body>
+</html>
