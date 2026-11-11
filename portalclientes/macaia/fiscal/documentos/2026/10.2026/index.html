@@ -3,24 +3,629 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fiscal Outubro/2026 - MACAIA GESTAO LTDA</title>
+    <title>Dashboard Fiscal - MACAIA GESTAO LTDA</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f8f9fa; color: #333; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; text-align: center; }
-        .container { max-width: 500px; background: white; padding: 40px 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border-top: 5px solid #bd9a5f; }
-        .icon { font-size: 48px; margin-bottom: 20px; color: #bd9a5f; }
-        h1 { font-size: 22px; color: #1a2530; margin-bottom: 10px; }
-        p { font-size: 14px; color: #666; line-height: 1.5; margin-bottom: 25px; }
-        .btn-back { display: inline-block; text-decoration: none; background-color: #2b3d52; color: white; padding: 12px 25px; border-radius: 6px; font-size: 14px; font-weight: 600; transition: background 0.2s; }
-        .btn-back:hover { background-color: #1a2530; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #F9FAFB; color: #1F2937; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+
+        /* HEADER */
+        .header {
+            background: white; border: 1px solid #E5E7EB; border-radius: 8px; padding: 24px;
+            margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .header-left h1 { font-size: 18px; font-weight: 700; color: #111827; margin-bottom: 4px; }
+        .header-left p { font-size: 13px; color: #6B7280; margin: 2px 0; }
+        .header-regime {
+            background: linear-gradient(135deg, #C58A94 0%, #C5A059 100%);
+            color: white; padding: 8px 16px; border-radius: 6px;
+            font-size: 12px; font-weight: 600;
+        }
+
+        /* KPIs */
+        .kpis-grid {
+            display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;
+            margin-bottom: 24px;
+        }
+        .kpi-card {
+            background: white; border: 1px solid #E5E7EB; border-left: 4px solid;
+            border-radius: 6px; padding: 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+        }
+        .kpi-card.fat { border-left-color: #C58A94; }
+        .kpi-card.das { border-left-color: #F59E0B; }
+        .kpi-card.rbt { border-left-color: #8B5CF6; }
+        .kpi-card.carga { border-left-color: #6366F1; }
+        .kpi-card.resultado { border-left-color: #10B981; }
+        .kpi-label { font-size: 10px; color: #6B7280; text-transform: uppercase; font-weight: 600; margin-bottom: 8px; }
+        .kpi-value { font-size: 20px; font-weight: 700; color: #111827; margin-bottom: 4px; }
+        .kpi-sub { font-size: 11px; color: #6B7280; }
+        .kpi-sub.pos { color: #10B981; }
+        .kpi-sub.warn { color: #F59E0B; }
+
+        /* PAINEL */
+        .panel {
+            background: white; border: 1px solid #E5E7EB; border-radius: 8px;
+            padding: 20px; margin-bottom: 24px;
+        }
+        .panel-title {
+            font-size: 14px; font-weight: 600; color: #111827; margin-bottom: 16px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .competencia-badge {
+            background: #FEF3C7; color: #92400E; padding: 4px 12px;
+            border-radius: 16px; font-size: 11px; font-weight: 600;
+        }
+
+        /* PAGAMENTOS */
+        .payment-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px;
+        }
+        .payment-item {
+            border: 1px solid #E5E7EB; border-radius: 6px; padding: 14px;
+            background: #F9FAFB;
+        }
+        .payment-type { font-size: 12px; color: #6B7280; font-weight: 600; margin-bottom: 10px; }
+        .payment-value { font-size: 22px; font-weight: 700; color: #111827; margin-bottom: 8px; }
+        .payment-info { font-size: 11px; color: #6B7280; margin-bottom: 10px; line-height: 1.4; }
+        .payment-code { font-size: 10px; background: #F3F4F6; padding: 8px; border-radius: 4px;
+            color: #374151; margin-bottom: 10px; word-break: break-all; font-family: monospace; }
+        .btn-copy {
+            width: 100%; padding: 8px; border: none; border-radius: 6px; cursor: pointer;
+            font-size: 11px; font-weight: 600; transition: all 0.2s;
+        }
+        .btn-copy.das { background: #C5A059; color: white; }
+        .btn-copy.das:hover { background: #B89146; }
+        .btn-copy.inss { background: #0D9488; color: white; }
+        .btn-copy.inss:hover { background: #0A7A6E; }
+
+        /* GRÁFICOS */
+        .charts-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;
+        }
+        .chart-container {
+            background: white; border: 1px solid #E5E7EB; border-radius: 8px;
+            padding: 20px; position: relative; height: 280px;
+        }
+        .chart-title { font-size: 13px; font-weight: 600; color: #111827; margin-bottom: 12px; }
+        canvas { max-height: 240px; }
+
+        /* APURAÇÃO */
+        .apuracao-grid {
+            display: grid; grid-template-columns: 1fr; gap: 14px; margin-bottom: 24px;
+        }
+        .apuracao-row {
+            display: grid; grid-template-columns: 2fr 1fr; gap: 10px;
+            padding: 12px; border-bottom: 1px solid #E5E7EB;
+            background: white;
+        }
+        .apuracao-row:first-child { border-radius: 8px 8px 0 0; }
+        .apuracao-row:last-child { border-bottom: none; border-radius: 0 0 8px 8px; }
+        .apuracao-label { font-size: 12px; color: #6B7280; font-weight: 500; }
+        .apuracao-value { font-size: 13px; font-weight: 600; color: #111827; text-align: right; }
+        .apuracao-row.total { background: #F3F4F6; font-weight: 700; color: #111827; }
+        .apuracao-row.resultado { background: linear-gradient(90deg, #F0FDF4 0%, #F0FDF4 100%); }
+        .apuracao-row.resultado .apuracao-value { color: #10B981; font-size: 16px; }
+
+        /* INDICADORES */
+        .health-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 24px;
+        }
+        .health-card {
+            background: white; border: 1px solid #E5E7EB; border-radius: 8px;
+            padding: 16px;
+        }
+        .health-label { font-size: 11px; color: #6B7280; text-transform: uppercase; font-weight: 600; margin-bottom: 8px; }
+        .health-value { font-size: 28px; font-weight: 700; color: #111827; margin-bottom: 4px; }
+        .health-status { font-size: 12px; padding: 4px 8px; border-radius: 4px; text-align: center; font-weight: 600; }
+        .health-status.ok { background: #ECFDF5; color: #10B981; }
+        .health-status.warn { background: #FFFBEB; color: #F59E0B; }
+        .health-status.critical { background: #FEF2F2; color: #EF4444; }
+
+        /* COMPARATIVO */
+        .comparative-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 24px;
+        }
+        .comp-card {
+            background: white; border: 1px solid #E5E7EB; border-radius: 8px;
+            padding: 16px; text-align: center;
+        }
+        .comp-month { font-size: 11px; color: #6B7280; font-weight: 600; text-transform: uppercase; }
+        .comp-value { font-size: 24px; font-weight: 700; color: #111827; margin: 8px 0; }
+        .comp-variance { font-size: 11px; font-weight: 600; }
+        .comp-variance.up { color: #10B981; }
+        .comp-variance.down { color: #EF4444; }
+
+        /* STATUS OBRIGAÇÕES */
+        .fiscal-grid {
+            display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 24px;
+        }
+        .fiscal-card {
+            background: white; border: 1px solid #E5E7EB; border-radius: 6px;
+            padding: 14px; text-align: center;
+        }
+        .fiscal-icon { font-size: 20px; margin-bottom: 6px; }
+        .fiscal-label { font-size: 11px; font-weight: 600; color: #111827; }
+        .fiscal-status { font-size: 10px; color: #6B7280; margin-top: 4px; }
+
+        /* DOCUMENTOS */
+        .docs-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+        }
+        .doc-link {
+            padding: 12px; background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 6px;
+            text-decoration: none; color: #374151; font-size: 12px; text-align: center;
+            font-weight: 500; transition: all 0.2s;
+        }
+        .doc-link:hover { background: #F3F4F6; border-color: #D1D5DB; }
+        .doc-link.highlight {
+            background: #F3E8E8; border-left: 3px solid #C5A059; color: #8B5A6B;
+        }
+
+        /* STATUS FISCAL */
+        .status-fiscal-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 24px;
+        }
+        .status-item {
+            background: white; border: 1px solid #E5E7EB; border-radius: 8px;
+            padding: 16px; display: flex; align-items: center; gap: 12px;
+        }
+        .status-icon { font-size: 28px; min-width: 40px; }
+        .status-content { flex: 1; }
+        .status-label { font-size: 11px; color: #6B7280; font-weight: 600; text-transform: uppercase; }
+        .status-value { font-size: 14px; font-weight: 700; color: #111827; }
+
+        /* CERTIDÕES */
+        .certidoes-grid {
+            display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 24px;
+        }
+        .cert-card {
+            background: white; border: 1px solid #E5E7EB; border-left: 4px solid #10B981;
+            border-radius: 6px; padding: 14px; text-align: center;
+        }
+        .cert-icon { font-size: 24px; margin-bottom: 6px; }
+        .cert-label { font-size: 11px; font-weight: 600; color: #111827; }
+        .cert-status { font-size: 10px; color: #10B981; margin-top: 4px; font-weight: 600; }
+
+        /* FOOTER */
+        .footer {
+            background: white; border-top: 1px solid #E5E7EB; padding: 16px;
+            font-size: 11px; color: #6B7280; text-align: center; margin-top: 24px;
+        }
+        .footer-line { margin: 4px 0; }
+
+        @media (max-width: 1200px) {
+            .kpis-grid { grid-template-columns: repeat(3, 1fr); }
+            .charts-grid { grid-template-columns: 1fr; }
+            .health-grid { grid-template-columns: 1fr; }
+            .comparative-grid { grid-template-columns: 1fr; }
+            .fiscal-grid { grid-template-columns: repeat(3, 1fr); }
+            .status-fiscal-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            .kpis-grid { grid-template-columns: repeat(2, 1fr); }
+            .fiscal-grid { grid-template-columns: repeat(2, 1fr); }
+            .certidoes-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 640px) {
+            .kpis-grid { grid-template-columns: 1fr; }
+            .fiscal-grid { grid-template-columns: 1fr; }
+            .certidoes-grid { grid-template-columns: repeat(2, 1fr); }
+            .docs-grid { grid-template-columns: 1fr; }
+        }
+
+        /* SIDEBAR DE DOCUMENTOS */
+        .sidebar-docs { position: fixed; top: 0; left: 0; bottom: 0; width: 220px; background: white; border-right: 1px solid #E5E7EB; padding: 20px 14px; overflow-y: auto; z-index: 10; }
+        .sidebar-back { display: block; padding: 10px; margin-bottom: 16px; background: #C58A94; color: white; border-radius: 4px; text-decoration: none; text-align: center; font-size: 11px; font-weight: 600; }
+        .sidebar-back:hover { background: #b37684; }
+        .sidebar-title { font-size: 12px; font-weight: 700; color: #111827; margin: 6px 0 10px; }
+        .doc-item { display: flex; align-items: center; gap: 8px; padding: 9px 10px; margin-bottom: 6px; background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 6px; text-decoration: none; color: #374151; font-size: 12px; font-weight: 500; transition: all 0.2s; }
+        .doc-item:hover { background: #F3F4F6; border-color: #D1D5DB; }
+        .doc-item.highlight { background: #F3E8E8; border-left: 3px solid #C5A059; color: #8B5A6B; }
+        .main-content { margin-left: 220px; }
     </style>
 </head>
 <body>
-<div class="container">
-    <div class="icon">🗂️</div>
-    <h1>Painel em Atualização</h1>
-    <p>Estamos organizando os documentos fiscais de outubro/2026. Em breve estarão disponíveis para consulta.</p>
-    <a href="../../../../fiscal.html" class="btn-back">Voltar ao Fiscal</a>
-</div>
+    <aside class="sidebar-docs">
+        <a href="../../../../fiscal.html" class="sidebar-back">← Voltar ao Menu</a>
+        <div class="sidebar-title">📁 Documentos - Outubro/2026</div>
+        <a class="doc-item" href="01.%20Protocolo%20Servi%C3%A7os%20Prestados%2010.2026.pdf" target="_blank">📄 Protocolo Serviços Prestados</a>
+        <a class="doc-item" href="02.%20Protocolo%20Servi%C3%A7os%20Tomados%2010.2026.pdf" target="_blank">📄 Protocolo Serviços Tomados</a>
+        <a class="doc-item" href="03.%20Entradas%2010.2026.pdf" target="_blank">📄 Entradas</a>
+        <a class="doc-item" href="04.%20Servi%C3%A7os%2010.2026.pdf" target="_blank">📄 Serviços</a>
+        <a class="doc-item" href="05.%20Resumo%20Acumulador%2010.2026.pdf" target="_blank">📄 Resumo Acumulador</a>
+        <a class="doc-item" href="06.%20Faturamento%2012%20meses%2010.2026.pdf" target="_blank">📄 Faturamento 12 meses</a>
+        <a class="doc-item" href="07.%20Simples%20Nacional%2010.2026.pdf" target="_blank">📄 Simples Nacional</a>
+        <a class="doc-item" href="07.1%20Simples%20Nacional%20-%20Mem%C3%B3ria%20de%20C%C3%A1lculo%2010.2026.pdf" target="_blank">📄 Memória de Cálculo</a>
+        <a class="doc-item" href="07.2%20Simples%20Nacional%20-%20RBA%20-%20Folha%2012%20meses%2010.2026.pdf" target="_blank">📄 RBA - Folha 12 meses</a>
+        <a class="doc-item" href="07.3%20Simples%20Nacional%20-%20Al%C3%ADquota%20Efetiva%20per%C3%ADodo%20seguinte%2010.2026.pdf" target="_blank">📄 Alíquota Efetiva</a>
+        <a class="doc-item highlight" href="08.%20DAS%2010.2026%20-%20Guia%20Pagamento.pdf" target="_blank">📄 DAS - Guia</a>
+        <a class="doc-item" href="08.1%20PGDASD-EXTRATO-07202631483462212.pdf" target="_blank">📄 PGDAS Extrato</a>
+        <a class="doc-item" href="08.2%20PGDASD-DECLARACAO-33075903202610001.pdf" target="_blank">📄 PGDAS Declaração</a>
+        <a class="doc-item" href="08.3%20PGDASD-RECIBO-33075903202610001.pdf" target="_blank">📄 PGDAS Recibo</a>
+        <a class="doc-item" href="09.%20Destda%2010.2026%20-%20Guia%20Pagamento.pdf" target="_blank">📄 Destda - Guia</a>
+        <a class="doc-item" href="09.1%20Destda%2010.2026%20-%20Resumo%20Declara%C3%A7%C3%A3o.pdf" target="_blank">📄 Destda - Resumo</a>
+        <a class="doc-item" href="09.2%20Destda%2010.2026%20-%20Recibo.pdf" target="_blank">📄 Destda - Recibo</a>
+        <a class="doc-item" href="09.3%20Destda%2010.2026%20-%20Detalhamento%20por%20nota.pdf" target="_blank">📄 Destda - Detalhamento</a>
+        <a class="doc-item" href="10.%20Sintegra%2010.2026%20-%20Recibo.pdf" target="_blank">📄 Sintegra</a>
+    </aside></aside>
+
+    <div class="main-content"><div class="container">
+
+        <!-- 1. HEADER -->
+        <div class="header">
+            <div class="header-left">
+                <h1>🏢 MACAIA GESTAO LTDA</h1>
+                <p>CNPJ: 33.075.903/0001-90 | Outubro/2026</p>
+            </div>
+            <div class="header-regime">
+                Simples Nacional<br>Anexo I | Anexo III
+            </div>
+        </div>
+
+        <!-- 2. KPIs -->
+        <div class="kpis-grid">
+            <div class="kpi-card fat">
+                <div class="kpi-label">Faturamento</div>
+                <div class="kpi-value">R$ 12.000,00</div>
+                <div class="kpi-sub warn">↓ 53,85% vs setembro</div>
+            </div>
+            <div class="kpi-card das">
+                <div class="kpi-label">DAS a Recolher</div>
+                <div class="kpi-value">R$ 720,00</div>
+                <div class="kpi-sub warn">Venc. 23/11/2026</div>
+            </div>
+            <div class="kpi-card rbt">
+                <div class="kpi-label">RBT12 Acumulado</div>
+                <div class="kpi-value">R$ 133.860,24</div>
+                <div class="kpi-sub">74,4% do limite</div>
+            </div>
+            <div class="kpi-card carga">
+                <div class="kpi-label">Carga Tributária</div>
+                <div class="kpi-value">6,00%</div>
+                <div class="kpi-sub">Anexo III</div>
+            </div>
+            <div class="kpi-card resultado">
+                <div class="kpi-label">Resultado Operacional</div>
+                <div class="kpi-value">-R$ 4.077,47</div>
+                <div class="kpi-sub warn">Margem: -33,98%</div>
+            </div>
+        </div>
+
+        <!-- 3. PAINEL FINANCEIRO -->
+        <div class="panel">
+            <div class="panel-title">
+                💳 Painel Financeiro - Outubro/2026
+                <div class="competencia-badge">Próximo vencimento 19/11/2026</div>
+            </div>
+            <div class="payment-grid">
+                <div class="payment-item">
+                    <div class="payment-type">DAS Simples Nacional</div>
+                    <div class="payment-value">R$ 720,00</div>
+                    <div class="payment-info">Vencimento 23/11/2026</div>
+                    <div class="payment-info">Código de Barras (cópia para pagamento):</div>
+                    <div class="payment-code">85820000007 4 20000328263 8 27072026314 3 83462212037 4</div>
+                    <button class="btn-copy das" onclick="copiarCodigo('858200000074200003282638270720263143834622120374', this)">📋 Copiar Código de Barras</button>
+                    <a class="doc-link highlight" style="display:block;margin-top:8px;" href="08.%20DAS%2010.2026%20-%20Guia%20Pagamento.pdf" target="_blank">📄 Abrir guia (PDF)</a>
+                </div>
+                <div class="payment-item">
+                    <div class="payment-type">INSS DCTFWeb</div>
+                    <div class="payment-value">R$ 178,31</div>
+                    <div class="payment-info">Vencimento 19/11/2026</div>
+                    <div class="payment-info">Código de Barras (cópia para pagamento):</div>
+                    <div class="payment-code">85820000001 5 78310385263 5 23071626308 9 05070886090 3</div>
+                    <button class="btn-copy inss" onclick="copiarCodigo('858200000015783103852635230716263089050708860903', this)">📋 Copiar Código de Barras</button>
+                    <a class="doc-link highlight" style="display:block;margin-top:8px;" href="../../../../departamentopessoal/documentos/2026/10.2026/01.%20INSS%2010.2026%20-%20Guia%20Pagamento.pdf" target="_blank">📄 Abrir guia (PDF)</a>
+                </div>
+                <div class="payment-item">
+                    <div class="payment-type">DeSTDA (ICMS-ST)</div>
+                    <div class="payment-value">R$ 53,25</div>
+                    <div class="payment-info">Vencimento 10/12/2026</div>
+                    <div class="payment-info">Código de Barras (cópia para pagamento):</div>
+                    <div class="payment-code">85690000000 6 53250024260 9 42012472131 7 60000025691 4</div>
+                    <button class="btn-copy das" onclick="copiarCodigo('856900000006532500242609420124721317600000256914', this)">📋 Copiar Código de Barras</button>
+                    <a class="doc-link highlight" style="display:block;margin-top:8px;" href="09.%20Destda%2010.2026%20-%20Guia%20Pagamento.pdf" target="_blank">📄 Abrir guia (PDF)</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. GRÁFICOS -->
+        <div class="charts-grid">
+            <div class="chart-container">
+                <div class="chart-title">Composição do DAS (Outubro/2026)</div>
+                <canvas id="rosca"></canvas>
+            </div>
+            <div class="chart-container">
+                <div class="chart-title">Faturamento vs Despesas (Outubro/2026)</div>
+                <canvas id="barras"></canvas>
+            </div>
+        </div>
+
+        <!-- 5. APURAÇÃO DE RESULTADO -->
+        <div class="panel">
+            <div class="panel-title">
+                📊 Apuração de Resultado - Outubro/2026
+            </div>
+            <div class="apuracao-grid">
+                <div class="apuracao-row">
+                    <div class="apuracao-label">Receita Bruta de Serviços</div>
+                    <div class="apuracao-value">R$ 12.000,00</div>
+                </div>
+                <div class="apuracao-row">
+                    <div class="apuracao-label">Deduções (Impostos)</div>
+                    <div class="apuracao-value">-R$ 720,00</div>
+                </div>
+                <div class="apuracao-row">
+                    <div class="apuracao-label">Receita Líquida</div>
+                    <div class="apuracao-value">R$ 11.280,00</div>
+                </div>
+                <div class="apuracao-row">
+                    <div class="apuracao-label">Despesas Operacionais</div>
+                    <div class="apuracao-value">-R$ 15.357,47</div>
+                </div>
+                <div class="apuracao-row resultado">
+                    <div class="apuracao-label">Resultado Líquido (Prejuízo)</div>
+                    <div class="apuracao-value">-R$ 4.077,47</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. INDICADORES DE SAÚDE FISCAL -->
+        <div class="panel">
+            <div class="panel-title">
+                💉 Indicadores de Saúde Fiscal
+            </div>
+            <div class="health-grid">
+                <div class="health-card">
+                    <div class="health-label">Limite RBT12</div>
+                    <div class="health-value">74,4%</div>
+                    <div class="health-status ok">✓ OK - Dentro do Limite</div>
+                </div>
+                <div class="health-card">
+                    <div class="health-label">Margem Operacional</div>
+                    <div class="health-value">-33,98%</div>
+                    <div class="health-status warn">⚠ Resultado negativo no mês</div>
+                </div>
+                <div class="health-card">
+                    <div class="health-label">Status Obrigacional</div>
+                    <div class="health-value">Em Dia</div>
+                    <div class="health-status ok">✓ Adimplente</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 7. COMPARATIVO FATURAMENTO -->
+        <div class="panel">
+            <div class="panel-title">
+                📈 Comparativo Faturamento - Últimos 3 Meses
+            </div>
+            <div class="comparative-grid">
+                <div class="comp-card">
+                    <div class="comp-month">Agosto/2026</div>
+                    <div class="comp-value">R$ 25.250,00</div>
+                    <div class="comp-variance up">↑ +76,27% vs julho</div>
+                </div>
+                <div class="comp-card">
+                    <div class="comp-month">Setembro/2026</div>
+                    <div class="comp-value">R$ 26.000,00</div>
+                    <div class="comp-variance up">↑ +2,97% vs agosto</div>
+                </div>
+                <div class="comp-card" style="border: 2px solid #C58A94;">
+                    <div class="comp-month">Outubro/2026</div>
+                    <div class="comp-value">R$ 12.000,00</div>
+                    <div class="comp-variance down">↓ -53,85% vs setembro</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 8. STATUS DE OBRIGAÇÕES -->
+        <div class="panel">
+            <div class="panel-title">
+                ✅ Status de Obrigações (Outubro/2026)
+            </div>
+            <div class="fiscal-grid">
+                <div class="fiscal-card">
+                    <div class="fiscal-icon">✔️</div>
+                    <div class="fiscal-label">PGDAS-D</div>
+                    <div class="fiscal-status">Transmitido 10/11/2026</div>
+                </div>
+                <div class="fiscal-card">
+                    <div class="fiscal-icon">✔️</div>
+                    <div class="fiscal-label">Protocolos</div>
+                    <div class="fiscal-status">Prestados e Tomados</div>
+                </div>
+                <div class="fiscal-card">
+                    <div class="fiscal-icon">✔️</div>
+                    <div class="fiscal-label">Despesas</div>
+                    <div class="fiscal-status">Resumo emitido</div>
+                </div>
+                <div class="fiscal-card">
+                    <div class="fiscal-icon">✔️</div>
+                    <div class="fiscal-label">Limite RBT12</div>
+                    <div class="fiscal-status">Regular</div>
+                </div>
+                <div class="fiscal-card">
+                    <div class="fiscal-icon">✔️</div>
+                    <div class="fiscal-label">DAS</div>
+                    <div class="fiscal-status">Apurado</div>
+                </div>
+                <div class="fiscal-card">
+                    <div class="fiscal-icon">✔️</div>
+                    <div class="fiscal-label">DeSTDA e Sintegra</div>
+                    <div class="fiscal-status">Entregues 11/11/2026</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 10. STATUS FISCAL -->
+        <div class="panel">
+            <div class="panel-title">
+                🔍 Status Fiscal Completo
+            </div>
+            <div class="status-fiscal-grid">
+                <div class="status-item">
+                    <div class="status-icon">✅</div>
+                    <div class="status-content">
+                        <div class="status-label">Simples Nacional</div>
+                        <div class="status-value">Optante pelo Simples Nacional</div>
+                    </div>
+                </div>
+                <div class="status-item">
+                    <div class="status-icon">✅</div>
+                    <div class="status-content">
+                        <div class="status-label">Inscrição Estadual</div>
+                        <div class="status-value">264.305.108</div>
+                    </div>
+                </div>
+                <div class="status-item">
+                    <div class="status-icon">✅</div>
+                    <div class="status-content">
+                        <div class="status-label">Alíquota Efetiva</div>
+                        <div class="status-value">6,00% (Anexo III)</div>
+                    </div>
+                </div>
+                <div class="status-item">
+                    <div class="status-icon">✅</div>
+                    <div class="status-content">
+                        <div class="status-label">Situação RBT12</div>
+                        <div class="status-value">74,4% - Regular</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 11. CERTIDÕES -->
+        <div class="panel">
+            <div class="panel-title">
+                📋 Situação das Certidões
+            </div>
+            <div class="certidoes-grid">
+                <div class="cert-card">
+                    <div class="cert-icon">✅</div>
+                    <div class="cert-label">Federal (CND)</div>
+                    <div class="cert-status">Regular</div>
+                </div>
+                <div class="cert-card">
+                    <div class="cert-icon">✅</div>
+                    <div class="cert-label">Estadual (CND)</div>
+                    <div class="cert-status">Regular</div>
+                </div>
+                <div class="cert-card">
+                    <div class="cert-icon">✅</div>
+                    <div class="cert-label">Municipal (CDMR)</div>
+                    <div class="cert-status">Regular</div>
+                </div>
+                <div class="cert-card">
+                    <div class="cert-icon">✅</div>
+                    <div class="cert-label">FGTS (CRF)</div>
+                    <div class="cert-status">Regular</div>
+                </div>
+                <div class="cert-card">
+                    <div class="cert-icon">✅</div>
+                    <div class="cert-label">Trabalhista (CNDT)</div>
+                    <div class="cert-status">Regular</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <div class="footer-line"><strong>Jaqueline Ferreira Assessoria Contábil Ltda</strong> | CRC SC-013019/O-4</div>
+        <div class="footer-line">Responsável Técnica: Jaqueline do Prado Ferreira | CRC SC-048028/O-0</div>
+        <div class="footer-line">Videira - SC | contato@jaquelineferreiracontadora.com.br | WhatsApp (49) 9.9980-3552</div>
+        <div class="footer-line" style="margin-top: 8px; font-size: 10px;">
+            Dashboard Fiscal Confidencial - Uso Exclusivo do Cliente | Outubro/2026
+        </div>
+    </div>
+    </div>
+
+    <script>
+        // Função para copiar código para clipboard
+        function copiarCodigo(texto, btn) {
+            navigator.clipboard.writeText(texto).then(() => {
+                const orig = btn.innerText;
+                btn.innerText = '✓ Código Copiado!';
+                btn.style.backgroundColor = '#10B981';
+                setTimeout(() => {
+                    btn.innerText = orig;
+                    btn.style.backgroundColor = '';
+                }, 2500);
+            });
+        }
+
+        // Função para inicializar gráficos
+        function initCharts() {
+            // Gráfico de Rosca - Composição do DAS
+            new Chart(document.getElementById('rosca'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['INSS/CPP', 'ISS', 'COFINS', 'IRPJ', 'CSLL', 'PIS'],
+                    datasets: [{
+                        data: [312.48, 241.20, 92.30, 28.80, 25.20, 20.02],
+                        backgroundColor: ['#C58A94', '#C5A059', '#8B5CF6', '#6366F1', '#F59E0B', '#10B981'],
+                        borderColor: '#fff',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { font: { size: 11 }, padding: 12 }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => {
+                                    const val = ctx.parsed;
+                                    const total = ctx.dataset.data.reduce((a,b) => a+b, 0);
+                                    const pct = ((val / total) * 100).toFixed(1);
+                                    return `R$ ${val.toFixed(2)} (${pct}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Gráfico de Barras - Faturamento vs Despesas
+            new Chart(document.getElementById('barras'), {
+                type: 'bar',
+                data: {
+                    labels: ['Faturamento', 'Despesas'],
+                    datasets: [{
+                        data: [12000.00, 15357.47],
+                        backgroundColor: ['#C58A94', '#C5A059'],
+                        borderRadius: 4,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => `R$ ${ctx.parsed.x.toFixed(2)}`
+                            }
+                        }
+                    },
+                    scales: { x: { beginAtZero: true } }
+                }
+            });
+        }
+
+        // Inicializar gráficos quando DOM estiver pronto
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", initCharts);
+        } else {
+            initCharts();
+        }
+    </script>
 </body>
 </html>
