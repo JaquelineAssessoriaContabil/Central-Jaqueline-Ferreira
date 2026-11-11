@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Fiscal</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #F9FAFB; color: #1F2937; }
@@ -609,6 +609,7 @@
 
     /* ---------- GRÁFICOS ---------- */
     function initCharts(c) {
+        if (typeof Chart === "undefined") { console.warn("Chart.js não carregou"); return; }
         const soma = CONFIG.composicaoDAS.reduce(function (a, b) { return a + b.valor; }, 0);
         if (Math.abs(soma - CONFIG.das.valor) > 0.01) {
             console.warn("Composição do DAS (" + soma.toFixed(2) + ") não bate com o DAS (" + CONFIG.das.valor.toFixed(2) + ")");
