@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Fiscal - MACAIA GESTAO LTDA</title>
+    <title>Dashboard Fiscal</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -184,9 +184,32 @@
             background: white; border: 1px solid #E5E7EB; border-left: 4px solid #10B981;
             border-radius: 6px; padding: 14px; text-align: center;
         }
+        .cert-card.pendente { border-left-color: #F59E0B; }
         .cert-icon { font-size: 24px; margin-bottom: 6px; }
         .cert-label { font-size: 11px; font-weight: 600; color: #111827; }
         .cert-status { font-size: 10px; color: #10B981; margin-top: 4px; font-weight: 600; }
+        .cert-status.pendente { color: #F59E0B; }
+
+        /* SIDEBAR DE DOCUMENTOS */
+        .sidebar-docs {
+            position: fixed; top: 0; left: 0; bottom: 0; width: 220px;
+            background: white; border-right: 1px solid #E5E7EB; padding: 20px 14px;
+            overflow-y: auto; z-index: 10;
+        }
+        .sidebar-back {
+            display: block; padding: 10px; margin-bottom: 16px; background: #C58A94; color: white;
+            border-radius: 4px; text-decoration: none; text-align: center; font-size: 11px; font-weight: 600;
+        }
+        .sidebar-back:hover { background: #b37684; }
+        .sidebar-title { font-size: 12px; font-weight: 700; color: #111827; margin: 6px 0 10px; }
+        .doc-item {
+            display: flex; align-items: center; gap: 8px; padding: 9px 10px; margin-bottom: 6px;
+            background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 6px;
+            text-decoration: none; color: #374151; font-size: 12px; font-weight: 500; transition: all 0.2s;
+        }
+        .doc-item:hover { background: #F3F4F6; border-color: #D1D5DB; }
+        .doc-item.highlight { background: #F3E8E8; border-left: 3px solid #C5A059; color: #8B5A6B; }
+        .main-content { margin-left: 220px; }
 
         /* FOOTER */
         .footer {
@@ -212,411 +235,514 @@
             .kpis-grid { grid-template-columns: 1fr; }
             .fiscal-grid { grid-template-columns: 1fr; }
             .certidoes-grid { grid-template-columns: repeat(2, 1fr); }
-            .docs-grid { grid-template-columns: 1fr; }
         }
-
-        /* SIDEBAR DE DOCUMENTOS */
-        .sidebar-docs { position: fixed; top: 0; left: 0; bottom: 0; width: 220px; background: white; border-right: 1px solid #E5E7EB; padding: 20px 14px; overflow-y: auto; z-index: 10; }
-        .sidebar-back { display: block; padding: 10px; margin-bottom: 16px; background: #C58A94; color: white; border-radius: 4px; text-decoration: none; text-align: center; font-size: 11px; font-weight: 600; }
-        .sidebar-back:hover { background: #b37684; }
-        .sidebar-title { font-size: 12px; font-weight: 700; color: #111827; margin: 6px 0 10px; }
-        .doc-item { display: flex; align-items: center; gap: 8px; padding: 9px 10px; margin-bottom: 6px; background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 6px; text-decoration: none; color: #374151; font-size: 12px; font-weight: 500; transition: all 0.2s; }
-        .doc-item:hover { background: #F3F4F6; border-color: #D1D5DB; }
-        .doc-item.highlight { background: #F3E8E8; border-left: 3px solid #C5A059; color: #8B5A6B; }
-        .main-content { margin-left: 220px; }
     </style>
 </head>
 <body>
+
     <aside class="sidebar-docs">
         <a href="../../../../fiscal.html" class="sidebar-back">← Voltar ao Menu</a>
-        <div class="sidebar-title">📁 Documentos - Outubro/2026</div>
-        <a class="doc-item" href="01.%20Protocolo%20Servi%C3%A7os%20Prestados%2010.2026.pdf" target="_blank">📄 Protocolo Serviços Prestados</a>
-        <a class="doc-item" href="02.%20Protocolo%20Servi%C3%A7os%20Tomados%2010.2026.pdf" target="_blank">📄 Protocolo Serviços Tomados</a>
-        <a class="doc-item" href="03.%20Entradas%2010.2026.pdf" target="_blank">📄 Entradas</a>
-        <a class="doc-item" href="04.%20Servi%C3%A7os%2010.2026.pdf" target="_blank">📄 Serviços</a>
-        <a class="doc-item" href="05.%20Resumo%20Acumulador%2010.2026.pdf" target="_blank">📄 Resumo Acumulador</a>
-        <a class="doc-item" href="06.%20Faturamento%2012%20meses%2010.2026.pdf" target="_blank">📄 Faturamento 12 meses</a>
-        <a class="doc-item" href="07.%20Simples%20Nacional%2010.2026.pdf" target="_blank">📄 Simples Nacional</a>
-        <a class="doc-item" href="07.1%20Simples%20Nacional%20-%20Mem%C3%B3ria%20de%20C%C3%A1lculo%2010.2026.pdf" target="_blank">📄 Memória de Cálculo</a>
-        <a class="doc-item" href="07.2%20Simples%20Nacional%20-%20RBA%20-%20Folha%2012%20meses%2010.2026.pdf" target="_blank">📄 RBA - Folha 12 meses</a>
-        <a class="doc-item" href="07.3%20Simples%20Nacional%20-%20Al%C3%ADquota%20Efetiva%20per%C3%ADodo%20seguinte%2010.2026.pdf" target="_blank">📄 Alíquota Efetiva</a>
-        <a class="doc-item highlight" href="08.%20DAS%2010.2026%20-%20Guia%20Pagamento.pdf" target="_blank">📄 DAS - Guia</a>
-        <a class="doc-item" href="08.1%20PGDASD-EXTRATO-07202631483462212.pdf" target="_blank">📄 PGDAS Extrato</a>
-        <a class="doc-item" href="08.2%20PGDASD-DECLARACAO-33075903202610001.pdf" target="_blank">📄 PGDAS Declaração</a>
-        <a class="doc-item" href="08.3%20PGDASD-RECIBO-33075903202610001.pdf" target="_blank">📄 PGDAS Recibo</a>
-        <a class="doc-item" href="09.%20Destda%2010.2026%20-%20Guia%20Pagamento.pdf" target="_blank">📄 Destda - Guia</a>
-        <a class="doc-item" href="09.1%20Destda%2010.2026%20-%20Resumo%20Declara%C3%A7%C3%A3o.pdf" target="_blank">📄 Destda - Resumo</a>
-        <a class="doc-item" href="09.2%20Destda%2010.2026%20-%20Recibo.pdf" target="_blank">📄 Destda - Recibo</a>
-        <a class="doc-item" href="09.3%20Destda%2010.2026%20-%20Detalhamento%20por%20nota.pdf" target="_blank">📄 Destda - Detalhamento</a>
-        <a class="doc-item" href="10.%20Sintegra%2010.2026%20-%20Recibo.pdf" target="_blank">📄 Sintegra</a>
-    </aside></aside>
+        <div id="documentos"></div>
+    </aside>
+
+    <!--
+      ============================================================
+      DASHBOARD FISCAL MENSAL
+      Para cada empresa e competência:
+      1. Duplique este arquivo para a pasta da competência
+         (ex.: portalclientes/nome-empresa/fiscal/documentos/10.2026/index.html)
+      2. Altere SOMENTE o bloco CONFIG abaixo
+      3. Os arquivos (PDFs) devem estar na MESMA pasta deste index.html
+      4. Não altere o CSS nem a estrutura do HTML
+      Os valores calculados (faturamento vs mês anterior, RBT12 %, resultado,
+      margem, variações) são feitos automaticamente a partir dos dados.
+      ============================================================
+    -->
+
+    <script>
+    const CONFIG = {
+        empresa: {
+            nome: "MACAIA GESTÃO LTDA",
+            cnpj: "33.075.903/0001-90",
+            regime: { linha1: "Simples Nacional", linha2: "Anexo III" }
+        },
+
+        competencia: {
+            mesAno: "Outubro/2026",
+            numero: "10.2026"
+        },
+
+        faturamentoHistorico: [
+            { mes: "Setembro/2026", valor: 26000.00 },,
+            { mes: "Outubro/2026", valor: 12000.00 }
+        ],
+
+        das: {
+            valor: 720.0,
+            vencimento: "23/11/2026",
+            codigoBarras: "858200000074200003282638270720263143834622120374",
+            arquivo: "08. DAS 10.2026 - Guia Pagamento.pdf"
+        },
+
+        inss: null, // INSS fica no Departamento Pessoal
+
+        outrasGuias: [
+            { titulo: "DeSTDA - ICMS-ST", valor: 53.25, vencimento: "10/12/2026", codigoBarras: "856900000006532500242609420124721317600000256914", arquivo: "09. Destda 10.2026 - Guia Pagamento.pdf" }
+        ],
+
+        rbt12: {
+            valor: 133860.24,
+            limite: 4800000.00,
+            limiarAtencao: 0.80,
+            situacao: "Regular"
+        },
+
+        cargaTributaria: { valor: 0.06, rotulo: "Anexo III" },
+
+        despesasOperacionais: 15357.47, // Entradas do mês (Resumo por acumulador, total de Vlr Contábil)
+
+        composicaoDAS: [
+            { label: "INSS/CPP", valor: 312.48 },
+            { label: "ISS", valor: 241.20 },
+            { label: "COFINS", valor: 92.30 },
+            { label: "IRPJ", valor: 28.80 },
+            { label: "CSLL", valor: 25.20 },
+            { label: "PIS", valor: 20.02 }
+        ],
+
+        indicadores: {
+            margem:             { texto: "⚠ Resultado negativo no mês: conferir despesas", classe: "warn" },
+            statusObrigacional: { valor: "Em Dia", texto: "✓ DAS apurado, a pagar até 23/11/2026", classe: "ok" }
+        },
+
+        statusFiscal: {
+            situacaoSimples: "Optante pelo Simples Nacional",
+            inscricaoEstadual: "Não informada nos documentos"
+        },
+
+        obrigacoes: [
+            { label: "PGDAS-D", status: "Transmitido" },
+            { label: "DAS", status: "Apurado" },
+            { label: "DeSTDA", status: "Apurado" },
+            { label: "Sintegra", status: "Entregue" },
+            { label: "Limite RBT12", status: "Regular" }
+        ],
+
+        certidoes: [],
+
+        documentos: [
+            { rotulo: "Protocolo Serviços Prestados", arquivo: "01. Protocolo Serviços Prestados 10.2026.pdf" },
+            { rotulo: "Protocolo Serviços Tomados", arquivo: "02. Protocolo Serviços Tomados 10.2026.pdf" },
+            { rotulo: "Entradas", arquivo: "03. Entradas 10.2026.pdf" },
+            { rotulo: "Serviços", arquivo: "04. Serviços 10.2026.pdf" },
+            { rotulo: "Resumo Acumulador", arquivo: "05. Resumo Acumulador 10.2026.pdf" },
+            { rotulo: "Faturamento 12 meses", arquivo: "06. Faturamento 12 meses 10.2026.pdf" },
+            { rotulo: "Simples Nacional", arquivo: "07. Simples Nacional 10.2026.pdf" },
+            { rotulo: "Memória Cálculo", arquivo: "07.1 Simples Nacional - Memória de Cálculo 10.2026.pdf" },
+            { rotulo: "RBA - Folha 12 meses", arquivo: "07.2 Simples Nacional - RBA - Folha 12 meses 10.2026.pdf" },
+            { rotulo: "Alíquota Efetiva", arquivo: "07.3 Simples Nacional - Alíquota Efetiva período seguinte 10.2026.pdf" },
+            { rotulo: "DAS - Guia", arquivo: "08. DAS 10.2026 - Guia Pagamento.pdf", destaque: true },
+            { rotulo: "PGDAS Extrato", arquivo: "08.1 PGDASD-EXTRATO-07202631483462212.pdf" },
+            { rotulo: "PGDAS Declaração", arquivo: "08.2 PGDASD-DECLARACAO-33075903202610001.pdf" },
+            { rotulo: "PGDAS Recibo", arquivo: "08.3 PGDASD-RECIBO-33075903202610001.pdf" },
+            { rotulo: "DeSTDA - Guia", arquivo: "09. Destda 10.2026 - Guia Pagamento.pdf", destaque: true },
+            { rotulo: "DeSTDA - Resumo", arquivo: "09.1 Destda 10.2026 - Resumo Declaração.pdf" },
+            { rotulo: "DeSTDA - Recibo", arquivo: "09.2 Destda 10.2026 - Recibo.pdf" },
+            { rotulo: "DeSTDA - Detalhamento", arquivo: "09.3 Destda 10.2026 - Detalhamento por nota.pdf" },
+            { rotulo: "Sintegra - Recibo", arquivo: "10. Sintegra 10.2026 - Recibo.pdf" }
+        ],
+
+        escritorio: {
+            razao: "Jaqueline Ferreira Assessoria Contábil Ltda | CRC SC-013019/O-4",
+            responsavel: "Responsável Técnica: Jaqueline do Prado Ferreira | CRC SC-048028/O-0",
+            local: "Videira - SC | contato@jaquelineferreiracontadora.com.br | WhatsApp (49) 9.9980-3552",
+            rodape: "Dashboard Fiscal Confidencial - Uso Exclusivo do Cliente"
+        }
+    };
+
+    /* ---------- FORMATAÇÃO ---------- */
+    const fmt = function (v) {
+        return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+    };
+    // "fracao" recebe um valor entre 0 e 1 (ex.: 0.6931 -> 69,31%)
+    const pct = function (fracao, casas) {
+        if (casas === undefined) casas = 2;
+        return (fracao * 100).toLocaleString("pt-BR", {
+            minimumFractionDigits: casas, maximumFractionDigits: casas
+        }) + "%";
+    };
+    const esc = function (t) {
+        const d = document.createElement("div");
+        d.textContent = String(t);
+        return d.innerHTML;
+    };
+    const nomeMes = function (mesAno) { return mesAno.split("/")[0].toLowerCase(); };
+
+    /* ---------- CÁLCULOS ---------- */
+    function calcular() {
+        const hist = CONFIG.faturamentoHistorico;
+        const atual = hist[hist.length - 1];
+        const anterior = hist.length > 1 ? hist[hist.length - 2] : null;
+
+        const das = CONFIG.das.valor;
+        const inss = 0; // INSS não é descontado da apuração (aparece só no painel de pagamentos)
+        const receitaLiquida = atual.valor - das - inss;
+        const resultado = receitaLiquida - CONFIG.despesasOperacionais;
+
+        return {
+            faturamento: atual.valor,
+            anterior: anterior,
+            variacaoMes: anterior ? atual.valor / anterior.valor - 1 : null,
+            receitaLiquida: receitaLiquida,
+            resultado: resultado,
+            margem: atual.valor ? resultado / atual.valor : 0,
+            rbtPct: CONFIG.rbt12.valor / CONFIG.rbt12.limite
+        };
+    }
+
+    /* ---------- RENDERIZAÇÃO ---------- */
+    function renderCabecalho() {
+        document.title = "Dashboard Fiscal - " + CONFIG.empresa.nome;
+        document.getElementById("cabecalho").innerHTML =
+            '<div class="header-left">' +
+                '<h1>🏢 ' + esc(CONFIG.empresa.nome) + '</h1>' +
+                '<p>CNPJ: ' + esc(CONFIG.empresa.cnpj) + ' | ' + esc(CONFIG.competencia.mesAno) + '</p>' +
+            '</div>' +
+            '<div class="header-regime">' + esc(CONFIG.empresa.regime.linha1) + '<br>' + esc(CONFIG.empresa.regime.linha2) + '</div>';
+    }
+
+    function renderKPIs(c) {
+        const sub = c.variacaoMes === null ? "" :
+            '<div class="kpi-sub ' + (c.variacaoMes >= 0 ? "pos" : "warn") + '">' +
+            (c.variacaoMes >= 0 ? "↑ " : "↓ ") + pct(Math.abs(c.variacaoMes)) +
+            " vs " + esc(nomeMes(c.anterior.mes)) + "</div>";
+
+        document.getElementById("kpis").innerHTML =
+            '<div class="kpi-card fat"><div class="kpi-label">Faturamento</div>' +
+                '<div class="kpi-value">' + fmt(c.faturamento) + '</div>' + sub + '</div>' +
+            '<div class="kpi-card das"><div class="kpi-label">DAS a Recolher</div>' +
+                '<div class="kpi-value">' + fmt(CONFIG.das.valor) + '</div>' +
+                '<div class="kpi-sub warn">Venc. ' + esc(CONFIG.das.vencimento) + '</div></div>' +
+            '<div class="kpi-card rbt"><div class="kpi-label">RBT12 Acumulado</div>' +
+                '<div class="kpi-value">' + fmt(CONFIG.rbt12.valor) + '</div>' +
+                '<div class="kpi-sub">' + pct(c.rbtPct, 1) + ' do limite</div></div>' +
+            '<div class="kpi-card carga"><div class="kpi-label">Carga Tributária</div>' +
+                '<div class="kpi-value">' + pct(CONFIG.cargaTributaria.valor) + '</div>' +
+                '<div class="kpi-sub">' + esc(CONFIG.cargaTributaria.rotulo) + '</div></div>' +
+            '<div class="kpi-card resultado"><div class="kpi-label">Resultado Operacional</div>' +
+                '<div class="kpi-value">' + fmt(c.resultado) + '</div>' +
+                '<div class="kpi-sub pos">Margem: ' + pct(c.margem) + '</div></div>';
+    }
+
+    function cardPagamento(titulo, valor, vencimento, codigo, arquivo, classeBtn) {
+        return '<div class="payment-item">' +
+            '<div class="payment-type">' + esc(titulo) + '</div>' +
+            '<div class="payment-value">' + fmt(valor) + '</div>' +
+            '<div class="payment-info">Vencimento ' + esc(vencimento) + '</div>' +
+            '<div class="payment-info">Código de Barras (cópia para pagamento):</div>' +
+            '<div class="payment-code">' + esc(codigo) + '</div>' +
+            '<button class="btn-copy ' + classeBtn + '" data-codigo="' + esc(codigo) + '">📋 Copiar Código de Barras</button>' +
+            '<a class="doc-link highlight" style="display:block;margin-top:8px;" href="' + esc(encodeURI(arquivo)) + '" target="_blank">📄 Abrir guia (PDF)</a>' +
+        '</div>';
+    }
+
+    function renderPagamentos() {
+        const temDAS = CONFIG.das.valor > 0 && !!CONFIG.das.codigoBarras;
+        const dasHtml = temDAS ?
+            cardPagamento("DAS Simples Nacional", CONFIG.das.valor, CONFIG.das.vencimento, CONFIG.das.codigoBarras, CONFIG.das.arquivo, "das") :
+            '<div class="payment-item"><div class="payment-type">DAS Simples Nacional</div>' +
+            '<div class="payment-value">' + fmt(CONFIG.das.valor) + '</div>' +
+            '<div class="payment-info">Sem DAS a pagar neste mês.</div></div>';
+
+        const inss = CONFIG.inss;
+        const inssHtml = inss ?
+            cardPagamento(inss.titulo || "INSS DCTFWeb", inss.valor, inss.vencimento || CONFIG.das.vencimento, inss.codigoBarras, inss.arquivo, "inss") : "";
+
+        const outrasHtml = (CONFIG.outrasGuias || []).map(function (g) {
+            return cardPagamento(g.titulo, g.valor, g.vencimento, g.codigoBarras, g.arquivo, "inss");
+        }).join("");
+
+        document.getElementById("pagamentos").innerHTML =
+            '<div class="panel-title">💳 Painel Financeiro - ' + esc(CONFIG.competencia.mesAno) +
+                '<div class="competencia-badge">Vencimento ' + esc(CONFIG.das.vencimento) + '</div></div>' +
+            '<div class="payment-grid">' + dasHtml + inssHtml + outrasHtml + '</div>';
+
+        document.querySelectorAll("[data-codigo]").forEach(function (btn) {
+            btn.addEventListener("click", function () { copiarCodigo(btn.getAttribute("data-codigo"), btn); });
+        });
+    }
+
+    function renderApuracao(c) {
+        const linhas = [
+            ["Receita Bruta de Serviços", fmt(c.faturamento), ""],
+            ["Deduções (Impostos)", "-" + fmt(CONFIG.das.valor), ""]
+        ];
+        linhas.push(["Receita Líquida", fmt(c.receitaLiquida), ""]);
+        linhas.push(["Despesas Operacionais", "-" + fmt(CONFIG.despesasOperacionais), ""]);
+        linhas.push(["Lucro Líquido (Resultado)", fmt(c.resultado), "resultado"]);
+
+        document.getElementById("apuracao").innerHTML =
+            '<div class="panel-title">📊 Apuração de Resultado - ' + esc(CONFIG.competencia.mesAno) + '</div>' +
+            '<div class="apuracao-grid">' +
+            linhas.map(function (l) {
+                return '<div class="apuracao-row ' + l[2] + '">' +
+                    '<div class="apuracao-label">' + esc(l[0]) + '</div>' +
+                    '<div class="apuracao-value">' + esc(l[1]) + '</div></div>';
+            }).join("") +
+            '</div>';
+    }
+
+    function renderSaude(c) {
+        const r = c.rbtPct;
+        const rbt = r > 1 ? ["critical", "✗ Acima do limite"] :
+                    r >= CONFIG.rbt12.limiarAtencao ? ["warn", "⚠ Próximo do limite"] :
+                    ["ok", "✓ OK - Dentro do Limite"];
+        const ind = CONFIG.indicadores;
+        const ob = ind.statusObrigacional;
+
+        document.getElementById("saude").innerHTML =
+            '<div class="panel-title">💉 Indicadores de Saúde Fiscal</div>' +
+            '<div class="health-grid">' +
+                '<div class="health-card"><div class="health-label">Limite RBT12</div>' +
+                    '<div class="health-value">' + pct(r, 1) + '</div>' +
+                    '<div class="health-status ' + rbt[0] + '">' + rbt[1] + '</div></div>' +
+                '<div class="health-card"><div class="health-label">Margem Operacional</div>' +
+                    '<div class="health-value">' + pct(c.margem) + '</div>' +
+                    '<div class="health-status ' + ind.margem.classe + '">' + esc(ind.margem.texto) + '</div></div>' +
+                '<div class="health-card"><div class="health-label">Status Obrigacional</div>' +
+                    '<div class="health-value">' + esc(ob.valor) + '</div>' +
+                    '<div class="health-status ' + ob.classe + '">' + esc(ob.texto) + '</div></div>' +
+            '</div>';
+    }
+
+    function renderComparativo() {
+        const hist = CONFIG.faturamentoHistorico;
+        const cards = hist.map(function (item, i) {
+            const atual = i === hist.length - 1;
+            let variacao = '<div class="comp-variance">Mês base</div>';
+            if (i > 0) {
+                const prev = hist[i - 1];
+                const v = item.valor / prev.valor - 1;
+                variacao = '<div class="comp-variance ' + (v >= 0 ? "up" : "down") + '">' +
+                    (v >= 0 ? "↑ +" : "↓ -") + pct(Math.abs(v)) + " vs " + esc(nomeMes(prev.mes)) + '</div>';
+            }
+            return '<div class="comp-card"' + (atual ? ' style="border: 2px solid #C58A94;"' : '') + '>' +
+                '<div class="comp-month">' + esc(item.mes) + '</div>' +
+                '<div class="comp-value">' + fmt(item.valor) + '</div>' +
+                variacao + '</div>';
+        }).join("");
+
+        document.getElementById("comparativo").innerHTML =
+            '<div class="panel-title">' + (hist.length > 1 ? '📈 Comparativo Faturamento - Últimos ' + hist.length + ' Meses' : '📈 Faturamento do Mês') + '</div>' +
+            '<div class="comparative-grid">' + cards + '</div>';
+    }
+
+    function renderObrigacoes() {
+        document.getElementById("obrigacoes").innerHTML =
+            '<div class="panel-title">✅ Status de Obrigações (' + esc(CONFIG.competencia.mesAno) + ')</div>' +
+            '<div class="fiscal-grid">' +
+            CONFIG.obrigacoes.map(function (o) {
+                return '<div class="fiscal-card"><div class="fiscal-icon">✔️</div>' +
+                    '<div class="fiscal-label">' + esc(o.label) + '</div>' +
+                    '<div class="fiscal-status">' + esc(o.status) + '</div></div>';
+            }).join("") +
+            '</div>';
+    }
+
+    function renderDocumentos() {
+        document.getElementById("documentos").innerHTML =
+            '<div class="sidebar-title">📁 Documentos - ' + esc(CONFIG.competencia.mesAno) + '</div>' +
+            CONFIG.documentos.map(function (d) {
+                return '<a href="' + esc(encodeURI(d.arquivo)) + '" target="_blank" class="doc-item' +
+                    (d.destaque ? " highlight" : "") + '">📄 ' + esc(d.rotulo) + '</a>';
+            }).join("");
+    }
+
+    function renderStatusFiscal(c) {
+        const carga = CONFIG.cargaTributaria;
+        const itens = [
+            ["Simples Nacional", CONFIG.statusFiscal.situacaoSimples],
+            ["Inscrição Estadual", CONFIG.statusFiscal.inscricaoEstadual],
+            ["Alíquota Efetiva", pct(carga.valor) + " (" + carga.rotulo + ")"],
+            ["Situação RBT12", pct(c.rbtPct, 1) + " - " + CONFIG.rbt12.situacao]
+        ];
+        document.getElementById("status-fiscal").innerHTML =
+            '<div class="panel-title">🔍 Status Fiscal Completo</div>' +
+            '<div class="status-fiscal-grid">' +
+            itens.map(function (i) {
+                return '<div class="status-item"><div class="status-icon">✅</div>' +
+                    '<div class="status-content"><div class="status-label">' + esc(i[0]) + '</div>' +
+                    '<div class="status-value">' + esc(i[1]) + '</div></div></div>';
+            }).join("") +
+            '</div>';
+    }
+
+    function renderCertidoes() {
+        document.getElementById("certidoes").innerHTML =
+            '<div class="panel-title">📋 Situação das Certidões</div>' +
+            '<div class="certidoes-grid">' +
+            CONFIG.certidoes.map(function (cert) {
+                const ok = cert.status === "Regular";
+                return '<div class="cert-card' + (ok ? "" : " pendente") + '">' +
+                    '<div class="cert-icon">' + (ok ? "✅" : "⚠️") + '</div>' +
+                    '<div class="cert-label">' + esc(cert.label) + '</div>' +
+                    '<div class="cert-status' + (ok ? "" : " pendente") + '">' + esc(cert.status) + '</div></div>';
+            }).join("") +
+            '</div>';
+    }
+
+    function renderRodape() {
+        const e = CONFIG.escritorio;
+        document.getElementById("rodape").innerHTML =
+            '<div class="footer-line"><strong>' + esc(e.razao.split(" | ")[0]) + '</strong> | ' + esc(e.razao.split(" | ")[1]) + '</div>' +
+            '<div class="footer-line">' + esc(e.responsavel) + '</div>' +
+            '<div class="footer-line">' + esc(e.local) + '</div>' +
+            '<div class="footer-line" style="margin-top: 8px; font-size: 10px;">' +
+                esc(e.rodape) + ' | ' + esc(CONFIG.competencia.mesAno) + '</div>';
+    }
+
+    /* ---------- CÓPIA DO CÓDIGO DE BARRAS ---------- */
+    function copiarCodigo(texto, btn) {
+        navigator.clipboard.writeText(texto).then(function () {
+            const orig = btn.innerText;
+            btn.innerText = "✓ Código Copiado!";
+            btn.style.backgroundColor = "#10B981";
+            setTimeout(function () {
+                btn.innerText = orig;
+                btn.style.backgroundColor = "";
+            }, 2500);
+        });
+    }
+
+    /* ---------- GRÁFICOS ---------- */
+    function initCharts(c) {
+        const soma = CONFIG.composicaoDAS.reduce(function (a, b) { return a + b.valor; }, 0);
+        if (Math.abs(soma - CONFIG.das.valor) > 0.01) {
+            console.warn("Composição do DAS (" + soma.toFixed(2) + ") não bate com o DAS (" + CONFIG.das.valor.toFixed(2) + ")");
+        }
+
+        const cores = ["#C58A94", "#C5A059", "#8B5CF6", "#6366F1", "#F59E0B", "#10B981"];
+
+        new Chart(document.getElementById("rosca"), {
+            type: "doughnut",
+            data: {
+                labels: CONFIG.composicaoDAS.map(function (x) { return x.label; }),
+                datasets: [{
+                    data: CONFIG.composicaoDAS.map(function (x) { return x.valor; }),
+                    backgroundColor: CONFIG.composicaoDAS.map(function (x, i) { return cores[i % cores.length]; }),
+                    borderColor: "#fff",
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: "bottom", labels: { font: { size: 11 }, padding: 12 } },
+                    tooltip: {
+                        callbacks: {
+                            label: function (ctx) {
+                                const total = ctx.dataset.data.reduce(function (a, b) { return a + b; }, 0);
+                                return "R$ " + ctx.parsed.toFixed(2) + " (" + ((ctx.parsed / total) * 100).toFixed(1) + "%)";
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        new Chart(document.getElementById("barras"), {
+            type: "bar",
+            data: {
+                labels: ["Faturamento", "Despesas"],
+                datasets: [{
+                    data: [c.faturamento, CONFIG.despesasOperacionais],
+                    backgroundColor: ["#C58A94", "#C5A059"],
+                    borderRadius: 4,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: "y",
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { callbacks: { label: function (ctx) { return "R$ " + ctx.parsed.x.toFixed(2); } } }
+                },
+                scales: { x: { beginAtZero: true } }
+            }
+        });
+    }
+
+    /* ---------- INICIALIZAÇÃO ---------- */
+    function renderizar() {
+        const c = calcular();
+        renderCabecalho();
+        renderKPIs(c);
+        renderPagamentos();
+        renderApuracao(c);
+        renderSaude(c);
+        renderComparativo();
+        renderObrigacoes();
+        renderDocumentos();
+        renderStatusFiscal(c);
+        renderCertidoes();
+        renderRodape();
+        initCharts(c);
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", renderizar);
+    } else {
+        renderizar();
+    }
+    </script>
 
     <div class="main-content"><div class="container">
-
         <!-- 1. HEADER -->
-        <div class="header">
-            <div class="header-left">
-                <h1>🏢 MACAIA GESTAO LTDA</h1>
-                <p>CNPJ: 33.075.903/0001-90 | Outubro/2026</p>
-            </div>
-            <div class="header-regime">
-                Simples Nacional<br>Anexo I | Anexo III
-            </div>
-        </div>
+        <div class="header" id="cabecalho"></div>
 
         <!-- 2. KPIs -->
-        <div class="kpis-grid">
-            <div class="kpi-card fat">
-                <div class="kpi-label">Faturamento</div>
-                <div class="kpi-value">R$ 12.000,00</div>
-                <div class="kpi-sub warn">↓ 53,85% vs setembro</div>
-            </div>
-            <div class="kpi-card das">
-                <div class="kpi-label">DAS a Recolher</div>
-                <div class="kpi-value">R$ 720,00</div>
-                <div class="kpi-sub warn">Venc. 23/11/2026</div>
-            </div>
-            <div class="kpi-card rbt">
-                <div class="kpi-label">RBT12 Acumulado</div>
-                <div class="kpi-value">R$ 133.860,24</div>
-                <div class="kpi-sub">74,4% do limite</div>
-            </div>
-            <div class="kpi-card carga">
-                <div class="kpi-label">Carga Tributária</div>
-                <div class="kpi-value">6,00%</div>
-                <div class="kpi-sub">Anexo III</div>
-            </div>
-            <div class="kpi-card resultado">
-                <div class="kpi-label">Resultado Operacional</div>
-                <div class="kpi-value">-R$ 4.077,47</div>
-                <div class="kpi-sub warn">Margem: -33,98%</div>
-            </div>
-        </div>
+        <div class="kpis-grid" id="kpis"></div>
 
         <!-- 3. PAINEL FINANCEIRO -->
-        <div class="panel">
-            <div class="panel-title">
-                💳 Painel Financeiro - Outubro/2026
-                <div class="competencia-badge">Próximo vencimento 19/11/2026</div>
-            </div>
-            <div class="payment-grid">
-                <div class="payment-item">
-                    <div class="payment-type">DAS Simples Nacional</div>
-                    <div class="payment-value">R$ 720,00</div>
-                    <div class="payment-info">Vencimento 23/11/2026</div>
-                    <div class="payment-info">Código de Barras (cópia para pagamento):</div>
-                    <div class="payment-code">85820000007 4 20000328263 8 27072026314 3 83462212037 4</div>
-                    <button class="btn-copy das" onclick="copiarCodigo('858200000074200003282638270720263143834622120374', this)">📋 Copiar Código de Barras</button>
-                    <a class="doc-link highlight" style="display:block;margin-top:8px;" href="08.%20DAS%2010.2026%20-%20Guia%20Pagamento.pdf" target="_blank">📄 Abrir guia (PDF)</a>
-                </div>
-                <div class="payment-item">
-                    <div class="payment-type">DeSTDA (ICMS-ST)</div>
-                    <div class="payment-value">R$ 53,25</div>
-                    <div class="payment-info">Vencimento 10/12/2026</div>
-                    <div class="payment-info">Código de Barras (cópia para pagamento):</div>
-                    <div class="payment-code">85690000000 6 53250024260 9 42012472131 7 60000025691 4</div>
-                    <button class="btn-copy das" onclick="copiarCodigo('856900000006532500242609420124721317600000256914', this)">📋 Copiar Código de Barras</button>
-                    <a class="doc-link highlight" style="display:block;margin-top:8px;" href="09.%20Destda%2010.2026%20-%20Guia%20Pagamento.pdf" target="_blank">📄 Abrir guia (PDF)</a>
-                </div>
-            </div>
-        </div>
+        <div class="panel" id="pagamentos"></div>
 
         <!-- 4. GRÁFICOS -->
         <div class="charts-grid">
             <div class="chart-container">
-                <div class="chart-title">Composição do DAS (Outubro/2026)</div>
+                <div class="chart-title">Composição do DAS</div>
                 <canvas id="rosca"></canvas>
             </div>
             <div class="chart-container">
-                <div class="chart-title">Faturamento vs Despesas (Outubro/2026)</div>
+                <div class="chart-title">Faturamento vs Despesas</div>
                 <canvas id="barras"></canvas>
             </div>
         </div>
 
         <!-- 5. APURAÇÃO DE RESULTADO -->
-        <div class="panel">
-            <div class="panel-title">
-                📊 Apuração de Resultado - Outubro/2026
-            </div>
-            <div class="apuracao-grid">
-                <div class="apuracao-row">
-                    <div class="apuracao-label">Receita Bruta de Serviços</div>
-                    <div class="apuracao-value">R$ 12.000,00</div>
-                </div>
-                <div class="apuracao-row">
-                    <div class="apuracao-label">Deduções (Impostos)</div>
-                    <div class="apuracao-value">-R$ 720,00</div>
-                </div>
-                <div class="apuracao-row">
-                    <div class="apuracao-label">Receita Líquida</div>
-                    <div class="apuracao-value">R$ 11.280,00</div>
-                </div>
-                <div class="apuracao-row">
-                    <div class="apuracao-label">Despesas Operacionais</div>
-                    <div class="apuracao-value">-R$ 15.357,47</div>
-                </div>
-                <div class="apuracao-row resultado">
-                    <div class="apuracao-label">Resultado Líquido (Prejuízo)</div>
-                    <div class="apuracao-value">-R$ 4.077,47</div>
-                </div>
-            </div>
-        </div>
+        <div class="panel" id="apuracao"></div>
 
         <!-- 6. INDICADORES DE SAÚDE FISCAL -->
-        <div class="panel">
-            <div class="panel-title">
-                💉 Indicadores de Saúde Fiscal
-            </div>
-            <div class="health-grid">
-                <div class="health-card">
-                    <div class="health-label">Limite RBT12</div>
-                    <div class="health-value">74,4%</div>
-                    <div class="health-status ok">✓ OK - Dentro do Limite</div>
-                </div>
-                <div class="health-card">
-                    <div class="health-label">Margem Operacional</div>
-                    <div class="health-value">-33,98%</div>
-                    <div class="health-status warn">⚠ Resultado negativo no mês</div>
-                </div>
-                <div class="health-card">
-                    <div class="health-label">Status Obrigacional</div>
-                    <div class="health-value">Em Dia</div>
-                    <div class="health-status ok">✓ Adimplente</div>
-                </div>
-            </div>
-        </div>
+        <div class="panel" id="saude"></div>
 
         <!-- 7. COMPARATIVO FATURAMENTO -->
-        <div class="panel">
-            <div class="panel-title">
-                📈 Comparativo Faturamento - Últimos 3 Meses
-            </div>
-            <div class="comparative-grid">
-                <div class="comp-card">
-                    <div class="comp-month">Agosto/2026</div>
-                    <div class="comp-value">R$ 25.250,00</div>
-                    <div class="comp-variance up">↑ +76,27% vs julho</div>
-                </div>
-                <div class="comp-card">
-                    <div class="comp-month">Setembro/2026</div>
-                    <div class="comp-value">R$ 26.000,00</div>
-                    <div class="comp-variance up">↑ +2,97% vs agosto</div>
-                </div>
-                <div class="comp-card" style="border: 2px solid #C58A94;">
-                    <div class="comp-month">Outubro/2026</div>
-                    <div class="comp-value">R$ 12.000,00</div>
-                    <div class="comp-variance down">↓ -53,85% vs setembro</div>
-                </div>
-            </div>
-        </div>
+        <div class="panel" id="comparativo"></div>
 
         <!-- 8. STATUS DE OBRIGAÇÕES -->
-        <div class="panel">
-            <div class="panel-title">
-                ✅ Status de Obrigações (Outubro/2026)
-            </div>
-            <div class="fiscal-grid">
-                <div class="fiscal-card">
-                    <div class="fiscal-icon">✔️</div>
-                    <div class="fiscal-label">PGDAS-D</div>
-                    <div class="fiscal-status">Transmitido 10/11/2026</div>
-                </div>
-                <div class="fiscal-card">
-                    <div class="fiscal-icon">✔️</div>
-                    <div class="fiscal-label">Protocolos</div>
-                    <div class="fiscal-status">Prestados e Tomados</div>
-                </div>
-                <div class="fiscal-card">
-                    <div class="fiscal-icon">✔️</div>
-                    <div class="fiscal-label">Despesas</div>
-                    <div class="fiscal-status">Resumo emitido</div>
-                </div>
-                <div class="fiscal-card">
-                    <div class="fiscal-icon">✔️</div>
-                    <div class="fiscal-label">Limite RBT12</div>
-                    <div class="fiscal-status">Regular</div>
-                </div>
-                <div class="fiscal-card">
-                    <div class="fiscal-icon">✔️</div>
-                    <div class="fiscal-label">DAS</div>
-                    <div class="fiscal-status">Apurado</div>
-                </div>
-                <div class="fiscal-card">
-                    <div class="fiscal-icon">✔️</div>
-                    <div class="fiscal-label">DeSTDA e Sintegra</div>
-                    <div class="fiscal-status">Entregues 11/11/2026</div>
-                </div>
-            </div>
-        </div>
+        <div class="panel" id="obrigacoes"></div>
 
         <!-- 10. STATUS FISCAL -->
-        <div class="panel">
-            <div class="panel-title">
-                🔍 Status Fiscal Completo
-            </div>
-            <div class="status-fiscal-grid">
-                <div class="status-item">
-                    <div class="status-icon">✅</div>
-                    <div class="status-content">
-                        <div class="status-label">Simples Nacional</div>
-                        <div class="status-value">Optante pelo Simples Nacional</div>
-                    </div>
-                </div>
-                <div class="status-item">
-                    <div class="status-icon">✅</div>
-                    <div class="status-content">
-                        <div class="status-label">Inscrição Estadual</div>
-                        <div class="status-value">264.305.108</div>
-                    </div>
-                </div>
-                <div class="status-item">
-                    <div class="status-icon">✅</div>
-                    <div class="status-content">
-                        <div class="status-label">Alíquota Efetiva</div>
-                        <div class="status-value">6,00% (Anexo III)</div>
-                    </div>
-                </div>
-                <div class="status-item">
-                    <div class="status-icon">✅</div>
-                    <div class="status-content">
-                        <div class="status-label">Situação RBT12</div>
-                        <div class="status-value">74,4% - Regular</div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <div class="panel" id="status-fiscal"></div>
 
         <!-- 11. CERTIDÕES -->
-        <div class="panel">
-            <div class="panel-title">
-                📋 Situação das Certidões
-            </div>
-            <div class="certidoes-grid">
-                <div class="cert-card">
-                    <div class="cert-icon">✅</div>
-                    <div class="cert-label">Federal (CND)</div>
-                    <div class="cert-status">Regular</div>
-                </div>
-                <div class="cert-card">
-                    <div class="cert-icon">✅</div>
-                    <div class="cert-label">Estadual (CND)</div>
-                    <div class="cert-status">Regular</div>
-                </div>
-                <div class="cert-card">
-                    <div class="cert-icon">✅</div>
-                    <div class="cert-label">Municipal (CDMR)</div>
-                    <div class="cert-status">Regular</div>
-                </div>
-                <div class="cert-card">
-                    <div class="cert-icon">✅</div>
-                    <div class="cert-label">FGTS (CRF)</div>
-                    <div class="cert-status">Regular</div>
-                </div>
-                <div class="cert-card">
-                    <div class="cert-icon">✅</div>
-                    <div class="cert-label">Trabalhista (CNDT)</div>
-                    <div class="cert-status">Regular</div>
-                </div>
-            </div>
-        </div>
+        <div class="panel" id="certidoes"></div>
     </div>
 
     <!-- FOOTER -->
-    <div class="footer">
-        <div class="footer-line"><strong>Jaqueline Ferreira Assessoria Contábil Ltda</strong> | CRC SC-013019/O-4</div>
-        <div class="footer-line">Responsável Técnica: Jaqueline do Prado Ferreira | CRC SC-048028/O-0</div>
-        <div class="footer-line">Videira - SC | contato@jaquelineferreiracontadora.com.br | WhatsApp (49) 9.9980-3552</div>
-        <div class="footer-line" style="margin-top: 8px; font-size: 10px;">
-            Dashboard Fiscal Confidencial - Uso Exclusivo do Cliente | Outubro/2026
-        </div>
-    </div>
+    <div class="footer" id="rodape"></div>
     </div>
 
-    <script>
-        // Função para copiar código para clipboard
-        function copiarCodigo(texto, btn) {
-            navigator.clipboard.writeText(texto).then(() => {
-                const orig = btn.innerText;
-                btn.innerText = '✓ Código Copiado!';
-                btn.style.backgroundColor = '#10B981';
-                setTimeout(() => {
-                    btn.innerText = orig;
-                    btn.style.backgroundColor = '';
-                }, 2500);
-            });
-        }
-
-        // Função para inicializar gráficos
-        function initCharts() {
-            // Gráfico de Rosca - Composição do DAS
-            new Chart(document.getElementById('rosca'), {
-                type: 'doughnut',
-                data: {
-                    labels: ['INSS/CPP', 'ISS', 'COFINS', 'IRPJ', 'CSLL', 'PIS'],
-                    datasets: [{
-                        data: [312.48, 241.20, 92.30, 28.80, 25.20, 20.02],
-                        backgroundColor: ['#C58A94', '#C5A059', '#8B5CF6', '#6366F1', '#F59E0B', '#10B981'],
-                        borderColor: '#fff',
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: { font: { size: 11 }, padding: 12 }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: (ctx) => {
-                                    const val = ctx.parsed;
-                                    const total = ctx.dataset.data.reduce((a,b) => a+b, 0);
-                                    const pct = ((val / total) * 100).toFixed(1);
-                                    return `R$ ${val.toFixed(2)} (${pct}%)`;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-
-            // Gráfico de Barras - Faturamento vs Despesas
-            new Chart(document.getElementById('barras'), {
-                type: 'bar',
-                data: {
-                    labels: ['Faturamento', 'Despesas'],
-                    datasets: [{
-                        data: [12000.00, 15357.47],
-                        backgroundColor: ['#C58A94', '#C5A059'],
-                        borderRadius: 4,
-                        borderSkipped: false
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    indexAxis: 'y',
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: (ctx) => `R$ ${ctx.parsed.x.toFixed(2)}`
-                            }
-                        }
-                    },
-                    scales: { x: { beginAtZero: true } }
-                }
-            });
-        }
-
-        // Inicializar gráficos quando DOM estiver pronto
-        if (document.readyState === "loading") {
-            document.addEventListener("DOMContentLoaded", initCharts);
-        } else {
-            initCharts();
-        }
-    </script>
 </body>
 </html>
