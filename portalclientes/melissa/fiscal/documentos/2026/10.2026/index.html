@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fiscal Outubro/2026 - MELISSA SCHWARTZ PSICOLOGIA LTDA</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #F9FAFB; color: #1F2937; display: flex; }
+
+        /* SIDEBAR */
+        .sidebar-docs {
+            width: 220px;
+            background: white;
+            border-right: 1px solid #E5E7EB;
+            padding: 16px;
+            height: 100vh;
+            overflow-y: auto;
+            position: fixed;
+            left: 0;
+            top: 0;
+            box-shadow: 1px 0 3px rgba(0,0,0,0.05);
+        }
+
+        .sidebar-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #C58A94;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #C5A059;
+        }
+
+        .doc-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 10px;
+            margin-bottom: 6px;
+            border-radius: 4px;
+            font-size: 11px;
+            color: #111827;
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .doc-item:hover {
+            background: #F3F4F6;
+            color: #C58A94;
+        }
+
+        .doc-item-icon {
+            margin-right: 8px;
+            font-size: 14px;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 220px;
+        }
+
+        .container { max-width: 100%; margin: 0; padding: 20px; }
+
+        /* HEADER */
+        .header {
+            background: white; border: 1px solid #E5E7EB; border-radius: 8px; padding: 24px;
+            margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .header-left h1 { font-size: 18px; font-weight: 700; color: #111827; margin-bottom: 4px; }
+        .header-left p { font-size: 13px; color: #6B7280; margin: 2px 0; }
+        .header-right { font-size: 40px; font-weight: 700; color: #E5E7EB; text-align: center; min-width: 80px; }
+
+        /* SEÇÃO RESUMO GERAL */
+        .section-title {
+            font-size: 15px; font-weight: 600; color: #111827; margin: 24px 0 16px 0;
+            padding-bottom: 8px; border-bottom: 2px solid #E5E7EB;
+        }
+
+        /* KPI CARDS - 5 COLUNAS */
+        .kpis-grid {
+            display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px;
+            margin-bottom: 24px;
+        }
+        .kpi-card {
+            background: white; border: 1px solid #E5E7EB; border-left: 5px solid;
+            border-radius: 6px; padding: 18px; box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+        }
+        .kpi-card.folha { border-left-color: #C58A94; }
+        .kpi-card.encargos { border-left-color: #F59E0B; }
+        .kpi-card.liquido { border-left-color: #8B5CF6; }
+        .kpi-card.empregados { border-left-color: #6366F1; }
+        .kpi-card.contribuintes { border-left-color: #10B981; }
+        .kpi-label { font-size: 11px; color: #6B7280; text-transform: uppercase; font-weight: 600; margin-bottom: 8px; }
+        .kpi-value { font-size: 22px; font-weight: 700; color: #111827; margin-bottom: 4px; }
+        .kpi-sub { font-size: 12px; color: #6B7280; }
+        .kpi-sub.pos { color: #10B981; }
+        .kpi-sub.warn { color: #F59E0B; }
+
+        /* PAINEL */
+        .panel {
+            background: white; border: 1px solid #E5E7EB; border-radius: 8px;
+            padding: 24px; margin-bottom: 24px;
+        }
+        .panel-title {
+            font-size: 15px; font-weight: 600; color: #111827; margin-bottom: 16px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .competencia-badge {
+            background: #FEF3C7; color: #92400E; padding: 4px 12px;
+            border-radius: 16px; font-size: 11px; font-weight: 600;
+        }
+        .payment-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;
+        }
+        .payment-item {
+            border: 1px solid #E5E7EB; border-radius: 6px; padding: 16px;
+            background: #F9FAFB;
+        }
+        .payment-type { font-size: 13px; color: #6B7280; font-weight: 600; margin-bottom: 12px; }
+        .payment-value { font-size: 24px; font-weight: 700; color: #111827; margin-bottom: 8px; }
+        .payment-info { font-size: 12px; color: #6B7280; margin-bottom: 10px; line-height: 1.4; }
+        .payment-code { font-size: 11px; background: #F3F4F6; padding: 8px; border-radius: 4px;
+            color: #374151; margin-bottom: 12px; word-break: break-all; font-family: monospace; }
+        .btn-copy {
+            width: 100%; padding: 10px; border: none; border-radius: 6px; cursor: pointer;
+            font-size: 12px; font-weight: 600; transition: all 0.2s;
+        }
+        .btn-copy.inss { background: #C58A94; color: white; }
+        .btn-copy.inss:hover { background: #AE7681; }
+        .btn-copy.fgts { background: #C5A059; color: white; }
+        .btn-copy.fgts:hover { background: #B89146; }
+
+        /* CHARTS */
+        .charts-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;
+        }
+        .chart-container {
+            background: white; border: 1px solid #E5E7EB; border-radius: 8px;
+            padding: 20px; position: relative; height: 280px;
+        }
+        .chart-title { font-size: 14px; font-weight: 600; color: #111827; margin-bottom: 12px; }
+        canvas { max-height: 240px; }
+
+        /* TABELAS */
+        .table-container {
+            background: white; border: 1px solid #E5E7EB; border-radius: 8px;
+            padding: 20px; margin-bottom: 24px; overflow-x: auto;
+        }
+        table {
+            width: 100%; border-collapse: collapse; font-size: 13px;
+        }
+        thead {
+            background: #F9FAFB; border-bottom: 2px solid #E5E7EB;
+        }
+        th {
+            padding: 12px; text-align: left; font-weight: 600; color: #111827;
+        }
+        td {
+            padding: 12px; border-bottom: 1px solid #E5E7EB;
+        }
+        tbody tr:hover {
+            background: #F9FAFB;
+        }
+        .text-right { text-align: right; }
+
+        /* ACOMPANHAMENTO */
+        .fiscal-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 24px;
+        }
+        .fiscal-card {
+            background: white; border: 1px solid #E5E7EB; border-radius: 6px;
+            padding: 16px; text-align: center;
+        }
+        .fiscal-icon { font-size: 24px; margin-bottom: 8px; }
+        .fiscal-label { font-size: 12px; font-weight: 600; color: #111827; }
+        .fiscal-status { font-size: 11px; color: #6B7280; margin-top: 4px; }
+
+        /* CERTIDÕES */
+        .certidoes-grid {
+            display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 24px;
+        }
+        .cert-card {
+            background: white; border: 1px solid #E5E7EB; border-radius: 6px;
+            padding: 14px; text-align: center;
+        }
+        .cert-icon { font-size: 28px; margin-bottom: 6px; }
+        .cert-label { font-size: 11px; font-weight: 600; color: #111827; }
+        .cert-status { font-size: 10px; color: #6B7280; margin-top: 4px; }
+
+        /* RODAPÉ */
+        .footer {
+            background: white; border-top: 1px solid #E5E7EB; padding: 16px;
+            font-size: 11px; color: #6B7280; text-align: center; margin-top: 24px;
+        }
+        .footer-line { margin: 4px 0; }
+
+        @media (max-width: 1024px) {
+            .kpis-grid { grid-template-columns: repeat(2, 1fr); }
+            .fiscal-grid { grid-template-columns: repeat(2, 1fr); }
+            .charts-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 640px) {
+            .kpis-grid { grid-template-columns: 1fr; }
+            .fiscal-grid { grid-template-columns: 1fr; }
+            .certidoes-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    
+        .panel { background:white; border:1px solid #E5E7EB; border-radius:8px; padding:20px; margin-bottom:20px; }
+        .panel-title { font-size:14px; font-weight:700; color:#111827; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
+        .badge { font-size:11px; background:#FEF2F2; color:#991B1B; padding:4px 10px; border-radius:12px; font-weight:600; }
+        .kpis { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:20px; }
+        .kpi { background:white; border:1px solid #E5E7EB; border-left:4px solid #C5A059; border-radius:6px; padding:16px; }
+        .kpi-label { font-size:11px; color:#6B7280; text-transform:uppercase; font-weight:600; margin-bottom:6px; }
+        .kpi-value { font-size:22px; font-weight:700; color:#111827; }
+        .kpi-sub { font-size:11px; color:#6B7280; margin-top:4px; }
+        .row { display:flex; justify-content:space-between; gap:12px; padding:10px 12px; border-bottom:1px solid #E5E7EB; font-size:13px; }
+        .row:last-child { border-bottom:none; }
+        .row.total { background:#F3F4F6; font-weight:700; }
+        .row .obs { color:#6B7280; font-size:11px; }
+        .aviso { background:#FFFBEB; border-left:4px solid #F59E0B; color:#92400E; padding:12px 14px; border-radius:6px; font-size:12px; margin-bottom:10px; }
+        .ok { background:#ECFDF5; border-left:4px solid #10B981; color:#065F46; padding:12px 14px; border-radius:6px; font-size:12px; margin-bottom:20px; }
+
+        .payment-code { font-size:12px; background:#F3F4F6; padding:8px; border-radius:4px; color:#374151; margin-bottom:10px; word-break:break-all; font-family:monospace; }
+        .btn-copy { width:100%; padding:8px; border:none; border-radius:6px; cursor:pointer; font-size:11px; font-weight:600; transition:all 0.2s; }
+        .btn-copy.das { background:#C5A059; color:white; }
+        .btn-copy.das:hover { background:#B89146; }
+        .btn-copy.inss { background:#0D9488; color:white; }
+        .btn-copy.inss:hover { background:#0A7A6E; }
+        .doc-link.highlight { display:block; text-align:center; padding:8px; background:#F3E8E8; border-left:3px solid #C5A059; color:#8B5A6B; border-radius:6px; font-size:12px; text-decoration:none; font-weight:600; }
+    
+        .pay-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+        .pay-col { border:1px solid #E5E7EB; border-radius:8px; padding:14px; background:#FFFFFF; }
+        .pay-head { font-size:13px; font-weight:700; color:#111827; display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; }
+        .pay-val { font-size:22px; font-weight:700; color:#111827; margin-top:6px; }
+        .pay-info { font-size:11px; color:#6B7280; margin-top:2px; }
+            .container h1 { font-size: 20px; line-height: 1.25; }
+    </style>
+</head>
+<body>
+    <aside class="sidebar-docs">
+        <a href="../../../../fiscal.html" style="display:block; padding:10px; margin-bottom:14px; background:#C58A94; color:white; border-radius:4px; text-decoration:none; text-align:center; font-size:11px; font-weight:600;">← Voltar ao Fiscal</a>
+        <div class="sidebar-title">📁 Documentos</div>
+        <a class="doc-item" href="03.%20Entradas%2010.2026.pdf" target="_blank">
+            <span class="doc-item-icon">🧾</span>
+            <span>Entradas do período</span>
+        </a>
+        <a class="doc-item" href="04.%20Servi%C3%A7os%2010.2026.pdf" target="_blank">
+            <span class="doc-item-icon">🧾</span>
+            <span>Serviços prestados</span>
+        </a>
+        <a class="doc-item" href="05.%20Resumo%20Acumulador%2010.2026.pdf" target="_blank">
+            <span class="doc-item-icon">🧾</span>
+            <span>Resumo por acumulador</span>
+        </a>
+        <a class="doc-item" href="06.%20Faturamento%2012%20meses%2010.2026.pdf" target="_blank">
+            <span class="doc-item-icon">🧾</span>
+            <span>Faturamento dos 12 meses</span>
+        </a>
+        <a class="doc-item" href="07.%20Simples%20Nacional%2010.2026.pdf" target="_blank">
+            <span class="doc-item-icon">🧾</span>
+            <span>Apuração do Simples Nacional</span>
+        </a>
+        <a class="doc-item" href="07.1%20Simples%20Nacional%20-%20Mem%C3%B3ria%20de%20C%C3%A1lculo%2010.2026.pdf" target="_blank">
+            <span class="doc-item-icon">🧾</span>
+            <span>Memória de cálculo do Simples</span>
+        </a>
+        <a class="doc-item" href="07.2%20Simples%20Nacional%20-%20RBA%20-%20Folha%2012%20meses%2010.2026.pdf" target="_blank">
+            <span class="doc-item-icon">🧾</span>
+            <span>RBA e folha de 12 meses</span>
+        </a>
+        <a class="doc-item" href="07.3%20Simples%20Nacional%20-%20Al%C3%ADquota%20Efetiva%20per%C3%ADodo%20seguinte%2010.2026.pdf" target="_blank">
+            <span class="doc-item-icon">🧾</span>
+            <span>Alíquota efetiva do período seguinte</span>
+        </a>
+        <a class="doc-item highlight" href="08.%20DAS%2010.2026%20-%20Guia%20Pagamento.pdf" target="_blank">
+            <span class="doc-item-icon">💳</span>
+            <span>DAS - Guia de pagamento</span>
+        </a>
+        <a class="doc-item" href="08.1%20PGDASD-EXTRATO-07202631508036068.pdf" target="_blank">
+            <span class="doc-item-icon">🧾</span>
+            <span>PGDAS-D - Extrato</span>
+        </a>
+        <a class="doc-item" href="08.2%20PGDASD-DECLARACAO-67753162202610001.pdf" target="_blank">
+            <span class="doc-item-icon">🧾</span>
+            <span>PGDAS-D - Declaração</span>
+        </a>
+        <a class="doc-item" href="08.3%20PGDASD-RECIBO-67753162202610001.pdf" target="_blank">
+            <span class="doc-item-icon">🧾</span>
+            <span>PGDAS-D - Recibo de entrega</span>
+        </a>
+    </aside>
+
+    <div class="main-content">
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <h1>Fiscal - Outubro/2026</h1>
+                <p>MELISSA SCHWARTZ PSICOLOGIA LTDA | CNPJ 67.753.162/0001-71</p>
+            </div>
+            <div class="header-regime">Simples Nacional<br>Anexo III · Competência</div>
+        </div>
+
+        <div class="kpis">
+            <div class="kpi">
+                <div class="kpi-label">Receita do período</div>
+                <div class="kpi-value">R$ 2.086,00</div>
+                <div class="kpi-sub">8 notas emitidas (nº 5 a 12)</div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-label">DAS a pagar</div>
+                <div class="kpi-value">R$ 125,17</div>
+                <div class="kpi-sub">Vencimento 23/11/2026</div>
+            </div>
+            <div class="kpi">
+                <div class="kpi-label">Alíquota efetiva</div>
+                <div class="kpi-value">6,00%</div>
+                <div class="kpi-sub">Fator r 1,68 (Anexo III)</div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">💳 Pagamento - Outubro/2026 <span class="badge">Vence 23/11/2026</span></div>
+            <div class="pay-grid">
+                <div class="pay-col">
+                    <div class="pay-head">DAS - Simples Nacional</div>
+                    <div class="pay-val">R$ 125,17</div>
+                    <div class="pay-info">Número 07.20.26315.0803606-8 · Período outubro/2026</div>
+                    <div style="margin-top:10px;">
+                        <div class="obs" style="font-size:11px;color:#6B7280;margin-bottom:6px;">Código de barras (copiar para pagamento):</div>
+                        <div class="payment-code">85890000001 8 25170328263 5 27072026315 1 08036068031 1</div>
+                        <div style="display:flex; flex-direction:column; gap:8px;"><button style="margin:0;" class="btn-copy das" onclick="copiarCodigo('858900000018251703282635270720263151080360680311', this)">📋 Copiar Código de Barras</button><a class="doc-link highlight" style="display:block;margin:0;" href="08.%20DAS%2010.2026%20-%20Guia%20Pagamento.pdf" target="_blank">📄 Abrir guia (PDF)</a></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">📊 Apuração do Simples Nacional - Outubro/2026</div>
+            <div class="row" style="display:grid;grid-template-columns:1fr 110px 130px;gap:8px;"><span><b>Tributo</b></span><span style="text-align:right"><b>Alíquota</b></span><span style="text-align:right"><b>Valor</b></span></div>
+            <div class="row" style="display:grid;grid-template-columns:1fr 110px 130px;gap:8px;"><span>IRPJ</span><span style="text-align:right">0,24%</span><span style="text-align:right">R$ 5,01</span></div>
+            <div class="row" style="display:grid;grid-template-columns:1fr 110px 130px;gap:8px;"><span>CSLL</span><span style="text-align:right">0,21%</span><span style="text-align:right">R$ 4,38</span></div>
+            <div class="row" style="display:grid;grid-template-columns:1fr 110px 130px;gap:8px;"><span>COFINS</span><span style="text-align:right">0,77%</span><span style="text-align:right">R$ 16,05</span></div>
+            <div class="row" style="display:grid;grid-template-columns:1fr 110px 130px;gap:8px;"><span>PIS</span><span style="text-align:right">0,17%</span><span style="text-align:right">R$ 3,48</span></div>
+            <div class="row" style="display:grid;grid-template-columns:1fr 110px 130px;gap:8px;"><span>INSS/CPP</span><span style="text-align:right">2,60%</span><span style="text-align:right">R$ 54,32</span></div>
+            <div class="row" style="display:grid;grid-template-columns:1fr 110px 130px;gap:8px;"><span>ISS</span><span style="text-align:right">2,01%</span><span style="text-align:right">R$ 41,93</span></div>
+            <div class="row total" style="display:grid;grid-template-columns:1fr 110px 130px;gap:8px;"><span>Total do DAS</span><span></span><span style="text-align:right">R$ 125,17</span></div>
+            <div class="row"><span class="obs">Receita bruta do período (RPA)</span><span class="obs">R$ 2.086,00</span></div>
+            <div class="row"><span class="obs">Receita 12 meses (proporcionalizada)</span><span class="obs">R$ 8.634,00</span></div>
+            <div class="row"><span class="obs">Receita acumulada no ano (RBA)</span><span class="obs">R$ 4.964,00</span></div>
+            <div class="row"><span class="obs">Folha dos últimos 12 meses</span><span class="obs">R$ 4.863,00</span></div>
+            <div class="row"><span class="obs">Alíquota efetiva do próximo período (11/2026)</span><span class="obs">6,00%</span></div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">📥 Entradas - Outubro/2026</div>
+            <div class="row"><span>Serviços tomados - NFS-e (30/10/2026)</span><span>R$ 220,00</span></div>
+            <div class="row"><span class="obs">Fornecedor: Jaqueline Ferreira Assessoria Contábil Ltda</span><span class="obs"></span></div>
+            <div class="row total"><span>Total de entradas</span><span>R$ 220,00</span></div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">🧾 Movimento do período (01/10/2026 a 31/10/2026)</div>
+            <div class="row"><span>Serviços prestados - NFS-e 5 a 12 (09/10 a 31/10/2026)</span><span>R$ 2.086,00</span></div>
+            <div class="row"><span class="obs">Cliente: FACILITY SAÚDE CLÍNICA MULTIDISCIPLINAR LTDA (PR)</span><span class="obs"></span></div>
+            <div class="row total"><span>Total de serviços do período</span><span>R$ 2.086,00</span></div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">📈 Faturamento dos últimos 12 meses</div>
+            <div class="row"><span>Julho/2026</span><span>R$ 760,00</span></div>
+            <div class="row"><span>Agosto/2026</span><span>R$ 1.140,00</span></div>
+            <div class="row"><span>Setembro/2026</span><span>R$ 978,00</span></div>
+            <div class="row"><span>Outubro/2026</span><span>R$ 2.086,00</span></div>
+            <div class="row total"><span>Total acumulado no ano (RBA)</span><span>R$ 4.964,00</span></div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-title">✅ Obrigações entregues - Outubro/2026</div>
+            <div class="row"><span>PGDAS-D (declaração original)</span><span>Entregue em 11/11/2026</span></div>
+            <div class="row"><span class="obs">Recibo de entrega</span><span class="obs">01.07.26315.0255637-8</span></div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-line">Jaqueline Ferreira Assessoria Contábil Ltda | CRC SC-013019/O-4</div>
+            <div class="footer-line">Responsável Técnica: Jaqueline do Prado Ferreira | CRC SC-048028/O-0</div>
+            <div class="footer-line">Videira - SC | contato@jaquelineferreiracontadora.com.br | WhatsApp (49) 9.9980-3552</div>
+        </div>
+    </div>
+    </div>
+
+    <script>
+    function copiarCodigo(codigo, btn) {
+        const texto = codigo.replace(/\s+/g, '');
+        const original = btn.textContent;
+        const feedback = function () {
+            btn.textContent = '✅ Copiado!';
+            setTimeout(function () { btn.textContent = original; }, 2000);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(texto).then(feedback).catch(function () {});
+        } else {
+            const ta = document.createElement('textarea');
+            ta.value = texto; document.body.appendChild(ta); ta.select();
+            try { document.execCommand('copy'); feedback(); } catch (e) {}
+            document.body.removeChild(ta);
+        }
+    }
+    </script>
+</body>
+</html>
