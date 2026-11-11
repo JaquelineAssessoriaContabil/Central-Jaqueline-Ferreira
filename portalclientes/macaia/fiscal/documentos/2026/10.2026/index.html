@@ -273,12 +273,12 @@
         },
 
         faturamentoHistorico: [
-            { mes: "Setembro/2026", valor: 26000.00 },,
+            { mes: "Setembro/2026", valor: 26000.00 },
             { mes: "Outubro/2026", valor: 12000.00 }
         ],
 
         das: {
-            valor: 720.0,
+            valor: 720.00,
             vencimento: "23/11/2026",
             codigoBarras: "858200000074200003282638270720263143834622120374",
             arquivo: "08. DAS 10.2026 - Guia Pagamento.pdf"
@@ -287,7 +287,13 @@
         inss: null, // INSS fica no Departamento Pessoal
 
         outrasGuias: [
-            { titulo: "DeSTDA - ICMS-ST", valor: 53.25, vencimento: "10/12/2026", codigoBarras: "856900000006532500242609420124721317600000256914", arquivo: "09. Destda 10.2026 - Guia Pagamento.pdf" }
+            {
+                titulo: "DeSTDA - ICMS-ST",
+                valor: 53.25,
+                vencimento: "10/12/2026",
+                codigoBarras: "856900000006532500242609420124721317600000256914",
+                arquivo: "09. Destda 10.2026 - Guia Pagamento.pdf"
+            }
         ],
 
         rbt12: {
@@ -300,15 +306,16 @@
         cargaTributaria: { valor: 0.06, rotulo: "Anexo III" },
 
         adiantamentoSocio: { entradas: 15357.47, valor: 857.08 },
-        despesasOperacionais: 14500.39, // Entradas do mês (R$ 15.357,47) menos adiantamento ao sócio (R$ 857,08, compra de uso particular)
+
+        despesasOperacionais: 14500.39, // Entradas (R$ 15.357,47) menos adiantamento ao sócio (R$ 857,08, uso particular)
 
         composicaoDAS: [
             { label: "INSS/CPP", valor: 312.48 },
-            { label: "ISS", valor: 241.20 },
-            { label: "COFINS", valor: 92.30 },
-            { label: "IRPJ", valor: 28.80 },
-            { label: "CSLL", valor: 25.20 },
-            { label: "PIS", valor: 20.02 }
+            { label: "ISS",      valor: 241.20 },
+            { label: "COFINS",   valor: 92.30 },
+            { label: "IRPJ",     valor: 28.80 },
+            { label: "CSLL",     valor: 25.20 },
+            { label: "PIS",      valor: 20.02 }
         ],
 
         indicadores: {
@@ -328,8 +335,6 @@
             { label: "Sintegra", status: "Entregue" },
             { label: "Limite RBT12", status: "Regular" }
         ],
-
-        certidoes: [],
 
         documentos: [
             { rotulo: "Protocolo Serviços Prestados", arquivo: "01. Protocolo Serviços Prestados 10.2026.pdf" },
