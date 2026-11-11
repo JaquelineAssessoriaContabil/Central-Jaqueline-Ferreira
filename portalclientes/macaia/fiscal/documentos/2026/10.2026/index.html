@@ -299,6 +299,7 @@
 
         cargaTributaria: { valor: 0.06, rotulo: "Anexo III" },
 
+        adiantamentoSocio: { entradas: 15357.47, valor: 857.08 },
         despesasOperacionais: 14500.39, // Entradas do mês (R$ 15.357,47) menos adiantamento ao sócio (R$ 857,08, compra de uso particular)
 
         composicaoDAS: [
@@ -478,6 +479,10 @@
             ["Deduções (Impostos)", "-" + fmt(CONFIG.das.valor), ""]
         ];
         linhas.push(["Receita Líquida", fmt(c.receitaLiquida), ""]);
+        if (CONFIG.adiantamentoSocio) {
+            linhas.push(["Entradas do mês (Resumo por acumulador)", fmt(CONFIG.adiantamentoSocio.entradas), ""]);
+            linhas.push(["(-) Adiantamento ao sócio (uso particular)", "-" + fmt(CONFIG.adiantamentoSocio.valor), ""]);
+        }
         linhas.push(["Despesas Operacionais", "-" + fmt(CONFIG.despesasOperacionais), ""]);
         linhas.push(["Lucro Líquido (Resultado)", fmt(c.resultado), "resultado"]);
 
