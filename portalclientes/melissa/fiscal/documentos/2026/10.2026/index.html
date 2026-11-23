@@ -298,6 +298,11 @@
 
         cargaTributaria: { valor: 0.06, rotulo: "Anexo III" },
 
+        aliquotasEfetivas: {
+            comercio: null,
+            servicos: { valor: 0.06, receita: 2086.0, imposto: 125.17, rotulo: "Anexo III - Serviços" }
+        },
+
         despesasOperacionais: 220.00, // Entradas do mês (Resumo por acumulador, total de Vlr Contábil)
 
         composicaoDAS: [
@@ -434,6 +439,27 @@
             '<button class="btn-copy ' + classeBtn + '" data-codigo="' + esc(codigo) + '">📋 Copiar Código de Barras</button>' +
             '<a class="doc-link highlight" style="display:block;margin-top:8px;" href="' + esc(encodeURI(arquivo)) + '" target="_blank">📄 Abrir guia (PDF)</a>' +
         '</div>';
+    }
+
+    function renderAliquotas() {
+        const a = CONFIG.aliquotasEfetivas;
+        if (!a) return;
+        const bloco = function (titulo, x, cor) {
+            return '<div style="border:1px solid #E5E7EB;border-left:4px solid ' + cor + ';border-radius:8px;padding:12px 14px;min-width:0;">' +
+                '<div style="font-size:11px;color:#6B7280;text-transform:uppercase;font-weight:600;">' + titulo + '</div>' +
+                '<div style="font-size:18px;font-weight:700;color:#111827;margin-top:4px;">' + pct(x.valor, 4) + '</div>' +
+                '<div style="font-size:11px;color:#6B7280;margin-top:2px;">' + esc(x.rotulo) + '</div>' +
+                '<div style="font-size:12px;color:#374151;margin-top:8px;border-top:1px dashed #E5E7EB;padding-top:6px;">Receita do mês: <b>' + fmt(x.receita) + '</b></div>' +
+                '<div style="font-size:12px;color:#374151;margin-top:3px;">Valor do mês: <b>' + fmt(x.imposto) + '</b></div>' +
+            '</div>';
+        };
+        let blocos = "";
+        if (a.comercio) blocos += bloco("Comércio", a.comercio, "#C5A059");
+        if (a.servicos) blocos += bloco("Serviços", a.servicos, "#C58A94");
+        if (!blocos) blocos = '<div style="font-size:13px;color:#6B7280;">Sem receita tributada no período.</div>';
+        document.getElementById("aliquotas").innerHTML =
+            '<div class="panel-title">📊 Alíquota efetiva do mês (PGDAS-D)</div>' +
+            '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;">' + blocos + '</div>';
     }
 
     function renderPagamentos() {
@@ -671,6 +697,7 @@
         const c = calcular();
         renderCabecalho();
         renderKPIs(c);
+        renderAliquotas();
         renderPagamentos();
         renderApuracao(c);
         renderSaude(c);
@@ -695,6 +722,9 @@
 
         <!-- 2. KPIs -->
         <div class="kpis-grid" id="kpis"></div>
+
+        <!-- 2b. ALÍQUOTAS EFETIVAS -->
+        <div class="panel" id="aliquotas"></div>
 
         <!-- 3. PAINEL FINANCEIRO -->
         <div class="panel" id="pagamentos"></div>
