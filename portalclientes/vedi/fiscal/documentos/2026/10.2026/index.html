@@ -322,8 +322,8 @@
         // Alíquotas efetivas do PGDAS-D (campo "Alíquota" de cada seção, em %).
         // Atualizar todo mês a partir de 11/2026, sempre dos campos do Simples Nacional.
         aliquotasEfetivas: {
-            comercio: { valor: 0.063586391706481, rotulo: "Anexo I - Comércio (revenda)" },
-            servicos: { valor: 0.095019043990067, rotulo: "Anexo III - Serviços" }
+            comercio: { valor: 0.063586391706481, imposto: 2147.67, rotulo: "Anexo I - Comércio (revenda)" },
+            servicos: { valor: 0.095019043990067, imposto: 36.10, rotulo: "Anexo III - Serviços" }
         },
 
         despesasOperacionais: 22344.30, // Entradas do mês (Resumo por acumulador, total de Vlr Contábil)
@@ -482,15 +482,19 @@
     function renderAliquotas() {
         const a = CONFIG.aliquotasEfetivas;
         if (!a) return;
+        const bloco = function (titulo, x, cor) {
+            return '<div style="border:1px solid #E5E7EB;border-left:4px solid ' + cor + ';border-radius:8px;padding:12px 14px;min-width:0;">' +
+                '<div style="font-size:11px;color:#6B7280;text-transform:uppercase;font-weight:600;">' + titulo + '</div>' +
+                '<div style="font-size:18px;font-weight:700;color:#111827;margin-top:4px;">' + pct(x.valor, 4) + '</div>' +
+                '<div style="font-size:11px;color:#6B7280;margin-top:2px;">' + esc(x.rotulo) + '</div>' +
+                '<div style="font-size:12px;color:#374151;margin-top:8px;border-top:1px dashed #E5E7EB;padding-top:6px;">Valor do mês: <b>' + fmt(x.imposto) + '</b></div>' +
+            '</div>';
+        };
         document.getElementById("aliquotas").innerHTML =
             '<div class="panel-title">📊 Alíquota efetiva do mês (PGDAS-D)</div>' +
-            '<div class="kpis-grid">' +
-                '<div class="kpi-card carga"><div class="kpi-label">Comércio</div>' +
-                    '<div class="kpi-value">' + pct(a.comercio.valor, 4) + '</div>' +
-                    '<div class="kpi-sub">' + esc(a.comercio.rotulo) + '</div></div>' +
-                '<div class="kpi-card rbt"><div class="kpi-label">Serviços</div>' +
-                    '<div class="kpi-value">' + pct(a.servicos.valor, 4) + '</div>' +
-                    '<div class="kpi-sub">' + esc(a.servicos.rotulo) + '</div></div>' +
+            '<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;">' +
+                bloco("Comércio", a.comercio, "#C5A059") +
+                bloco("Serviços", a.servicos, "#C58A94") +
             '</div>';
     }
 
