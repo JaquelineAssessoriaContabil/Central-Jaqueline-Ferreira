@@ -90,7 +90,7 @@ th,td{font-size:10px;padding:5px}
 <body>
 <header><div class="wrap">
 <div class="brand">JAQUELINE FERREIRA • ASSESSORIA CONTÁBIL</div>
-<div id="diagJS" style="font-size:11px;color:#766a70;margin-top:4px">Versão v8 (22/11/2026) • script: <b id="diagStatus" style="color:#a33c48">NÃO CARREGOU</b></div>
+<div id="diagJS" style="font-size:11px;color:#766a70;margin-top:4px">Versão v9 (23/11/2026) • script: <b id="diagStatus" style="color:#a33c48">NÃO CARREGOU</b></div>
 <h1>Simulador de Jornadas e Remuneração</h1>
 <div class="sub">Ferramenta de apoio para montar escalas, simular remuneração por hora e identificar pontos que exigem conferência trabalhista ou consulta à convenção coletiva.</div>
 </div></header>
@@ -204,6 +204,7 @@ th,td{font-size:10px;padding:5px}
 <div style="margin-top:12px"><label>Observações e orientações ao cliente</label><textarea id="rObs" rows="4" placeholder="Inclua recomendações, documentos pendentes, necessidade de consulta à convenção coletiva etc."></textarea></div>
 <div class="notice">Antes de entregar, confira os dados da empresa, a convenção coletiva, os parâmetros utilizados e os alertas técnicos. O relatório é uma simulação e não substitui a validação do caso concreto.</div>
 <div class="actions">
+<button class="btn secondary" type="button" onclick="trazerPontosParaObs()">Trazer pontos da convenção para as observações</button>
 <button class="btn primary" onclick="montarRelatorio()">Gerar relatório</button>
 <button class="btn ghost" onclick="window.print()">Imprimir / Salvar em PDF</button>
 </div>
@@ -250,7 +251,9 @@ th,td{font-size:10px;padding:5px}
 <label><input type="checkbox" id="cctChkPiso"> Piso salarial e reajuste conferidos</label>
 <label><input type="checkbox" id="cctChkJornada"> Jornada, banco de horas e escalas conferidos</label>
 </div>
-<div style="margin-top:12px"><label>Resumo das cláusulas relevantes para este estudo</label><textarea id="cctResumo" rows="6" placeholder="Registre número da cláusula e resumo fiel: piso, jornada, adicional, intervalo, banco de horas, domingos/feriados, compensação, prazo de vigência etc."></textarea></div>
+<div style="margin-top:12px"><label>Pontos importantes da convenção / acordo (vão para o relatório)</label><textarea id="cctResumo" rows="14" placeholder="Registre número da cláusula e resumo fiel: piso, jornada, adicional, intervalo, banco de horas, domingos/feriados, compensação, prazo de vigência etc."></textarea></div>
+<div class="actions no-print" style="margin-top:8px"><button type="button" class="btn secondary" onclick="carregarPontosCCT('modelo')">Modelo em branco</button><button type="button" class="btn secondary" onclick="carregarPontosCCT('videira')">Exemplo: Comércio de Videira (SC002523/2026)</button></div>
+<p class="muted"><small>Os botões preenchem o resumo acima para você editar. O exemplo foi lido do extrato público do Mediador em 23/11/2026 e vale só para quem se enquadra nessa convenção.</small></p>
 <div style="margin-top:12px"><label>Identificação do instrumento / link / número de registro</label><input id="cctIdent" placeholder="Número de registro no Mediador, sindicatos signatários e/ou endereço do documento"></div>
 <p class="muted">Depois de conferir e preencher o resumo, gere o relatório PDF. Os dados registrados aqui serão incluídos no relatório do cliente.</p>
 </div>
@@ -479,7 +482,7 @@ function montarRelatorio(){
     <div class="report-section">
       <h3 style="color:#9b5e78">CONVENÇÃO / ACORDO COLETIVO CONFERIDO</h3>
       <p><b>Instrumento:</b> ${esc((vv('cctIdent')||'').trim()||'Não informado')}<br><b>Categoria:</b> ${esc((vv('cctCategoria')||'').trim()||'Não informada')}<br><b>Base territorial:</b> ${esc(((vv('cctCidade')||'').trim())+'/'+(vv('cctUf')||''))}</p>
-      <p style="white-space:pre-wrap">${esc((vv('cctResumo')||'').trim()||'Nenhuma cláusula foi registrada nesta área.')}</p>
+      <p style="white-space:pre-wrap">${esc(((vv('cctResumo')||'').trim()&&obs.indexOf((vv('cctResumo')||'').trim().slice(0,60))>=0)?'Os pontos importantes da convenção/acordo estão em "Observações e orientações", abaixo.':((vv('cctResumo')||'').trim()||'Nenhuma cláusula foi registrada nesta área.'))}</p>
       <h3 style="color:#9b5e78">OBSERVAÇÕES E ORIENTAÇÕES</h3>
       <p style="white-space:pre-wrap">${esc(obs||'Não foram incluídas observações adicionais.')}</p>
     </div>
@@ -495,6 +498,19 @@ function montarRelatorio(){
   $('relatorioPronto').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
+
+var PONTOS_CCT={modelo:["PONTOS IMPORTANTES DA CONVENÇÃO / ACORDO", "Instrumento: (tipo, nº do registro, partes, vigência, data-base, abrangência)", "- Piso salarial (cláusula __): ", "- Reajuste (cláusula __): ", "- Hora extra (cláusula __): dias úteis ___% / domingos e feriados ___%", "- Adicional noturno (cláusula __): ___% (horário: ___)", "- Jornada, compensação e banco de horas (cláusula __): ", "- Trabalho em domingos e feriados (cláusula __): ", "- Aviso prévio (cláusula __): ", "- Outros adicionais, vale-refeição ou benefícios (cláusula __): ", "- Contribuição assistencial (cláusula __): ", "Conferir: enquadramento da empresa na categoria, termos aditivos e acordo coletivo da própria empresa."],videira:["PONTOS IMPORTANTES DA CONVENÇÃO COLETIVA — COMÉRCIO DE VIDEIRA/SC", "Instrumento: Convenção Coletiva de Trabalho nº SC002523/2026, registrada no MTE em 24/09/2026. Partes: Sindicato dos Trabalhadores no Comércio Varejista, Atacadista e Similares de Videira e Sindicato do Comércio Atacadista e Distribuidor de Joaçaba e região. Vigência: 01/01/2026 a 31/12/2026. Data-base: 1º de janeiro. Abrangência: Videira/SC.", "- Piso salarial (cláusula 3ª): R$ 2.094,00 a partir de 01/01/2026, para todas as funções.", "- Reajuste (cláusula 4ª): 5% em janeiro/2026 sobre os salários acima do piso. Admitidos depois de janeiro/2026 têm correção proporcional, conforme a tabela da cláusula.", "- Hora extra (cláusula 11ª): 60% nos dias úteis e 100% em domingos e feriados.", "- Adicional noturno (cláusula 12ª): 30%, para o trabalho entre 22h e 5h.", "- Quebra de caixa (cláusula 8ª): 25% sobre o piso, com pausa de 10 minutos a cada 50 trabalhados e jornada máxima de 6 horas.", "- Compensação de horas (cláusula 28ª): só com acordo coletivo feito com o sindicato. Sem o acordo, a compensação é nula e as horas são pagas com os acréscimos da convenção.", "- Trabalho em feriados no comércio atacadista e distribuidor (cláusula 10ª): permitido com acordo, exceto 1º/5, 25/12 e 1º/1. Jornada máxima de 7h20, adicional de 100% e bonificação mínima de R$ 30,00 (até 4h) ou R$ 60,00 (acima de 4h).", "- Aviso prévio (cláusula 15ª): 45 dias para quem tem mais de 5 anos na empresa.", "- Lanche em hora extra (cláusula 34ª): lanche ou R$ 27,00 por refeição/dia.", "- Controle de horário (cláusula 29ª): obrigatório nas empresas com 5 ou mais empregados.", "- Contribuição assistencial (cláusula 43ª): 2% descontado em agosto e novembro/2026 (texto final da cláusula não conferido).", "Conferir: enquadramento da empresa na categoria (a convenção cita comércio varejista e atacadista e serviços contábeis), termos aditivos e acordo coletivo da própria empresa. Texto lido do extrato público do Mediador em 23/11/2026."]};
+function carregarPontosCCT(k){
+  var t=document.getElementById('cctResumo');if(!t)return;
+  if(t.value.trim()&&!window.confirm('Substituir o texto atual pelo modelo?'))return;
+  t.value=PONTOS_CCT[k].join('\n');
+}
+function trazerPontosParaObs(){
+  var r=(vv('cctResumo')||'').trim(),o=document.getElementById('rObs');
+  if(!r){window.alert('Preencha os pontos importantes na aba Convenção coletiva primeiro.');return}
+  if(o.value.indexOf(r.slice(0,60))>=0)return;
+  o.value=(o.value.trim()?o.value.trim()+'\n\n':'')+r;
+}
 function atualizarRoteiro(){
   var g=function(id){return (vv(id)||'').trim()};
   var cat=g('cctCategoria'),tipo=g('cctTipo'),vig=g('cctVigSel'),uf=g('cctUf'),cid=g('cctCidade'),per=g('cctVigencia');
