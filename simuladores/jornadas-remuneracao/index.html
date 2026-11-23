@@ -21,7 +21,7 @@ nav a:focus,nav a:hover,nav a.active{background:var(--rose);color:white}
 main:has(.panel:target) .panel.active:not(:target){display:none!important}
 nav button,.btn{border:0;border-radius:10px;padding:11px 15px;background:#eee3e8;color:#684455;font-weight:700;cursor:pointer}
 nav button.active,.btn.primary{background:var(--rose);color:white}
-.btn.secondary{background:#f0e7dc;color:#6d512c}.btn.ghost{background:#f4f1f2;color:#51464b}
+.convOpts{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}.convOpt{display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer;font-weight:600;margin:0}.convOpt input{width:20px;height:20px;margin:0}.convOpt small{font-weight:400;color:#7a6a70}@media(max-width:640px){.convOpt{width:100%}}.btn.secondary{background:#f0e7dc;color:#6d512c}.btn.ghost{background:#f4f1f2;color:#51464b}
 main{padding:18px 0 48px}.panel{display:none}.panel.active{display:block}
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin:14px 0;box-shadow:0 4px 14px #563b4808}
 h2{font-size:21px;margin:0 0 12px;color:#654455}h3{font-size:16px;margin:14px 0 8px}
@@ -90,7 +90,7 @@ th,td{font-size:10px;padding:5px}
 <body>
 <header><div class="wrap">
 <div class="brand">JAQUELINE FERREIRA • ASSESSORIA CONTÁBIL</div>
-<div id="diagJS" style="font-size:11px;color:#766a70;margin-top:4px">Versão v10 (23/11/2026) • script: <b id="diagStatus" style="color:#a33c48">NÃO CARREGOU</b></div>
+<div id="diagJS" style="font-size:11px;color:#766a70;margin-top:4px">Versão v11 (23/11/2026) • script: <b id="diagStatus" style="color:#a33c48">NÃO CARREGOU</b></div>
 <h1>Simulador de Jornadas e Remuneração</h1>
 <div class="sub">Ferramenta de apoio para montar escalas, simular remuneração por hora e identificar pontos que exigem conferência trabalhista ou consulta à convenção coletiva.</div>
 </div></header>
@@ -103,6 +103,16 @@ th,td{font-size:10px;padding:5px}
 <a href="#cct">Convenção coletiva</a>
 <a href="#base">Base legal</a>
 </nav>
+
+<div class="card no-print" id="convBar" style="margin-top:0">
+<b>Convenção que este cliente segue</b>
+<div class="convOpts">
+<label class="convOpt"><input type="radio" name="convSel" value="" checked onclick="convAplicar('')"> Nenhuma</label>
+<label class="convOpt"><input type="radio" name="convSel" value="videira" onclick="convAplicar('videira')"> Comércio de Videira <small>(SC002523/2026)</small></label>
+<label class="convOpt"><input type="radio" name="convSel" value="balneario" onclick="convAplicar('balneario')"> Comércio de Balneário Camboriú <small>(SC002391/2026)</small></label>
+</div>
+<div id="convMsg" class="muted" style="margin-top:8px"><small>Ao marcar, o simulador preenche piso, hora extra, adicional noturno e os dados da aba Convenção coletiva. Você pode alterar qualquer campo depois.</small></div>
+</div>
 
 <section id="j42" class="panel active">
 <div class="card">
@@ -252,7 +262,7 @@ th,td{font-size:10px;padding:5px}
 <label><input type="checkbox" id="cctChkJornada"> Jornada, banco de horas e escalas conferidos</label>
 </div>
 <div style="margin-top:12px"><label>Pontos importantes da convenção / acordo (vão para o relatório)</label><textarea id="cctResumo" rows="14" placeholder="Registre número da cláusula e resumo fiel: piso, jornada, adicional, intervalo, banco de horas, domingos/feriados, compensação, prazo de vigência etc."></textarea></div>
-<div class="actions no-print" style="margin-top:8px"><button type="button" class="btn secondary" onclick="carregarPontosCCT('modelo')">Modelo em branco</button><button type="button" class="btn secondary" onclick="carregarPontosCCT('videira')">Comércio de Videira (SC002523/2026)</button><button type="button" class="btn secondary" onclick="carregarPontosCCT('balneario')">Comércio de Balneário Camboriú (SC002391/2026)</button></div>
+<div class="actions no-print" style="margin-top:8px"><button type="button" class="btn secondary" onclick="carregarPontosCCT('modelo')">Modelo em branco</button><button type="button" class="btn secondary" onclick="convEscolher('videira')">Comércio de Videira (SC002523/2026)</button><button type="button" class="btn secondary" onclick="convEscolher('balneario')">Comércio de Balneário Camboriú (SC002391/2026)</button></div>
 <p class="muted"><small>Os botões preenchem o resumo acima para você editar. Os textos de Videira e de Balneário Camboriú foram lidos do extrato público do Mediador em 23/11/2026 e valem só para quem se enquadra na convenção escolhida.</small></p>
 <div style="margin-top:12px"><label>Identificação do instrumento / link / número de registro</label><input id="cctIdent" placeholder="Número de registro no Mediador, sindicatos signatários e/ou endereço do documento"></div>
 <p class="muted">Depois de conferir e preencher o resumo, gere o relatório PDF. Os dados registrados aqui serão incluídos no relatório do cliente.</p>
@@ -510,6 +520,32 @@ function trazerPontosParaObs(){
   if(!r){window.alert('Preencha os pontos importantes na aba Convenção coletiva primeiro.');return}
   if(o.value.indexOf(r.slice(0,60))>=0)return;
   o.value=(o.value.trim()?o.value.trim()+'\n\n':'')+r;
+}
+
+var CONV={"videira": {"nome": "Comércio de Videira", "extra": "60", "not": "30", "piso": "2.094,00", "cat": "Trabalhadores no comércio varejista, atacadista e similares", "cidade": "Videira", "uf": "SC", "ident": "CCT SC002523/2026 (registrada em 24/09/2026). Sindicato dos Trabalhadores no Comércio Varejista, Atacadista e Similares de Videira e Sindicato do Comércio Atacadista e Distribuidor de Joaçaba e região.", "lab": "Sindicato dos Trabalhadores no Comércio Varejista, Atacadista e Similares de Videira", "pat": "Sindicato do Comércio Atacadista e Distribuidor de Joaçaba e região", "vig": "01/01/2026 a 31/12/2026", "nota": "Piso R$ 2.094,00. Hora extra 60% em dia útil e 100% em domingo/feriado. Adicional noturno 30%."}, "balneario": {"nome": "Comércio de Balneário Camboriú", "extra": "55", "not": "25", "piso": "2.420,00", "cat": "Trabalhadores no comércio varejista e atacadista em geral", "cidade": "Balneário Camboriú", "uf": "SC", "ident": "CCT SC002391/2026 (registrada em 14/09/2026). Sindicato dos Empregados no Comércio de Balneário Camboriú e Sindicato do Comércio Varejista e Atacadista de Balneário Camboriú.", "lab": "Sindicato dos Empregados no Comércio de Balneário Camboriú", "pat": "Sindicato do Comércio Varejista e Atacadista de Balneário Camboriú", "vig": "01/08/2026 a 31/07/2027", "nota": "Piso R$ 2.420,00 (após 90 dias; na admissão é R$ 2.195,00). Hora extra 55%. Adicional noturno 25% das 22h às 24h e 35% das 24h às 5h: o campo foi preenchido com 25%, ajuste se houver horas após a meia-noite."}};
+var convAnterior='';
+function convSet(id,v){var e=document.getElementById(id);if(e)e.value=v}
+function convAplicar(k){
+  var msg=document.getElementById('convMsg'),c=CONV[k],ant=CONV[convAnterior];
+  if(!c){convAnterior='';if(msg)msg.innerHTML='<small>Nenhuma convenção marcada. Os campos continuam como estão.</small>';return}
+  var sal=document.getElementById('salMensal'),sv=sal?String(sal.value).trim():'';
+  var salTrocado=false;
+  if(sal&&(sv===''||sv==='2040,00'||(ant&&sv===ant.piso))){sal.value=c.piso;salTrocado=true}
+  convSet('percentExtraCalc',c.extra);
+  convSet('percentNoturnoCalc',c.not);
+  convSet('cctCategoria',c.cat);convSet('cctTipo','Convenção Coletiva');convSet('cctVigSel','Vigentes');
+  convSet('cctUf',c.uf);convSet('cctCidade',c.cidade);convSet('cctSindLab',c.lab);convSet('cctSindPat',c.pat);
+  convSet('cctVigencia',c.vig);convSet('cctIdent',c.ident);
+  var t=document.getElementById('cctResumo'),novo=PONTOS_CCT[k].join('\n'),velho=ant?PONTOS_CCT[convAnterior].join('\n'):'';
+  if(t){var tv=t.value.trim();if(tv===''||tv===velho||tv===PONTOS_CCT.modelo.join('\n').trim()||window.confirm('Substituir o texto dos pontos importantes pelo da convenção escolhida?'))t.value=novo}
+  convAnterior=k;
+  if(typeof atualizarRoteiro==='function'){try{atualizarRoteiro()}catch(e){}}
+  if(msg)msg.innerHTML='<small><b>Preenchido:</b> '+c.nota+(salTrocado?'':' O salário-base não foi trocado, pois você já digitou outro valor.')+' Confira o enquadramento do cliente.</small>';
+}
+function convEscolher(k){
+  var r=document.querySelectorAll('input[name=convSel]');
+  for(var i=0;i<r.length;i++){r[i].checked=(r[i].value===k)}
+  convAplicar(k);
 }
 function atualizarRoteiro(){
   var g=function(id){return (vv(id)||'').trim()};
