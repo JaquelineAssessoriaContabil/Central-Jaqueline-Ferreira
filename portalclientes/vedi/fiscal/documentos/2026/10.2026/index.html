@@ -319,6 +319,13 @@
 
         cargaTributaria: { valor: 0.0639, rotulo: "Anexo I / III" },
 
+        // Alíquotas efetivas do PGDAS-D (campo "Alíquota" de cada seção, em %).
+        // Atualizar todo mês a partir de 11/2026, sempre dos campos do Simples Nacional.
+        aliquotasEfetivas: {
+            comercio: { valor: 0.063586391706481, rotulo: "Anexo I - Comércio (revenda)" },
+            servicos: { valor: 0.095019043990067, rotulo: "Anexo III - Serviços" }
+        },
+
         despesasOperacionais: 22344.30, // Entradas do mês (Resumo por acumulador, total de Vlr Contábil)
 
         composicaoDAS: [
@@ -470,6 +477,21 @@
             '<button class="btn-copy ' + classeBtn + '" data-codigo="' + esc(codigo) + '">📋 Copiar Código de Barras</button>' +
             '<a class="doc-link highlight" style="display:block;margin-top:8px;" href="' + esc(encodeURI(arquivo)) + '" target="_blank">📄 Abrir guia (PDF)</a>' +
         '</div>';
+    }
+
+    function renderAliquotas() {
+        const a = CONFIG.aliquotasEfetivas;
+        if (!a) return;
+        document.getElementById("aliquotas").innerHTML =
+            '<div class="panel-title">📊 Alíquota efetiva do mês (PGDAS-D)</div>' +
+            '<div class="kpis-grid">' +
+                '<div class="kpi-card carga"><div class="kpi-label">Comércio</div>' +
+                    '<div class="kpi-value">' + pct(a.comercio.valor, 4) + '</div>' +
+                    '<div class="kpi-sub">' + esc(a.comercio.rotulo) + '</div></div>' +
+                '<div class="kpi-card rbt"><div class="kpi-label">Serviços</div>' +
+                    '<div class="kpi-value">' + pct(a.servicos.valor, 4) + '</div>' +
+                    '<div class="kpi-sub">' + esc(a.servicos.rotulo) + '</div></div>' +
+            '</div>';
     }
 
     function renderPagamentos() {
@@ -707,6 +729,7 @@
         const c = calcular();
         renderCabecalho();
         renderKPIs(c);
+        renderAliquotas();
         renderPagamentos();
         renderApuracao(c);
         renderSaude(c);
@@ -731,6 +754,9 @@
 
         <!-- 2. KPIs -->
         <div class="kpis-grid" id="kpis"></div>
+
+        <!-- 2b. ALÍQUOTAS EFETIVAS -->
+        <div class="panel" id="aliquotas"></div>
 
         <!-- 3. PAINEL FINANCEIRO -->
         <div class="panel" id="pagamentos"></div>
