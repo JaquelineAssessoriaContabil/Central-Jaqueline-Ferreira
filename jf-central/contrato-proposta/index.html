@@ -109,7 +109,7 @@
 
     <div class="grupo-titulo primeiro">Documento</div>
     <div class="campo"><label for="tipo">O que você quer gerar</label>
-      <select id="tipo" class="sel"><option value="contrato">Contrato de prestação de serviços</option><option value="proposta">Proposta de honorários</option><option value="contrato_mei">Contrato para MEI (simples)</option><option value="proposta_mei">Proposta para MEI (simples)</option><option value="contrato_cam">Contrato MEI Caminhoneiro</option><option value="proposta_cam">Proposta MEI Caminhoneiro</option><option value="rescisao">Rescisão de contrato de prestação de serviços</option><option value="carta_resp">Carta de Responsabilidade da Administração (anual)</option><option value="proposta_avulsa">Proposta de serviço avulso (baixa, abertura, regularização)</option><option value="proposta_avulsa_sem_reg">Proposta de baixa e abertura (empresa em dia, sem regularização)</option><option value="proposta_abertura">Proposta de abertura de empresa</option><option value="proposta_mensal">Proposta de honorários mensais</option></select>
+      <select id="tipo" class="sel"><option value="contrato">Contrato de prestação de serviços</option><option value="proposta">Proposta de honorários</option><option value="contrato_mei">Contrato para MEI (simples)</option><option value="proposta_mei">Proposta para MEI (simples)</option><option value="contrato_cam">Contrato MEI Caminhoneiro</option><option value="proposta_cam">Proposta MEI Caminhoneiro</option><option value="rescisao">Rescisão de contrato de prestação de serviços</option><option value="carta_resp">Carta de Responsabilidade da Administração (anual)</option><option value="aditivo">Termo aditivo ao contrato (cláusulas da Res. CFC 1.590/2020)</option><option value="proposta_avulsa">Proposta de serviço avulso (baixa, abertura, regularização)</option><option value="proposta_avulsa_sem_reg">Proposta de baixa e abertura (empresa em dia, sem regularização)</option><option value="proposta_abertura">Proposta de abertura de empresa</option><option value="proposta_mensal">Proposta de honorários mensais</option></select>
     </div>
 
     <div class="grupo-titulo">Cliente</div>
@@ -252,9 +252,13 @@
     <div class="campo so-mei"><label for="mei_abertura">Valor da orientação e formalização MEI (independente do plano)</label><input type="text" id="mei_abertura" value="R$ 300,00"></div>
     <div class="campo so-exec"><label for="c_exec">Serviços que o cliente executa por conta própria (texto padrão; edite se precisar)</label><input type="text" id="c_exec" value="emissão de notas fiscais, guarda e conservação dos documentos originais, pagamento das guias nos vencimentos e manutenção dos controles internos da empresa"></div>
 
-    <div class="grupo-titulo so-carta">Carta de Responsabilidade (período-base)</div>
-    <div class="campo so-carta"><label for="ca_ini">Início do período-base</label><input type="date" id="ca_ini" value="2026-01-01"></div>
-    <div class="campo so-carta"><label for="ca_fim">Fim do período-base</label><input type="date" id="ca_fim" value="2026-12-31"></div>
+    <div class="grupo-titulo so-aditivo">Termo aditivo</div>
+    <div class="campo so-aditivo"><label for="ad_data">Data do contrato que será aditado</label><input type="date" id="ad_data"></div>
+    <div class="campo so-aditivo"><label for="ad_art">Tipo de cliente</label><select id="ad_art" class="sel"><option value="a">Empresa (A CONTRATANTE)</option><option value="o">MEI ou pessoa física (O CONTRATANTE)</option></select></div>
+    <label class="check so-aditivo"><input type="checkbox" id="ad_carta" checked> Incluir a entrega da Carta de Responsabilidade do período abaixo</label>
+    <div class="grupo-titulo so-per">Período-base da Carta de Responsabilidade</div>
+    <div class="campo so-per"><label for="ca_ini">Início do período-base</label><input type="date" id="ca_ini" value="2026-01-01"></div>
+    <div class="campo so-per"><label for="ca_fim">Fim do período-base</label><input type="date" id="ca_fim" value="2026-12-31"></div>
     <label class="check so-carta"><input type="checkbox" id="ca_estoque" checked> A empresa mantém estoques (desmarque para empresa de serviços)</label>
 
     <div class="grupo-titulo so-nr">Honorários e vigência</div>
@@ -37396,16 +37400,54 @@ function montarRescisao(){
 }
 
 /* ---------- Cláusulas exigidas pela Res. CFC 1.590/2020 (art. 2º, c, i, j, k) ---------- */
-function clausulaLegal(P, H, ord, num, art){
+function textosLegais(art){
   const CT = art === "a" ? "A CONTRATANTE" : "O CONTRATANTE";
   return [
-    H("CLÁUSULA " + ord + " - DAS OBRIGAÇÕES LEGAIS E PROFISSIONAIS"),
-    P(SEG(num + ".1. " + CT + " executará, por sua conta e responsabilidade, os seguintes serviços: "), V(val("c_exec").value), SEG(".")),
-    P(num + ".2. " + CT + " fornecerá à CONTRATADA, anualmente, ao término de cada exercício social, a Carta de Responsabilidade da Administração, em modelo disponibilizado pela CONTRATADA, nos termos da Resolução CFC nº 1.590/2020 e da ITG 1000."),
-    P(num + ".3. A recusa ou a omissão na entrega da Carta autoriza a CONTRATADA a adotar as salvaguardas cabíveis, inclusive rescindir este contrato, observadas as normas profissionais."),
-    P(num + ".4. " + CT + " declara ter ciência da Lei nº 9.613/1998 (prevenção à lavagem de dinheiro) e de que a CONTRATADA, na condição de profissional da contabilidade, está sujeita aos deveres de identificação de clientes, registro de operações e comunicação de operações suspeitas aos órgãos competentes, nos termos da lei e das normas profissionais."),
-    P(num + ".5. Qualquer alteração dos serviços, dos valores ou das condições deste contrato será feita por termo aditivo escrito, que poderá ser assinado por meio eletrônico.")
+    [SEG(CT + " executará, por sua conta e responsabilidade, os seguintes serviços: "), V(val("c_exec").value), SEG(".")],
+    [SEG(CT + " fornecerá à CONTRATADA, anualmente, ao término de cada exercício social, a Carta de Responsabilidade da Administração, em modelo disponibilizado pela CONTRATADA, nos termos da Resolução CFC nº 1.590/2020 e da ITG 1000.")],
+    [SEG("A recusa ou a omissão na entrega da Carta autoriza a CONTRATADA a adotar as salvaguardas cabíveis, inclusive rescindir este contrato, observadas as normas profissionais.")],
+    [SEG(CT + " declara ter ciência da Lei nº 9.613/1998 (prevenção à lavagem de dinheiro) e de que a CONTRATADA, na condição de profissional da contabilidade, está sujeita aos deveres de identificação de clientes, registro de operações e comunicação de operações suspeitas aos órgãos competentes, nos termos da lei e das normas profissionais.")],
+    [SEG("Qualquer alteração dos serviços, dos valores ou das condições deste contrato será feita por termo aditivo escrito, que poderá ser assinado por meio eletrônico.")]
   ];
+}
+function clausulaLegal(P, H, ord, num, art){
+  const out = [H("CLÁUSULA " + ord + " - DAS OBRIGAÇÕES LEGAIS E PROFISSIONAIS")];
+  textosLegais(art).forEach((segs, i) => out.push(P(SEG(num + "." + (i + 1) + ". "), ...segs)));
+  return out;
+}
+
+function montarAditivo(){
+  const cNome = val("c_razao").value.trim();
+  const art = val("ad_art").value;
+  const CT = art === "a" ? "A CONTRATANTE" : "O CONTRATANTE";
+  const P = (...segs) => ({k:"p", segs: segs.map(s => typeof s === "string" ? SEG(s) : s)});
+  const H = (t) => ({k:"h", segs:[SEG(t, true)]});
+  const I = (...segs) => ({k:"item", segs: segs.map(s => typeof s === "string" ? SEG(s) : s)});
+  const doc = val("c_cnpj").value.trim() || val("c_cpf").value.trim();
+  const b = [];
+  b.push({k:"titulo", segs:[SEG("TERMO ADITIVO AO CONTRATO DE PRESTAÇÃO DE", true), {t:"SERVIÇOS DE ASSESSORIA CONTÁBIL", b:true, e:false, quebra:true}]});
+  b.push(P(SEG("CONTRATADA: ", true), SEG(ESCRITORIO.razao + ", CNPJ nº " + ESCRITORIO.cnpj + ", com sede em " + ESCRITORIO.endereco + ", representada por " + ESCRITORIO.rep + ", Contadora registrada no CRC/SC sob o nº " + ESCRITORIO.crc + ", CPF nº " + ESCRITORIO.cpf + ".")));
+  b[b.length-1].extra = true;
+  b.push(P(SEG("CONTRATANTE: ", true), V(cNome), SEG(", inscrito(a) sob o nº "), V(doc), SEG(", representado(a) por "), V(val("c_rep").value), SEG(", CPF nº "), V(val("c_cpf").value), SEG(".")));
+  b[b.length-1].extra = true;
+  b.push(P(SEG("As partes celebraram, em "), V(dataCurta(val("ad_data").value)), SEG(", contrato de prestação de serviços de assessoria contábil, e resolvem aditá-lo para adequá-lo à Resolução CFC nº 1.590/2020, nos termos abaixo.")));
+  b.push(H("CLÁUSULA PRIMEIRA - DO OBJETO"));
+  b.push(P("1.1. Ficam acrescidas ao contrato, sob o título “Das obrigações legais e profissionais”, as seguintes disposições, que passam a integrá-lo:"));
+  textosLegais(art).forEach((segs, i) => b.push(I(SEG(String.fromCharCode(97 + i) + ") "), ...segs)));
+  let n = 2;
+  const ORD = ["PRIMEIRA","SEGUNDA","TERCEIRA","QUARTA"];
+  if(marcado("ad_carta")){
+    b.push(H("CLÁUSULA " + ORD[n-1] + " - DA CARTA DE RESPONSABILIDADE"));
+    b.push(P(SEG(n + ".1. " + CT + " entregará à CONTRATADA, junto com a assinatura deste termo, a Carta de Responsabilidade da Administração referente ao período-base de "), V(dataCurta(val("ca_ini").value)), SEG(" a "), V(dataCurta(val("ca_fim").value)), SEG(".")));
+    n++;
+  }
+  b.push(H("CLÁUSULA " + ORD[n-1] + " - DA RATIFICAÇÃO E DA ASSINATURA"));
+  b.push(P(n + ".1. As demais cláusulas e condições do contrato, não alteradas por este termo, permanecem em pleno vigor. Em caso de divergência, prevalece este termo aditivo."));
+  b.push(P(n + ".2. Este termo poderá ser assinado por meio eletrônico ou digital, com validade jurídica para as partes."));
+  b.push(P("E, por estarem de acordo, firmam este termo aditivo em duas vias de igual teor e forma, a tudo presentes."));
+  b.push(P(V(val("cidade").value.toUpperCase()), SEG(", "), V(dataLonga(val("data_ass").value)), SEG(".")));
+  b.push({k:"assin", cont: cNome, contCnpj: doc, cpfCont: !val("c_cnpj").value.trim() && !!val("c_cpf").value.trim(), cnpjCont: ESCRITORIO.cnpj, t1:"", t2:"", semTest:true});
+  return b;
 }
 
 function montarCartaResp(){
@@ -37442,6 +37484,7 @@ function montarCartaResp(){
 
 function montarBlocos(){
   if(tipoAtual() === "carta_resp") return montarCartaResp();
+  if(tipoAtual() === "aditivo") return montarAditivo();
   if(tipoAtual() === "proposta_abertura") return montarAbertura();
   if(tipoAtual() === "proposta_mensal") return montarMensal();
   if(tipoAtual().startsWith("proposta_avulsa")) return montarPropostaAvulsa();
@@ -37599,6 +37642,16 @@ function renderPrevia(blocos){
 }
 
 function checarCampos(){
+  if(tipoAtual() === "aditivo"){
+    const req = ["c_razao","c_rep","c_cpf","cidade","data_ass","ad_data"];
+    if(!val("c_cnpj").value.trim() && !val("c_cpf").value.trim()) req.push("c_cnpj");
+    if(marcado("ad_carta")) req.push("ca_ini","ca_fim");
+    const falt = req.filter(id => !val(id).value.trim());
+    const av = val("aviso");
+    av.style.display = falt.length ? "block" : "none";
+    av.textContent = falt.length ? `Faltam ${falt.length} campo(s). Eles aparecem como ______ no termo.` : "";
+    return;
+  }
   if(tipoAtual() === "carta_resp"){
     const req = ["c_razao","c_cnpj","c_rep","c_cpf","cidade","data_ass","ca_ini","ca_fim"];
     const falt = req.filter(id => !val(id).value.trim());
@@ -37717,16 +37770,18 @@ async function baixarWord(){
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   const nome = (val("c_razao").value.trim() || "cliente").replace(/[^\w\- ]+/g, "").replace(/\s+/g, "_");
-  const prefixo = (tipoAtual() === "carta_resp" ? "Carta_Responsabilidade" : isRescisao() ? "Rescisao" : isProposta() ? "Proposta" : "Contrato") + (isMEI() ? "_MEI" : "") + (isCam() ? "_MEI_Caminhoneiro" : "");
+  const prefixo = (tipoAtual() === "aditivo" ? "Termo_Aditivo" : tipoAtual() === "carta_resp" ? "Carta_Responsabilidade" : isRescisao() ? "Rescisao" : isProposta() ? "Proposta" : "Contrato") + (isMEI() ? "_MEI" : "") + (isCam() ? "_MEI_Caminhoneiro" : "");
   a.href = url; a.download = `${prefixo}_${nome}.docx`;
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 2000);
 }
 
 function ajustarCampos(){
-  const proposta = isProposta(), mei = isMEI(), cam = isCam(), resc = isRescisao(), carta = tipoAtual() === "carta_resp";
-  document.querySelectorAll(".so-contrato").forEach(el => el.style.display = (proposta || resc || carta) ? "none" : "");
+  const proposta = isProposta(), mei = isMEI(), cam = isCam(), resc = isRescisao(), carta = tipoAtual() === "carta_resp", adit = tipoAtual() === "aditivo";
+  document.querySelectorAll(".so-contrato").forEach(el => el.style.display = (proposta || resc || carta || adit) ? "none" : "");
   document.querySelectorAll(".so-exec").forEach(el => el.style.display = (proposta || resc || carta) ? "none" : "");
+  document.querySelectorAll(".so-aditivo").forEach(el => el.style.display = adit ? "" : "none");
+  document.querySelectorAll(".so-per").forEach(el => el.style.display = (carta || (adit && marcado("ad_carta"))) ? "" : "none");
   document.querySelectorAll(".so-carta").forEach(el => el.style.display = carta ? "" : "none");
   document.querySelectorAll(".so-proposta").forEach(el => el.style.display = proposta ? "" : "none");
   const avu = tipoAtual().startsWith("proposta_avulsa");
@@ -37740,18 +37795,18 @@ function ajustarCampos(){
     lbl.style.display = campo.style.display = semReg ? "none" : "";
     if(semReg){ val("sv_lp").checked = false; }
   }
-  document.querySelectorAll(".so-geral").forEach(el => el.style.display = (mei || cam || resc || avu || novo || carta) ? "none" : "");
+  document.querySelectorAll(".so-geral").forEach(el => el.style.display = (mei || cam || resc || avu || novo || carta || adit) ? "none" : "");
   document.querySelectorAll(".so-avulso").forEach(el => el.style.display = avu ? "" : "none");
   const outrosOn = marcado("outros_on");
   ["1","2","3","4"].forEach(k => ["av_s"+k+"_nome","av_s"+k+"_desc","av_s"+k+"_valor"].forEach(id => { const c = val(id).closest(".campo"); if(c) c.style.display = (avu && !outrosOn) ? "none" : ""; }));
   document.querySelectorAll(".so-mei").forEach(el => el.style.display = mei ? "" : "none");
   document.querySelectorAll(".so-cam").forEach(el => el.style.display = cam ? "" : "none");
   document.querySelectorAll(".so-nao-cam").forEach(el => el.style.display = cam ? "none" : "");
-  document.querySelectorAll(".so-nr").forEach(el => el.style.display = (resc || carta) ? "none" : "");
-  ["valor","venc","inicio"].forEach(id => val(id).closest(".campo").style.display = (resc || avu || novo || carta) ? "none" : "");
+  document.querySelectorAll(".so-nr").forEach(el => el.style.display = (resc || carta || adit) ? "none" : "");
+  ["valor","venc","inicio"].forEach(id => val(id).closest(".campo").style.display = (resc || avu || novo || carta || adit) ? "none" : "");
   document.querySelectorAll(".so-rescisao").forEach(el => el.style.display = resc ? "" : "none");
   document.querySelectorAll(".so-optb").forEach(el => el.style.display = (resc && val("rs_opcao").value === "B") ? "" : "none");
-  const nome = carta ? "Carta de Responsabilidade" : resc ? "Termo de Rescisão" : (proposta ? "Proposta" : "Contrato") + (mei ? " para MEI" : cam ? " MEI Caminhoneiro" : "");
+  const nome = adit ? "Termo Aditivo" : carta ? "Carta de Responsabilidade" : resc ? "Termo de Rescisão" : (proposta ? "Proposta" : "Contrato") + (mei ? " para MEI" : cam ? " MEI Caminhoneiro" : "");
   document.title = "Gerador de " + nome;
   document.querySelector(".painel h1").textContent = "Gerador de " + nome;
 }
@@ -37769,6 +37824,7 @@ val("rs_opcao").addEventListener("change", () => {
 });
 document.querySelectorAll("select").forEach(el => el.addEventListener("change", render));
 val("outros_on").addEventListener("change", ajustarCampos);
+val("ad_carta").addEventListener("change", ajustarCampos);
 ajustarCampos();
 if(isMEI()) aplicarPlano();
 render();
