@@ -475,7 +475,10 @@ function seta(c,v,dispara){var el=c.el,t=(el.type||"").toLowerCase();
   if(t==="checkbox"||t==="radio"){var b=!!v;if(el.checked!==b){el.checked=b;if(dispara){ev(el,"input");ev(el,"change")}}return}
   if((t==="date"||t==="month")&&el.value&&dispara)return;
   if(el.value!==v){el.value=v;if(dispara){ev(el,"input");ev(el,"change")}}}
-function restaura(){coleta();var d=ler(),o=d.v||{};
+function recarga(){try{var n=performance.getEntriesByType("navigation")[0];if(n&&n.type==="reload")return true}catch(e){}return /[?&]novo=1(&|$)/.test(location.search)}
+function restaura(){coleta();
+  if(recarga()){try{localStorage.removeItem(KEY);localStorage.removeItem("jf_cnpj_box_"+location.pathname)}catch(e){}pronto=true;st.textContent="Página zerada. Salvamento automático ativo";return}
+  var d=ler(),o=d.v||{};
   var estr=[],txt=[];campos.forEach(function(c){if(!(c.k in o))return;var t=(c.el.type||"").toLowerCase();(c.el.tagName==="SELECT"||t==="checkbox"||t==="radio"?estr:txt).push(c)});
   estr.forEach(function(c){seta(c,o[c.k],true)});
   txt.forEach(function(c){seta(c,o[c.k],true)});
@@ -500,6 +503,7 @@ function inicia(){setTimeout(restaura,60)}
 if(document.readyState==="complete")inicia();else window.addEventListener("load",inicia);
 })();
 </script>
+
 
 
 </body>
