@@ -354,6 +354,23 @@ var btn=document.createElement("button");btn.type="button";btn.textContent="Busc
 var msg=document.createElement("div");
 box.appendChild(btn);box.appendChild(msg);
 var host=inp.closest("label")||inp;host.insertAdjacentElement("afterend",box);
+var HK="jf_cnpj_hist_"+location.pathname;
+function hRead(){try{return JSON.parse(localStorage.getItem(HK)||"{}")||{}}catch(e){return {}}}
+function hWrite(o){try{localStorage.setItem(HK,JSON.stringify(o))}catch(e){}}
+var dl=document.createElement("datalist");dl.id="jfhist_"+CFG.cnpj;document.body.appendChild(dl);inp.setAttribute("list",dl.id);
+var bcl=document.createElement("button");bcl.type="button";bcl.textContent="Apagar CNPJs salvos";bcl.hidden=true;box.insertBefore(bcl,msg);
+var cc=false,ct=null;
+bcl.onclick=function(){if(!cc){cc=true;bcl.textContent="Clique de novo para apagar a lista";clearTimeout(ct);ct=setTimeout(function(){cc=false;bcl.textContent="Apagar CNPJs salvos"},4000);return}
+  clearTimeout(ct);cc=false;bcl.textContent="Apagar CNPJs salvos";try{localStorage.removeItem(HK)}catch(e){}hLista()};
+function hLista(){var h=hRead(),ks=Object.keys(h).sort(function(x,y){return (h[y].t||0)-(h[x].t||0)});dl.textContent="";
+  ks.forEach(function(k){var o=document.createElement("option");o.value=fmtCnpj(k);if(h[k].n)o.label=h[k].n;dl.appendChild(o)});bcl.hidden=!ks.length}
+function fmtHora(t){var d=new Date(t||0);function z(n){return ("0"+n).slice(-2)}return z(d.getDate())+"/"+z(d.getMonth()+1)+"/"+d.getFullYear()+" "+z(d.getHours())+":"+z(d.getMinutes())}
+inp.addEventListener("input",function(){var d=digits(inp.value);if(d.length!==14)return;var e=hRead()[d];if(!e)return;
+  Object.keys(e.f||{}).forEach(function(k){if(CFG[k]&&e.f[k]!==""&&e.f[k]!==undefined)setv(CFG[k],e.f[k])});
+  msg.innerHTML=e.h||"";var as=msg.querySelectorAll("a");for(var i=0;i<as.length;i++){as[i].target="_blank";as[i].rel="noopener noreferrer"}
+  var n=document.createElement("div");n.style.cssText="font-size:12px;color:#8E6F6B;margin-top:4px";n.textContent="Dados salvos neste navegador, da consulta de "+fmtHora(e.t)+". Nada foi consultado agora. Clique em Buscar CNPJ para atualizar.";
+  var m1=msg.querySelector(".m");if(m1)m1.insertBefore(n,m1.firstChild)});
+hLista();
 function digits(s){return String(s||"").replace(/\D/g,"")}
 function valido(d){if(d.length!==14||/^(\d)\1+$/.test(d))return false;
   function dv(n){var p=n-7,s=0;for(var i=0;i<n;i++){s+=+d.charAt(i)*p--;if(p<2)p=9}var r=s%11;return r<2?0:11-r}
@@ -426,7 +443,9 @@ function aplica(d,j){var feitos=[];
   var porte=pega(j,"porte","descricao_porte");if(porte)linha("Porte: "+porte,m);
   if(j.opcao_pelo_simples!==undefined&&j.opcao_pelo_simples!==null)linha("Opção pelo Simples Nacional: "+(j.opcao_pelo_simples?"sim":"não")+" | MEI: "+(j.opcao_pelo_mei?"sim":"não"),m);
   var f=document.createElement("div");f.style.cssText="margin-top:6px;font-size:12px;color:#555";
-  f.appendChild(document.createTextNode("[Buscar CNPJ v24/11-e] Dados do BrasilAPI (cópia da base da Receita, atualizada periodicamente, pode estar defasada). Confira a situação atual no Comprovante de Inscrição. "));link(f,"Abrir a consulta da Receita");m.appendChild(f);msg.appendChild(m);try{localStorage.setItem(BK,JSON.stringify({d:d,h:msg.innerHTML}))}catch(e){}}
+  f.appendChild(document.createTextNode("[Buscar CNPJ v24/11-f] Dados do BrasilAPI (cópia da base da Receita, atualizada periodicamente, pode estar defasada). Confira a situação atual no Comprovante de Inscrição. "));link(f,"Abrir a consulta da Receita");m.appendChild(f);msg.appendChild(m);try{localStorage.setItem(BK,JSON.stringify({d:d,h:msg.innerHTML}))}catch(e){}
+  try{var hh=hRead(),ff={};["nome","cnae","abertura","eleg","ativ","end","cep"].forEach(function(k){if(CFG[k]){var el=$(CFG[k]);if(el)ff[k]=el.value}});
+    hh[d]={n:razao,t:Date.now(),f:ff,h:msg.innerHTML};var ks=Object.keys(hh).sort(function(x,y){return hh[y].t-hh[x].t});ks.slice(60).forEach(function(k){delete hh[k]});hWrite(hh);hLista()}catch(e){}}
 setTimeout(function(){try{var sv=JSON.parse(localStorage.getItem(BK)||"null");if(sv&&sv.h&&sv.d===digits(inp.value)&&!msg.textContent){msg.innerHTML=sv.h;var as=msg.querySelectorAll("a");for(var i=0;i<as.length;i++){as[i].target="_blank";as[i].rel="noopener noreferrer"}}}catch(e){}},500);
 btn.onclick=function(){var d=digits(inp.value);
   if(d.length!==14){aviso("Digite os 14 números do CNPJ antes de buscar.",true);return}
@@ -434,6 +453,7 @@ btn.onclick=function(){var d=digits(inp.value);
   if(consentido)busca(d);else pergunta(d)};
 })();
 </script>
+
 
 
 
