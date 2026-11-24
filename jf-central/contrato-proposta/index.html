@@ -16,7 +16,7 @@
     --rose-claro: #faf3f0;
     --texto: #2e2623;
     --sans: "Helvetica Neue", Arial, sans-serif;
-    --serif: "Times New Roman", Times, serif;
+    --serif: "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
   }
   *{ box-sizing:border-box; }
   body{ margin:0; font-family:var(--sans); background:#f5efec; color:var(--texto); }
@@ -37847,7 +37847,7 @@ function rodapeTimbrado(){
 }
 async function baixarWord(){
   const blocos = render();
-  const FONTE = "Arial";
+  const FONTE = "Segoe UI";
   const TAM = 21; // 10,5 pt (half-points)
   const runs = segs => segs.map(s => new docx.TextRun({text: s.t, bold: !!s.b, font: FONTE, size: TAM, break: s.quebra ? 1 : undefined}));
 
