@@ -37791,10 +37791,24 @@ function checarCampos(){
   aviso.textContent = faltando.length ? `Faltam ${faltando.length} campo(s). Eles aparecem como ______ no contrato.` : "";
 }
 
+function avisoCondicaoMEI(){
+  if(!tipoAtual().startsWith("proposta_avulsa") || !marcado("cm_on")) return;
+  const b = valorEstrito(val("cm_base").value), i = valorEstrito(val("cm_integral").value);
+  let msg = "";
+  if(b.vazio || i.vazio) msg = "Condição de MEIs: preencha o valor base e o valor integral da baixa. Sem eles, o texto fica sem o valor da diferença.";
+  else if(b.invalido || i.invalido) msg = "Condição de MEIs: confira o formato dos valores (ex.: R$ 856,66).";
+  else if(i.n <= b.n) msg = "Condição de MEIs: o valor integral precisa ser maior que o valor base. Do jeito que está, a diferença cobrada dá zero.";
+  if(!msg) return;
+  const av = val("aviso");
+  av.style.display = "block";
+  av.textContent = (av.textContent ? av.textContent + " " : "") + msg;
+}
+
 function render(){
   const blocos = montarBlocos();
   renderPrevia(blocos);
   checarCampos();
+  avisoCondicaoMEI();
   return blocos;
 }
 
