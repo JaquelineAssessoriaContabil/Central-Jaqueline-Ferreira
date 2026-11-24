@@ -11,6 +11,7 @@ Cada simulador é um arquivo único (`index.html`), sem servidor e sem enviar da
 | `carta-reforma-tributaria/` | Carta de Adequação à Reforma Tributária |
 | `calculadora-honorarios/` | Calculadora de Honorários (MEI, Simples, Presumido) |
 | `proposta-revisao-2027/` | Proposta de Revisão para 2027 (Simples e Lucro Presumido), no papel timbrado |
+| `minha-hora-financas/` | Minha Hora e Finanças: custo da hora, despesas do escritório (PJ) e pessoais (PF) |
 | `contrato-proposta/` | Contrato e Proposta de Prestação de Serviços |
 | `declaracoes-dp/` | Gerador de Declarações DP |
 | `checklist-fechamento-mensal/` | Checklist de Fechamento Mensal |
