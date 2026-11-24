@@ -36699,7 +36699,7 @@ function aplica(d,j){var feitos=[];
   var eEl=CFG.eleg?$(CFG.eleg):null;var elegOk=!!(eleg&&eEl&&(eEl.value==="revisar"||eEl.value==="")&&setv(CFG.eleg,eleg));
   if(elegOk)feitos.push("elegibilidade ("+({sim:"Sujeita ao Fator R",nao:"Não sujeita ao Fator R",mista:"Atividade mista / requer análise"})[eleg]+")");
   if(CFG.ativ&&all.length){var eA=$(CFG.ativ);if(eA&&(!eA.value.trim()||eA.getAttribute("data-jfauto")===eA.value)){
-    var txt=all.map(function(x){return fmtCnae(x.c)+" – "+String(x.d||"").replace(/\s+/g," ").trim()}).join("; ");
+    var txt=all.map(function(x){var r=DB[x.c];var tg=r?(r.f?"sujeito ao Fator R":"Anexo "+r.a+", sem Fator R"):"anexo não identificado";return fmtCnae(x.c)+" – "+String(x.d||"").replace(/\s+/g," ").trim()+" ("+tg+")"}).join("; ");
     if(setv(CFG.ativ,txt)){eA.setAttribute("data-jfauto",txt);feitos.push("descrição dos CNAEs em \"Serviço efetivamente prestado\"")}}}
   limpa();var m=document.createElement("div");m.className="m";
   linha(feitos.length?"Preenchido: "+feitos.join(", ")+". Revise antes de usar.":"A consulta voltou, mas esta ferramenta não tem campo para esses dados.",m);
@@ -36723,6 +36723,7 @@ btn.onclick=function(){var d=digits(inp.value);
   if(consentido)busca(d);else pergunta(d)};
 })();
 </script>
+
 
 
 
