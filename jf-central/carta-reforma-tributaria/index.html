@@ -294,7 +294,7 @@ function hora(t){var d=new Date(t||Date.now());return ("0"+d.getHours()).slice(-
 function marca(ok,t){st.textContent=ok?"Salvo neste navegador às "+hora(t):"Não foi possível salvar aqui";st.title="Fica só neste computador e navegador. Nada é enviado para fora."}
 var conf=false,ct=null;
 bt.onclick=function(){if(!conf){conf=true;bt.textContent="Clique de novo para apagar";bt.style.background="#F6EFED";clearTimeout(ct);ct=setTimeout(function(){conf=false;bt.textContent="Limpar";bt.style.background="#fff"},4000);return}
-  clearTimeout(ct);pronto=false;try{localStorage.removeItem(KEY)}catch(e){}location.reload()};
+  clearTimeout(ct);pronto=false;try{localStorage.removeItem(KEY)}catch(e){}try{localStorage.removeItem("jf_cnpj_box_"+location.pathname)}catch(e){}location.reload()};
 document.body.appendChild(bar);st.textContent="Salvamento automático ativo";
 document.addEventListener("input",agenda,true);document.addEventListener("change",agenda,true);
 window.addEventListener("pagehide",function(){clearTimeout(timer);grava()});
@@ -302,6 +302,7 @@ function inicia(){setTimeout(restaura,60)}
 if(document.readyState==="complete")inicia();else window.addEventListener("load",inicia);
 })();
 </script>
+
 
 </body>
 </html>

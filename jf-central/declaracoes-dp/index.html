@@ -36621,7 +36621,7 @@ while (n === a[++i] && n === a[++i] && n === a[++i] && n === a[++i] && n === a[+
 var CFG={"cnpj": "e_cnpj", "nome": "e_razao"};
 var BASE="https://brasilapi.com.br/api/cnpj/v1/";
 var RECEITA="https://solucoes.receita.fazenda.gov.br/Servicos/cnpjreva/Cnpjreva_Solicitacao.asp";
-var consentido=false;
+var consentido=false;var BK="jf_cnpj_box_"+location.pathname;
 /* Atividades da LC 123/2006, art. 18, com o CNAE correspondente (montado a partir do texto da lei; conferir na Resolução CGSN 140/2018). Só entram códigos de que há segurança. */
 var B5M1="LC 123 art. 18, §5º-B + §5º-M, I (Anexo III com Fator R; abaixo de 28% vai ao Anexo V)",B5M2="LC 123 art. 18, §5º-D + §5º-M, II (Anexo III com Fator R; abaixo de 28% vai ao Anexo V)",B5I="LC 123 art. 18, §5º-I e §5º-J (Anexo V; com Fator R ≥ 28% vai ao Anexo III)";
 var DB={"8650004":{f:1,b:B5M1+", XVI, fisioterapia"},"7111100":{f:1,b:B5M1+", XVIII, arquitetura"},
@@ -36633,7 +36633,7 @@ var DB={"8650004":{f:1,b:B5M1+", XVI, fisioterapia"},"7111100":{f:1,b:B5M1+", XV
 "6202300":{f:1,b:B5M2+", V, licenciamento de software"},"6203100":{f:1,b:B5M2+", V, licenciamento de software"},
 "8640202":{f:1,b:B5M2+", XII, laboratório clínico"},"8640201":{f:1,b:B5M2+", XII, anatomia patológica"},
 "6920602":{f:1,b:B5I+", IX, auditoria e consultoria"},"7020400":{f:1,b:B5I+", IX, consultoria em gestão"},"7112000":{f:1,b:B5I+", VI, engenharia"},"7311400":{f:1,b:B5I+", X, publicidade"},"7500100":{f:1,b:B5I+", II, veterinária"},
-"6920601":{f:0,a:"III",b:"LC 123 art. 18, §5º-B, XIV (escritório de contabilidade: Anexo III direto, sem Fator R; ver também §§22-B e 22-C)"},"6911701":{f:0,a:"IV",b:"LC 123 art. 18, §5º-C (serviços advocatícios: Anexo IV, sem Fator R; conferir o inciso)"},"4321500":{f:0,a:"III",b:"LC 123 art. 18, §5º-B, IX (instalação, reparos e manutenção em geral: Anexo III)"},"3321000":{f:0,a:"III",b:"LC 123 art. 18, §5º-B, IX (instalação e manutenção: Anexo III)"},"4929901":{f:0,a:"III",b:"LC 123 art. 18, §5º-B, XIII (transporte municipal de passageiros: Anexo III)"}};
+"6920601":{f:0,a:"III",b:"LC 123 art. 18, §5º-B, XIV (escritório de contabilidade: Anexo III direto, sem Fator R; ver também §§22-B e 22-C)"},"4924800":{f:0,a:"III",b:"transporte escolar (tabelas de CNAE do Simples, fonte secundária; conferir na Res. CGSN 140/2018)"},"6911701":{f:0,a:"IV",b:"LC 123 art. 18, §5º-C (serviços advocatícios: Anexo IV, sem Fator R; conferir o inciso)"},"4321500":{f:0,a:"III",b:"LC 123 art. 18, §5º-B, IX (instalação, reparos e manutenção em geral: Anexo III)"},"3321000":{f:0,a:"III",b:"LC 123 art. 18, §5º-B, IX (instalação e manutenção: Anexo III)"},"4929901":{f:0,a:"III",b:"LC 123 art. 18, §5º-B, XIII (transporte municipal de passageiros: Anexo III)"}};
 
 function $(i){return i?document.getElementById(i):null}
 var inp=$(CFG.cnpj);if(!inp)return;
@@ -36717,13 +36717,15 @@ function aplica(d,j){var feitos=[];
   var porte=pega(j,"porte","descricao_porte");if(porte)linha("Porte: "+porte,m);
   if(j.opcao_pelo_simples!==undefined&&j.opcao_pelo_simples!==null)linha("Opção pelo Simples Nacional: "+(j.opcao_pelo_simples?"sim":"não")+" | MEI: "+(j.opcao_pelo_mei?"sim":"não"),m);
   var f=document.createElement("div");f.style.cssText="margin-top:6px;font-size:12px;color:#555";
-  f.appendChild(document.createTextNode("[Buscar CNPJ v24/11-d] Dados do BrasilAPI (cópia da base da Receita, atualizada periodicamente, pode estar defasada). Confira a situação atual no Comprovante de Inscrição. "));link(f,"Abrir a consulta da Receita");m.appendChild(f);msg.appendChild(m)}
+  f.appendChild(document.createTextNode("[Buscar CNPJ v24/11-e] Dados do BrasilAPI (cópia da base da Receita, atualizada periodicamente, pode estar defasada). Confira a situação atual no Comprovante de Inscrição. "));link(f,"Abrir a consulta da Receita");m.appendChild(f);msg.appendChild(m);try{localStorage.setItem(BK,JSON.stringify({d:d,h:msg.innerHTML}))}catch(e){}}
+setTimeout(function(){try{var sv=JSON.parse(localStorage.getItem(BK)||"null");if(sv&&sv.h&&sv.d===digits(inp.value)&&!msg.textContent){msg.innerHTML=sv.h;var as=msg.querySelectorAll("a");for(var i=0;i<as.length;i++){as[i].target="_blank";as[i].rel="noopener noreferrer"}}}catch(e){}},500);
 btn.onclick=function(){var d=digits(inp.value);
   if(d.length!==14){aviso("Digite os 14 números do CNPJ antes de buscar.",true);return}
   if(!valido(d)){aviso("Esse CNPJ não é válido (dígitos verificadores não conferem). Confira a digitação.",true);return}
   if(consentido)busca(d);else pergunta(d)};
 })();
 </script>
+
 
 
 
@@ -36767,7 +36769,7 @@ function hora(t){var d=new Date(t||Date.now());return ("0"+d.getHours()).slice(-
 function marca(ok,t){st.textContent=ok?"Salvo neste navegador às "+hora(t):"Não foi possível salvar aqui";st.title="Fica só neste computador e navegador. Nada é enviado para fora."}
 var conf=false,ct=null;
 bt.onclick=function(){if(!conf){conf=true;bt.textContent="Clique de novo para apagar";bt.style.background="#F6EFED";clearTimeout(ct);ct=setTimeout(function(){conf=false;bt.textContent="Limpar";bt.style.background="#fff"},4000);return}
-  clearTimeout(ct);pronto=false;try{localStorage.removeItem(KEY)}catch(e){}location.reload()};
+  clearTimeout(ct);pronto=false;try{localStorage.removeItem(KEY)}catch(e){}try{localStorage.removeItem("jf_cnpj_box_"+location.pathname)}catch(e){}location.reload()};
 document.body.appendChild(bar);st.textContent="Salvamento automático ativo";
 document.addEventListener("input",agenda,true);document.addEventListener("change",agenda,true);
 window.addEventListener("pagehide",function(){clearTimeout(timer);grava()});
@@ -36775,6 +36777,7 @@ function inicia(){setTimeout(restaura,60)}
 if(document.readyState==="complete")inicia();else window.addEventListener("load",inicia);
 })();
 </script>
+
 
 </body>
 </html>
