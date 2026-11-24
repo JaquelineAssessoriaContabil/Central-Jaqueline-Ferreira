@@ -256,6 +256,8 @@
     <div class="campo so-aditivo"><label for="ad_data">Data do contrato que será aditado</label><input type="date" id="ad_data"></div>
     <div class="campo so-aditivo"><label for="ad_art">Tipo de cliente</label><select id="ad_art" class="sel"><option value="a">Empresa (A CONTRATANTE)</option><option value="o">MEI ou pessoa física (O CONTRATANTE)</option></select></div>
     <label class="check so-aditivo"><input type="checkbox" id="ad_reaj"> Acrescentar cláusula de reajuste anual dos honorários pelo IPCA (use nos contratos que não têm, como os de MEI)</label>
+    <label class="check so-aditivo"><input type="checkbox" id="ad_ext" checked> Acrescentar cláusula de uso de sistemas e serviços de terceiros (Domínio, e-mail, nuvem, IA) e aviso de incidente</label>
+    <div class="campo so-aditivo"><label for="ad_inc">Prazo para avisar o cliente de incidente de segurança (dias úteis)</label><input type="number" id="ad_inc" min="1" value="2"></div>
     <label class="check so-aditivo"><input type="checkbox" id="ad_carta" checked> Incluir a entrega da Carta de Responsabilidade do período abaixo</label>
     <div class="grupo-titulo so-per">Período-base da Carta de Responsabilidade</div>
     <div class="campo so-per"><label for="ca_ini">Início do período-base</label><input type="date" id="ca_ini" value="2026-01-01"></div>
@@ -332,6 +334,7 @@
     <div class="campo so-nr"><label for="inicio">Início da vigência</label><input type="date" id="inicio"></div>
     <div class="campo so-contrato"><label for="aviso_dias">Aviso prévio para rescisão (dias) — cláusula 6.2</label><input type="number" id="aviso_dias" min="1" value="30"></div>
     <div class="campo so-contrato"><label for="atraso_dias">Dias de atraso para suspensão (dias) — cláusula 6.3</label><input type="number" id="atraso_dias" min="1" value="30"></div>
+    <div class="campo so-contrato"><label for="inc_dias">Prazo para avisar o cliente de incidente de segurança (dias úteis) — cláusula de sistemas de terceiros (LGPD)</label><input type="number" id="inc_dias" min="1" value="2"></div>
     <div class="campo so-proposta"><label for="validade">Validade da proposta (dias)</label><input type="number" id="validade" min="1" value="15"></div>
     <div class="campo so-proposta"><label for="prazo_contrato">Prazo para enviar o contrato após o aceite (dias úteis)</label><input type="number" id="prazo_contrato" min="1" value="5"></div>
 
@@ -36748,6 +36751,7 @@ function montarContratoMEI(){
   b.push(H("CLÁUSULA SEXTA - DO LIMITE DE FATURAMENTO E LGPD"));
   b.push(P("6.1. Limite MEI: caso o faturamento do CONTRATANTE exceda o limite legal do MEI (atualmente R$ 81.000,00 anuais), as partes deverão repactuar os valores de honorários para o regime de Microempresa (ME), cessando os efeitos deste contrato para a modalidade MEI."));
   b.push(P("6.2. Proteção de dados (LGPD): o CONTRATANTE autoriza o tratamento de seus dados pessoais pela CONTRATADA exclusivamente para o cumprimento das obrigações fiscais e acessórias previstas neste instrumento, nos termos da Lei nº 13.709/2018."));
+  textosSistemasExternos(val("inc_dias").value, "o").forEach((s, i) => b.push(P("6." + (i + 3) + ". " + s)));
 
   b.push(...clausulaLegal(P, H, "SÉTIMA", "7", "o"));
 
@@ -37201,6 +37205,7 @@ function montarContratoCam(){
   b.push(H("CLÁUSULA SÉTIMA - DO LIMITE DE FATURAMENTO E LGPD"));
   b.push(P("7.1. Limite MEI: caso o faturamento do CONTRATANTE exceda o limite legal do MEI (atualmente R$ 81.000,00 anuais), as partes deverão repactuar os valores de honorários para o regime de Microempresa (ME), cessando os efeitos deste contrato para a modalidade MEI."));
   b.push(P("7.2. Proteção de dados (LGPD): o CONTRATANTE autoriza o tratamento de seus dados pessoais pela CONTRATADA exclusivamente para o cumprimento das obrigações fiscais e acessórias previstas neste instrumento, nos termos da Lei nº 13.709/2018."));
+  textosSistemasExternos(val("inc_dias").value, "o").forEach((s, i) => b.push(P("7." + (i + 3) + ". " + s)));
 
   b.push(...clausulaLegal(P, H, "OITAVA", "8", "o"));
 
@@ -37494,6 +37499,7 @@ function montarContratoBaixa(){
   b.push(CL("DA PROTEÇÃO DE DADOS (LGPD)"));
   b.push(P(`${num()}.1. As partes manterão o sigilo das informações recebidas e tratarão os dados pessoais apenas para o cumprimento deste contrato e de obrigações legais, nos termos da Lei nº 13.709/2018 (LGPD).`));
   b.push(P(`${num()}.2. Qualquer alteração deste contrato será feita por termo aditivo escrito, que poderá ser assinado por meio eletrônico.`));
+  textosSistemasExternos(val("inc_dias").value, "o").forEach((s, i) => b.push(P(`${num()}.` + (i + 3) + `. ` + s)));
 
   b.push(CL("DO FORO"));
   b.push(P(SEG(`${num()}.1. Fica eleito o foro da Comarca de `), V(val("foro").value.toUpperCase()), SEG(" para dirimir quaisquer controvérsias oriundas deste contrato.")));
@@ -37515,6 +37521,17 @@ function textosLegais(art){
     [SEG("Qualquer alteração dos serviços, dos valores ou das condições deste contrato será feita por termo aditivo escrito, que poderá ser assinado por meio eletrônico.")]
   ];
 }
+function textosSistemasExternos(dias, art){
+  const d = Math.max(1, parseInt(dias, 10) || 2);
+  const f = art === "a";
+  const O = f ? "a" : "o", DO = f ? "da" : "do", AO = f ? "à" : "ao", PELA = f ? "pela" : "pelo";
+  return [
+    "Sistemas e serviços de terceiros: " + O + " CONTRATANTE está ciente e de acordo que a CONTRATADA utiliza, para prestar os serviços, sistemas e serviços de terceiros (como sistema contábil e fiscal, e-mail, armazenamento em nuvem, aplicativos de mensagem, portais de órgãos públicos e ferramentas de inteligência artificial), que podem tratar dados e informações " + DO + " CONTRATANTE exclusivamente para a execução deste instrumento.",
+    "A CONTRATADA adotará medidas de segurança compatíveis com a natureza dos dados tratados e, havendo incidente de segurança que possa acarretar risco ou dano relevante " + AO + " CONTRATANTE, " + (f ? "a" : "o") + " comunicará em até " + d + " (" + extenso(d) + ") dias úteis após tomar ciência, adotando as providências previstas na Lei nº 13.709/2018.",
+    (f ? "A" : "O") + " CONTRATANTE é responsável pela veracidade dos documentos e dados que enviar à CONTRATADA e pela guarda de seus próprios acessos e senhas."
+  ];
+}
+
 function clausulaLegal(P, H, ord, num, art){
   const out = [H("CLÁUSULA " + ord + " - DAS OBRIGAÇÕES LEGAIS E PROFISSIONAIS")];
   textosLegais(art).forEach((segs, i) => out.push(P(SEG(num + "." + (i + 1) + ". "), ...segs)));
@@ -37540,10 +37557,15 @@ function montarAditivo(){
   b.push(P("1.1. Ficam acrescidas ao contrato, sob o título “Das obrigações legais e profissionais”, as seguintes disposições, que passam a integrá-lo:"));
   textosLegais(art).forEach((segs, i) => b.push(I(SEG(String.fromCharCode(97 + i) + ") "), ...segs)));
   let n = 2;
-  const ORD = ["PRIMEIRA","SEGUNDA","TERCEIRA","QUARTA"];
+  const ORD = ["PRIMEIRA","SEGUNDA","TERCEIRA","QUARTA","QUINTA"];
   if(marcado("ad_reaj")){
     b.push(H("CLÁUSULA " + ORD[n-1] + " - DO REAJUSTE DOS HONORÁRIOS"));
     b.push(P(n + ".1. Os honorários mensais serão reajustados anualmente pelo índice IPCA/IBGE."));
+    n++;
+  }
+  if(marcado("ad_ext")){
+    b.push(H("CLÁUSULA " + ORD[n-1] + " - DO USO DE SISTEMAS E SERVIÇOS DE TERCEIROS"));
+    textosSistemasExternos(val("ad_inc").value, art).forEach((s, i) => b.push(P(n + "." + (i + 1) + ". " + s)));
     n++;
   }
   if(marcado("ad_carta")){
@@ -37641,6 +37663,7 @@ function montarBlocos(){
   b.push(H("CLÁUSULA QUARTA - PROTEÇÃO DE DADOS (LGPD)"));
   b.push(P("4.1. As partes declaram conformidade com a Lei nº 13.709/2018 (LGPD)."));
   b.push(P("4.2. A CONTRATADA, na qualidade de Operadora, tratará dados pessoais da CONTRATANTE e seus colaboradores exclusivamente para fins de cumprimento das obrigações trabalhistas e fiscais deste contrato."));
+  textosSistemasExternos(val("inc_dias").value, "a").forEach((s, i) => b.push(P("4." + (i + 3) + ". " + s)));
 
   b.push(H("CLÁUSULA QUINTA - DOS HONORÁRIOS"));
   b.push(P(SEG("5.1. Pelos serviços, a CONTRATANTE pagará o valor mensal de "), B(val("valor").value), SEG(", vencível todo dia "), V(val("venc").value), SEG(".")));
