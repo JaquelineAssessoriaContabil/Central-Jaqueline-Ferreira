@@ -109,14 +109,14 @@
 
     <div class="grupo-titulo primeiro">Documento</div>
     <div class="campo"><label for="tipo">O que você quer gerar</label>
-      <select id="tipo" class="sel"><option value="contrato">Contrato de prestação de serviços</option><option value="proposta">Proposta de honorários</option><option value="contrato_mei">Contrato para MEI (simples)</option><option value="proposta_mei">Proposta para MEI (simples)</option><option value="contrato_cam">Contrato MEI Caminhoneiro</option><option value="proposta_cam">Proposta MEI Caminhoneiro</option><option value="rescisao">Rescisão de contrato de prestação de serviços</option><option value="carta_resp">Carta de Responsabilidade da Administração (anual)</option><option value="aditivo">Termo aditivo ao contrato (cláusulas da Res. CFC 1.590/2020)</option><option value="proposta_avulsa">Proposta de serviço avulso (baixa, abertura, regularização)</option><option value="proposta_avulsa_sem_reg">Proposta de baixa e abertura (empresa em dia, sem regularização)</option><option value="proposta_abertura">Proposta de abertura de empresa</option><option value="proposta_mensal">Proposta de honorários mensais</option></select>
+      <select id="tipo" class="sel"><option value="contrato">Contrato de prestação de serviços</option><option value="proposta">Proposta de honorários</option><option value="contrato_mei">Contrato para MEI (simples)</option><option value="proposta_mei">Proposta para MEI (simples)</option><option value="contrato_cam">Contrato MEI Caminhoneiro</option><option value="proposta_cam">Proposta MEI Caminhoneiro</option><option value="rescisao">Rescisão de contrato de prestação de serviços</option><option value="contrato_baixa">Contrato de baixa de empresa (serviço avulso)</option><option value="carta_resp">Carta de Responsabilidade da Administração (anual)</option><option value="aditivo">Termo aditivo ao contrato (cláusulas da Res. CFC 1.590/2020)</option><option value="proposta_avulsa">Proposta de serviço avulso (baixa, abertura, regularização)</option><option value="proposta_avulsa_sem_reg">Proposta de baixa e abertura (empresa em dia, sem regularização)</option><option value="proposta_abertura">Proposta de abertura de empresa</option><option value="proposta_mensal">Proposta de honorários mensais</option></select>
     </div>
 
     <div class="grupo-titulo">Cliente</div>
     <div class="campo"><label for="c_razao">Razão social (ou nome, se pessoa física)</label><input type="text" id="c_razao"></div>
     <div class="campo so-nao-cam"><label for="c_cnpj">CNPJ</label><input type="text" id="c_cnpj" placeholder="00.000.000/0000-00"></div>
-    <div class="campo so-nr"><label for="c_endereco">Endereço (rua, nº, bairro, cidade/UF)</label><input type="text" id="c_endereco" placeholder="Rua, nº, bairro, cidade/UF"></div>
-    <div class="campo so-nr"><label for="c_cep">CEP</label><input type="text" id="c_cep" placeholder="00000-000" inputmode="numeric"></div>
+    <div class="campo so-end"><label for="c_endereco">Endereço (rua, nº, bairro, cidade/UF)</label><input type="text" id="c_endereco" placeholder="Rua, nº, bairro, cidade/UF"></div>
+    <div class="campo so-end"><label for="c_cep">CEP</label><input type="text" id="c_cep" placeholder="00000-000" inputmode="numeric"></div>
     <div class="campo"><label for="c_rep">Representante legal</label><input type="text" id="c_rep"></div>
     <div class="campo"><label for="c_cpf">CPF do representante</label><input type="text" id="c_cpf" placeholder="000.000.000-00"></div>
 
@@ -289,6 +289,21 @@
     <div class="campo so-contrato"><label for="c_data_aceite">Data do aceite da proposta</label><input type="date" id="c_data_aceite"></div>
     <label class="check so-contrato"><input type="checkbox" id="sem_test"> Sem testemunhas (só assinatura das partes)</label>
 
+    <div class="grupo-titulo so-baixa">Contrato de baixa de empresa</div>
+    <div class="campo so-baixa"><label for="bx_prop">Data da proposta aceita (opcional)</label><input type="date" id="bx_prop"></div>
+    <div class="campo so-baixa"><label for="bx_orgao">Órgão de registro</label><input type="text" id="bx_orgao" value="Junta Comercial do Estado de Santa Catarina (JUCESC)" placeholder="ex.: OAB-SC, Junta Comercial de SC"></div>
+    <div class="campo so-baixa"><label for="bx_integral">Honorário da baixa (valor integral)</label><input type="text" id="bx_integral" value="R$ 1.300,00" placeholder="ex.: R$ 1.300,00"></div>
+    <div class="campo so-baixa"><label for="bx_desc">Desconto comercial de fidelidade (deixe vazio se não houver)</label><input type="text" id="bx_desc" placeholder="ex.: R$ 443,34"></div>
+    <div class="campo so-baixa"><label for="bx_abat">Abatimento (deixe vazio se não houver)</label><input type="text" id="bx_abat" placeholder="ex.: R$ 206,66"></div>
+    <div class="campo so-baixa"><label for="bx_abat_txt">Texto do abatimento</label><input type="text" id="bx_abat_txt" value="referente ao 13º honorário proporcional já pago"></div>
+    <div class="campo so-baixa"><label for="bx_pag">Forma e prazo de pagamento</label><input type="text" id="bx_pag" value="a combinar"></div>
+    <label class="check so-baixa"><input type="checkbox" id="bx_cond"> Incluir condição de manutenção de MEIs (o desconto depende de eles continuarem clientes)</label>
+    <div class="campo so-baixa"><label for="bx_qtd">Quantidade de MEIs</label><input type="text" id="bx_qtd" value="3 (três)"></div>
+    <div class="campo so-baixa"><label for="bx_meses">Prazo mínimo de manutenção (meses)</label><input type="text" id="bx_meses" value="6 (seis)"></div>
+    <div class="campo so-baixa"><label for="bx_nomes">Nomes dos MEIs (opcional)</label><input type="text" id="bx_nomes" placeholder="ex.: Fulano, Beltrano e Sicrano"></div>
+    <label class="check so-baixa"><input type="checkbox" id="bx_taxas" checked> Taxas dos órgãos cobradas à parte</label>
+    <label class="check so-baixa"><input type="checkbox" id="bx_mensal"> Dizer que os honorários mensais do contrato em vigor continuam devidos até o encerramento dele</label>
+    <div class="campo so-baixa"><label for="bx_obs">Observação personalizada (opcional, vira item no contrato)</label><input type="text" id="bx_obs"></div>
     <div class="grupo-titulo so-rescisao">Rescisão</div>
     <div class="campo so-rescisao"><label for="rs_data_proposta">Data da proposta</label><input type="date" id="rs_data_proposta" value="2026-08-19"></div>
     <div class="campo so-rescisao"><label for="rs_data_contrato">Data de início do contrato (vigência)</label><input type="date" id="rs_data_contrato" value="2026-09-01"></div>
@@ -37400,6 +37415,88 @@ function montarRescisao(){
   return b;
 }
 
+function montarContratoBaixa(){
+  const cNome = val("c_razao").value.trim();
+  const P = (...segs) => ({k:"p", segs: segs.map(s => typeof s === "string" ? SEG(s) : s)});
+  const H = (t) => ({k:"h", segs:[SEG(t, true)]});
+  const I = (...segs) => ({k:"item", segs: segs.map(s => typeof s === "string" ? SEG(s) : s)});
+  const ORD = ["PRIMEIRA","SEGUNDA","TERCEIRA","QUARTA","QUINTA","SEXTA","SÉTIMA","OITAVA","NONA","DÉCIMA"];
+  let n = 0;
+  const CL = (t) => { const x = H("CLÁUSULA " + ORD[n] + " - " + t); n++; return x; };
+  const num = () => n;
+  const cent = id => { const v = valorEstrito(val(id).value); return {c: Math.round(v.n * 100), vazio: v.vazio, inv: v.invalido}; };
+  const R = c => fmtMoeda(c / 100) + " (" + extensoReais(c / 100) + ")";
+  const orgao = val("bx_orgao").value.trim() || "órgão de registro";
+  const integral = cent("bx_integral"), desc = cent("bx_desc"), abat = cent("bx_abat");
+  const temDesc = !desc.vazio && !desc.inv && desc.c > 0, temAbat = !abat.vazio && !abat.inv && abat.c > 0;
+  const saldoC = integral.c - (temDesc ? desc.c : 0) - (temAbat ? abat.c : 0);
+  const saldoOk = !integral.vazio && !integral.inv && saldoC >= 0;
+  const cond = marcado("bx_cond");
+  const dProp = dataCurta(val("bx_prop").value);
+  const dataTermo = dataLonga(val("data_ass").value);
+
+  const b = [];
+  b.push({k:"titulo", segs:[SEG("CONTRATO DE PRESTAÇÃO DE SERVIÇOS", true), {t:"DE BAIXA DE EMPRESA", b:true, e:false, quebra:true}]});
+  b.push(P(SEG("CONTRATADA: ", true), SEG(ESCRITORIO.razao + ", CNPJ nº " + ESCRITORIO.cnpj + ", com sede em " + ESCRITORIO.endereco + ", representada por " + ESCRITORIO.rep + ", Contadora registrada no CRC/SC sob o nº " + ESCRITORIO.crc + ".")));
+  b[b.length-1].extra = true;
+  b.push(P(SEG("CONTRATANTE: ", true), V(cNome), SEG(", CNPJ nº "), V(val("c_cnpj").value), SEG(", com sede em "), V(enderecoCliente()), SEG(", representada por "), V(val("c_rep").value), SEG(", CPF nº "), V(val("c_cpf").value), SEG(".")));
+  b[b.length-1].extra = true;
+  b.push(P("Pelo presente instrumento particular, as partes acima, devidamente qualificadas, doravante denominadas CONTRATADA e CONTRATANTE, ajustam a prestação de serviços de encerramento (baixa) da empresa CONTRATANTE, nas condições abaixo" + (dProp ? ", decorrentes da proposta emitida em " + dProp + " e aceita pelo CONTRATANTE" : "") + "."));
+
+  b.push(CL("DO OBJETO"));
+  b.push(P(`${num()}.1. O objeto deste contrato é a baixa da empresa CONTRATANTE, compreendendo:`));
+  b.push(I("a) ", SEG("elaboração do distrato social, com protocolo e acompanhamento junto ao órgão de registro: "), V(orgao), SEG(";")));
+  b.push(I("b) ", "baixa do CNPJ na Receita Federal;"));
+  b.push(I("c) ", "baixa da inscrição municipal;"));
+  b.push(I("d) ", "elaboração do balanço e das declarações finais de encerramento exigidas."));
+  b.push(P(`${num()}.2. Não fazem parte deste contrato o pagamento de tributos, multas, juros, taxas e contribuições, a regularização de débitos ou pendências anteriores e quaisquer serviços não previstos acima, que serão orçados à parte.`));
+
+  b.push(CL("DOS HONORÁRIOS"));
+  let h = 1;
+  b.push(P(SEG(`${num()}.${h++}. Pelos serviços, o CONTRATANTE pagará à CONTRATADA honorários no valor integral de `), V(integral.vazio || integral.inv ? "" : R(integral.c)), SEG(".")));
+  if(temDesc) b.push(P(`${num()}.${h++}. Sobre esse valor incide desconto comercial de fidelidade de ${R(desc.c)}` + (cond ? ", nas condições da cláusula terceira." : ".")));
+  if(temAbat) b.push(P(`${num()}.${h++}. Fica abatido o valor de ${R(abat.c)}, ${val("bx_abat_txt").value.trim().replace(/\.+$/, "") || "conforme acordado entre as partes"}.`));
+  if(temDesc || temAbat) b.push(P(SEG(`${num()}.${h++}. O saldo líquido a pagar é de `), V(saldoOk ? R(saldoC) : ""), SEG(".")));
+  b.push(P(SEG(`${num()}.${h++}. Forma e prazo de pagamento: `), V(val("bx_pag").value.trim()), SEG(".")));
+  if(marcado("bx_taxas")) b.push(P(`${num()}.${h++}. Taxas dos órgãos relativas à baixa, quando houver, são cobradas à parte e informadas ao CONTRATANTE antes do pagamento.`));
+  if(marcado("bx_mensal")) b.push(P(`${num()}.${h++}. Os honorários mensais do contrato de prestação de serviços em vigor não se confundem com os desta baixa e seguem devidos, conforme aquele contrato, até a data de seu encerramento.`));
+
+  if(cond){
+    const qtd = val("bx_qtd").value.trim() || "__", meses = val("bx_meses").value.trim() || "__", nomes = val("bx_nomes").value.trim();
+    b.push(CL("DA CONDIÇÃO DE MANUTENÇÃO DOS MEIs"));
+    b.push(P(SEG(`${num()}.1. O desconto de fidelidade previsto neste contrato considera a manutenção dos ${qtd} MEIs ligados ao CONTRATANTE` + (nomes ? " (" : "")), ...(nomes ? [V(nomes), SEG(")")] : []), SEG(` como clientes da CONTRATADA por no mínimo ${meses} meses, contados da assinatura deste contrato.`)));
+    b.push(P(`${num()}.2. Se algum deles for encerrado ou transferido antes desse prazo, o valor do desconto` + (temDesc ? ", de " + fmtMoeda(desc.c / 100) + "," : "") + " será cobrado do CONTRATANTE em boleto adicional."));
+  }
+
+  b.push(CL("DAS OBRIGAÇÕES DO CONTRATANTE"));
+  b.push(P(`${num()}.1. O CONTRATANTE se obriga a:`));
+  b.push(I("a) ", "entregar à CONTRATADA, no prazo solicitado, os documentos e informações necessários à baixa;"));
+  b.push(I("b) ", "assinar o distrato e os demais documentos exigidos pelos órgãos;"));
+  b.push(I("c) ", "pagar os tributos, multas, juros e taxas devidos aos órgãos, que não fazem parte dos honorários."));
+  b.push(P(`${num()}.2. O CONTRATANTE declara ciência de que a baixa não apaga dívidas: o que for devido pela empresa continua existindo e pode ser cobrado nos termos da lei.`));
+
+  b.push(CL("DAS OBRIGAÇÕES DA CONTRATADA"));
+  b.push(P(`${num()}.1. A CONTRATADA executará os serviços com diligência, informará o andamento da baixa ao CONTRATANTE e, ao final, entregará cópia dos documentos de encerramento.`));
+  b.push(P(`${num()}.2. Os prazos dependem do processamento dos órgãos, e a CONTRATADA não responde por atrasos que não dependam dela. Exigências novas dos órgãos que alterem o trabalho previsto não fazem parte dos honorários e serão orçadas à parte.`));
+  const obs = val("bx_obs").value.trim().replace(/\.+$/, "");
+  if(obs) b.push(P(`${num()}.3. ${obs}.`));
+
+  b.push(CL("DA VIGÊNCIA"));
+  b.push(P(`${num()}.1. Este contrato vigora da data de sua assinatura até a conclusão da baixa, comprovada pela entrega dos documentos de encerramento ao CONTRATANTE.`));
+
+  b.push(CL("DA PROTEÇÃO DE DADOS (LGPD)"));
+  b.push(P(`${num()}.1. As partes manterão o sigilo das informações recebidas e tratarão os dados pessoais apenas para o cumprimento deste contrato e de obrigações legais, nos termos da Lei nº 13.709/2018 (LGPD).`));
+  b.push(P(`${num()}.2. Qualquer alteração deste contrato será feita por termo aditivo escrito, que poderá ser assinado por meio eletrônico.`));
+
+  b.push(CL("DO FORO"));
+  b.push(P(SEG(`${num()}.1. Fica eleito o foro da Comarca de `), V(val("foro").value.toUpperCase()), SEG(" para dirimir quaisquer controvérsias oriundas deste contrato.")));
+
+  b.push(P("E, por estarem de acordo, firmam este contrato em duas vias de igual teor e forma, podendo ser assinado de forma física ou eletrônica/digital."));
+  b.push(P(V(val("cidade").value.toUpperCase()), SEG(", "), V(dataTermo), SEG(".")));
+  b.push({k:"assin", cont: cNome, contCnpj: val("c_cnpj").value.trim(), cnpjCont: ESCRITORIO.cnpj, t1: "", t2: "", semTest: true});
+  return b;
+}
+
 /* ---------- Cláusulas exigidas pela Res. CFC 1.590/2020 (art. 2º, c, i, j, k) ---------- */
 function textosLegais(art){
   const CT = art === "a" ? "A CONTRATANTE" : "O CONTRATANTE";
@@ -37490,6 +37587,7 @@ function montarCartaResp(){
 
 function montarBlocos(){
   if(tipoAtual() === "carta_resp") return montarCartaResp();
+  if(tipoAtual() === "contrato_baixa") return montarContratoBaixa();
   if(tipoAtual() === "aditivo") return montarAditivo();
   if(tipoAtual() === "proposta_abertura") return montarAbertura();
   if(tipoAtual() === "proposta_mensal") return montarMensal();
@@ -37658,6 +37756,14 @@ function checarCampos(){
     av.textContent = falt.length ? `Faltam ${falt.length} campo(s). Eles aparecem como ______ no termo.` : "";
     return;
   }
+  if(tipoAtual() === "contrato_baixa"){
+    const req = ["c_razao","c_cnpj","c_endereco","c_cep","c_rep","c_cpf","cidade","data_ass","bx_orgao","bx_integral","bx_pag"];
+    const falt = req.filter(id => !val(id).value.trim());
+    const av = val("aviso");
+    av.style.display = falt.length ? "block" : "none";
+    av.textContent = falt.length ? `Faltam ${falt.length} campo(s). Eles aparecem como ______ no contrato.` : "";
+    return;
+  }
   if(tipoAtual() === "carta_resp"){
     const req = ["c_razao","c_cnpj","c_rep","c_cpf","cidade","data_ass","ca_ini","ca_fim"];
     const falt = req.filter(id => !val(id).value.trim());
@@ -37776,16 +37882,18 @@ async function baixarWord(){
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   const nome = (val("c_razao").value.trim() || "cliente").replace(/[^\w\- ]+/g, "").replace(/\s+/g, "_");
-  const prefixo = (tipoAtual() === "aditivo" ? "Termo_Aditivo" : tipoAtual() === "carta_resp" ? "Carta_Responsabilidade" : isRescisao() ? "Rescisao" : isProposta() ? "Proposta" : "Contrato") + (isMEI() ? "_MEI" : "") + (isCam() ? "_MEI_Caminhoneiro" : "");
+  const prefixo = (tipoAtual() === "contrato_baixa" ? "Contrato_Baixa" : tipoAtual() === "aditivo" ? "Termo_Aditivo" : tipoAtual() === "carta_resp" ? "Carta_Responsabilidade" : isRescisao() ? "Rescisao" : isProposta() ? "Proposta" : "Contrato") + (isMEI() ? "_MEI" : "") + (isCam() ? "_MEI_Caminhoneiro" : "");
   a.href = url; a.download = `${prefixo}_${nome}.docx`;
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 2000);
 }
 
 function ajustarCampos(){
-  const proposta = isProposta(), mei = isMEI(), cam = isCam(), resc = isRescisao(), carta = tipoAtual() === "carta_resp", adit = tipoAtual() === "aditivo";
-  document.querySelectorAll(".so-contrato").forEach(el => el.style.display = (proposta || resc || carta || adit) ? "none" : "");
-  document.querySelectorAll(".so-exec").forEach(el => el.style.display = (proposta || resc || carta) ? "none" : "");
+  const proposta = isProposta(), mei = isMEI(), cam = isCam(), resc = isRescisao(), carta = tipoAtual() === "carta_resp", adit = tipoAtual() === "aditivo", bx = tipoAtual() === "contrato_baixa";
+  document.querySelectorAll(".so-contrato").forEach(el => el.style.display = (proposta || resc || carta || adit || bx) ? "none" : "");
+  document.querySelectorAll(".so-exec").forEach(el => el.style.display = (proposta || resc || carta || bx) ? "none" : "");
+  document.querySelectorAll(".so-end").forEach(el => el.style.display = (resc || carta || adit) ? "none" : "");
+  document.querySelectorAll(".so-baixa").forEach(el => el.style.display = bx ? "" : "none");
   document.querySelectorAll(".so-aditivo").forEach(el => el.style.display = adit ? "" : "none");
   document.querySelectorAll(".so-per").forEach(el => el.style.display = (carta || (adit && marcado("ad_carta"))) ? "" : "none");
   document.querySelectorAll(".so-carta").forEach(el => el.style.display = carta ? "" : "none");
@@ -37801,18 +37909,18 @@ function ajustarCampos(){
     lbl.style.display = campo.style.display = semReg ? "none" : "";
     if(semReg){ val("sv_lp").checked = false; }
   }
-  document.querySelectorAll(".so-geral").forEach(el => el.style.display = (mei || cam || resc || avu || novo || carta || adit) ? "none" : "");
+  document.querySelectorAll(".so-geral").forEach(el => el.style.display = (mei || cam || resc || avu || novo || carta || adit || bx) ? "none" : "");
   document.querySelectorAll(".so-avulso").forEach(el => el.style.display = avu ? "" : "none");
   const outrosOn = marcado("outros_on");
-  ["1","2","3","4"].forEach(k => ["av_s"+k+"_nome","av_s"+k+"_desc","av_s"+k+"_valor"].forEach(id => { const c = val(id).closest(".campo"); if(c) c.style.display = (avu && !outrosOn) ? "none" : ""; }));
+  ["1","2","3","4"].forEach(k => ["av_s"+k+"_nome","av_s"+k+"_desc","av_s"+k+"_valor"].forEach(id => { const c = val(id).closest(".campo"); if(c) c.style.display = (!avu || !outrosOn) ? "none" : ""; }));
   document.querySelectorAll(".so-mei").forEach(el => el.style.display = mei ? "" : "none");
   document.querySelectorAll(".so-cam").forEach(el => el.style.display = cam ? "" : "none");
   document.querySelectorAll(".so-nao-cam").forEach(el => el.style.display = cam ? "none" : "");
-  document.querySelectorAll(".so-nr").forEach(el => el.style.display = (resc || carta || adit) ? "none" : "");
-  ["valor","venc","inicio"].forEach(id => val(id).closest(".campo").style.display = (resc || avu || novo || carta || adit) ? "none" : "");
+  document.querySelectorAll(".so-nr").forEach(el => el.style.display = (resc || carta || adit || bx) ? "none" : "");
+  ["valor","venc","inicio"].forEach(id => val(id).closest(".campo").style.display = (resc || avu || novo || carta || adit || bx) ? "none" : "");
   document.querySelectorAll(".so-rescisao").forEach(el => el.style.display = resc ? "" : "none");
   document.querySelectorAll(".so-optb").forEach(el => el.style.display = (resc && val("rs_opcao").value === "B") ? "" : "none");
-  const nome = adit ? "Termo Aditivo" : carta ? "Carta de Responsabilidade" : resc ? "Termo de Rescisão" : (proposta ? "Proposta" : "Contrato") + (mei ? " para MEI" : cam ? " MEI Caminhoneiro" : "");
+  const nome = bx ? "Contrato de Baixa de Empresa" : adit ? "Termo Aditivo" : carta ? "Carta de Responsabilidade" : resc ? "Termo de Rescisão" : (proposta ? "Proposta" : "Contrato") + (mei ? " para MEI" : cam ? " MEI Caminhoneiro" : "");
   document.title = "Gerador de " + nome;
   document.querySelector(".painel h1").textContent = "Gerador de " + nome;
 }
