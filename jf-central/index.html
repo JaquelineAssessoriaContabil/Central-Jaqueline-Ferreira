@@ -120,7 +120,7 @@ function filtrar(){
 function abrir(d){
   var ok=false;for(var i=0;i<sel.options.length;i++)if(sel.options[i].value===d&&d&&!sel.options[i].disabled)ok=true;
   if(!ok){fr.hidden=true;bar.hidden=true;menu.hidden=false;fr.removeAttribute('src');sel.value='';document.title='JF Assessoria | Jaqueline Ferreira Assessoria Contábil';return;}
-  sel.value=d;fr.src=d+'/index.html';full.href=d+'/index.html';fr.hidden=false;bar.hidden=false;menu.hidden=true;
+  sel.value=d;fr.src=d+'/index.html?v='+Math.floor(Date.now()/60000);full.href=d+'/index.html';fr.hidden=false;bar.hidden=false;menu.hidden=true;
   document.title=sel.options[sel.selectedIndex].text+' | JF Assessoria';
 }
 sel.addEventListener('change',function(){location.hash=sel.value;});
