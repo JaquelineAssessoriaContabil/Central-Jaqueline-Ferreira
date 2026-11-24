@@ -36580,7 +36580,7 @@ var DB={"8650004":{f:1,b:B5M1+", XVI, fisioterapia"},"7111100":{f:1,b:B5M1+", XV
 "6202300":{f:1,b:B5M2+", V, licenciamento de software"},"6203100":{f:1,b:B5M2+", V, licenciamento de software"},
 "8640202":{f:1,b:B5M2+", XII, laboratório clínico"},"8640201":{f:1,b:B5M2+", XII, anatomia patológica"},
 "6920602":{f:1,b:B5I+", IX, auditoria e consultoria"},"7020400":{f:1,b:B5I+", IX, consultoria em gestão"},"7112000":{f:1,b:B5I+", VI, engenharia"},"7311400":{f:1,b:B5I+", X, publicidade"},"7500100":{f:1,b:B5I+", II, veterinária"},
-"6920601":{f:0,a:"III",b:"LC 123 art. 18, §5º-B, XIV (escritório de contabilidade: Anexo III direto, sem Fator R; ver também §§22-B e 22-C)"}};
+"6920601":{f:0,a:"III",b:"LC 123 art. 18, §5º-B, XIV (escritório de contabilidade: Anexo III direto, sem Fator R; ver também §§22-B e 22-C)"},"6911701":{f:0,a:"IV",b:"LC 123 art. 18, §5º-C (serviços advocatícios: Anexo IV, sem Fator R; conferir o inciso)"},"4321500":{f:0,a:"III",b:"LC 123 art. 18, §5º-B, IX (instalação, reparos e manutenção em geral: Anexo III)"},"3321000":{f:0,a:"III",b:"LC 123 art. 18, §5º-B, IX (instalação e manutenção: Anexo III)"},"4929901":{f:0,a:"III",b:"LC 123 art. 18, §5º-B, XIII (transporte municipal de passageiros: Anexo III)"}};
 
 function $(i){return i?document.getElementById(i):null}
 var inp=$(CFG.cnpj);if(!inp)return;
@@ -36641,14 +36641,14 @@ function aplica(d,j){var feitos=[];
   if(CFG.end&&partes.length&&setv(CFG.end,partes.join(", ")))feitos.push("endereço");
   var cep=pega(j,"cep");if(CFG.cep&&cep&&setv(CFG.cep,fmtCep(cep)))feitos.push("CEP");
   var cd=pega(j,"cnae_fiscal_descricao");var all=listaCnaes(j,cn,cd);var fr=all.filter(function(x){return DB[x.c]&&DB[x.c].f});
-  var prFR=all.length&&all[0].p&&DB[all[0].c]&&DB[all[0].c].f;if(CFG.eleg&&fr.length&&setv(CFG.eleg,prFR?"sim":"mista"))feitos.push(prFR?"elegibilidade (Sujeita ao Fator R)":"elegibilidade (atividade mista: o Fator R está só em CNAE secundário)");
+  if(CFG.eleg&&fr.length&&setv(CFG.eleg,"sim"))feitos.push("elegibilidade (Sujeita ao Fator R)");
   limpa();var m=document.createElement("div");m.className="m";
   linha(feitos.length?"Preenchido: "+feitos.join(", ")+". Revise antes de usar.":"A consulta voltou, mas esta ferramenta não tem campo para esses dados.",m);
   var sit=pega(j,"descricao_situacao_cadastral","situacaoCadastral");
   if(sit){var dt=fmtData(pega(j,"data_situacao_cadastral"));var l=linha("Situação cadastral: "+sit+(dt?" (desde "+dt+")":""),m);if(String(sit).toUpperCase()!=="ATIVA"){l.style.fontWeight="700";l.style.color="#b3261e"}}
   if(cn)linha("Atividade principal: "+fmtCnae(cn)+(cd?" — "+cd:""),m);
   if(all.length){
-    if(fr.length){var w=linha("Atenção ao Fator R: "+(fr.length>1?fr.length+" CNAEs constam":"1 CNAE consta")+" na lista de atividades sujeitas ao Fator R"+(CFG.eleg?" (elegibilidade marcada como '"+(prFR?"Sujeita ao Fator R":"Atividade mista / requer análise")+"'; confirme se a atividade é exercida de fato)":"")+":",m);w.style.fontWeight="700";
+    if(fr.length){var w=linha("Atenção ao Fator R: "+(fr.length>1?fr.length+" CNAEs constam":"1 CNAE consta")+" na lista de atividades sujeitas ao Fator R"+(CFG.eleg?" (elegibilidade marcada como 'Sujeita ao Fator R'; confirme se a atividade é exercida de fato)":"")+":",m);w.style.fontWeight="700";
       fr.forEach(function(x){linha("• "+fmtCnae(x.c)+" — "+x.d+(x.p?" (principal)":" (secundário)"),m)})}
     else linha("Nenhum dos "+all.length+" CNAE(s) consta na lista de Fator R desta ferramenta. Isso não prova que não haja Fator R, pois a lista é curta: confira na LC 123, art. 18.",m);
     var dtl=document.createElement("details");dtl.style.marginTop="4px";var sm=document.createElement("summary");sm.textContent="Ver todos os CNAEs e o anexo ("+all.length+")";sm.style.cursor="pointer";dtl.appendChild(sm);
@@ -36661,6 +36661,51 @@ btn.onclick=function(){var d=digits(inp.value);
   if(d.length!==14){aviso("Digite os 14 números do CNPJ antes de buscar.",true);return}
   if(!valido(d)){aviso("Esse CNPJ não é válido (dígitos verificadores não conferem). Confira a digitação.",true);return}
   if(consentido)busca(d);else pergunta(d)};
+})();
+</script>
+
+
+<script>
+/* JF • Salvar automático — guarda o que é digitado neste navegador (localStorage). Nada é enviado para fora. */
+(function(){"use strict";
+var KEY="jf_auto_"+location.pathname.replace(/[^a-z0-9]/gi,"_");
+var campos=[],pronto=false,timer=null;
+function skip(el){var t=(el.type||"").toLowerCase();return t==="file"||t==="password"||t==="button"||t==="submit"||t==="reset"||t==="hidden"||el.hasAttribute("data-nosave")||el.closest(".jfq")}
+function chave(el,i){if(el.id)return "#"+el.id;var t=(el.type||"").toLowerCase();if(el.name)return "n:"+el.name+(t==="radio"||t==="checkbox"?":"+el.value:"")+":"+i;return "i:"+i}
+function coleta(){campos=[];var all=document.querySelectorAll("input,select,textarea");for(var i=0;i<all.length;i++){if(skip(all[i]))continue;campos.push({el:all[i],k:chave(all[i],i)})}}
+function ler(){try{return JSON.parse(localStorage.getItem(KEY)||"{}")||{}}catch(e){return {}}}
+function valor(el){var t=(el.type||"").toLowerCase();if(t==="checkbox"||t==="radio")return el.checked?1:0;return el.value}
+function grava(){if(!pronto)return;var o={};campos.forEach(function(c){var v=valor(c.el);if(typeof v==="string"&&v.length>20000)return;o[c.k]=v});
+  try{localStorage.setItem(KEY,JSON.stringify({v:o,t:Date.now()}));marca(true)}catch(e){marca(false)}}
+function agenda(){if(!pronto)return;clearTimeout(timer);timer=setTimeout(grava,400)}
+function ev(el,n){try{el.dispatchEvent(new Event(n,{bubbles:true}))}catch(e){}}
+function seta(c,v,dispara){var el=c.el,t=(el.type||"").toLowerCase();
+  if(t==="checkbox"||t==="radio"){var b=!!v;if(el.checked!==b){el.checked=b;if(dispara){ev(el,"input");ev(el,"change")}}return}
+  if((t==="date"||t==="month")&&el.value&&dispara)return;
+  if(el.value!==v){el.value=v;if(dispara){ev(el,"input");ev(el,"change")}}}
+function restaura(){coleta();var d=ler(),o=d.v||{};
+  var estr=[],txt=[];campos.forEach(function(c){if(!(c.k in o))return;var t=(c.el.type||"").toLowerCase();(c.el.tagName==="SELECT"||t==="checkbox"||t==="radio"?estr:txt).push(c)});
+  estr.forEach(function(c){seta(c,o[c.k],true)});
+  txt.forEach(function(c){seta(c,o[c.k],true)});
+  estr.concat(txt).forEach(function(c){if(c.el.tagName==="SELECT"||/checkbox|radio/.test(c.el.type||""))seta(c,o[c.k],false)});
+  pronto=true;if(d.t)marca(true,d.t)}
+var bar=document.createElement("div");
+bar.style.cssText="position:fixed;right:10px;bottom:46px;z-index:50;background:#fff;border:1px solid #E6D8D4;border-radius:999px;padding:4px 6px 4px 12px;font:12px/1.3 'Segoe UI',system-ui,sans-serif;color:#8E6F6B;box-shadow:0 2px 8px rgba(0,0,0,.08);display:flex;gap:8px;align-items:center";
+bar.className="jfauto";
+var st=document.createElement("span"),bt=document.createElement("button");
+bt.type="button";bt.textContent="Limpar";bt.style.cssText="font:inherit;border:1px solid #C5A29E;background:#fff;color:#8E6F6B;border-radius:999px;padding:2px 10px;cursor:pointer";
+bar.appendChild(st);bar.appendChild(bt);
+var sty=document.createElement("style");sty.textContent="@media print{.jfauto{display:none!important}}";document.head.appendChild(sty);
+function hora(t){var d=new Date(t||Date.now());return ("0"+d.getHours()).slice(-2)+":"+("0"+d.getMinutes()).slice(-2)}
+function marca(ok,t){st.textContent=ok?"Salvo neste navegador às "+hora(t):"Não foi possível salvar aqui";st.title="Fica só neste computador e navegador. Nada é enviado para fora."}
+var conf=false,ct=null;
+bt.onclick=function(){if(!conf){conf=true;bt.textContent="Clique de novo para apagar";bt.style.background="#F6EFED";clearTimeout(ct);ct=setTimeout(function(){conf=false;bt.textContent="Limpar";bt.style.background="#fff"},4000);return}
+  clearTimeout(ct);pronto=false;try{localStorage.removeItem(KEY)}catch(e){}location.reload()};
+document.body.appendChild(bar);st.textContent="Salvamento automático ativo";
+document.addEventListener("input",agenda,true);document.addEventListener("change",agenda,true);
+window.addEventListener("pagehide",function(){clearTimeout(timer);grava()});
+function inicia(){setTimeout(restaura,60)}
+if(document.readyState==="complete")inicia();else window.addEventListener("load",inicia);
 })();
 </script>
 
