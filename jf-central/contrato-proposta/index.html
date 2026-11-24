@@ -275,8 +275,8 @@
       <div class="linha-plano"><span>Premium</span><input type="text" id="pl_valor_premium" value="R$ 247,00"><input type="number" id="pl_notas_premium" min="0" value="30"></div>
     </div>
     <div class="campo"><label for="m_plano">Plano MEI (preenche o valor mensal)</label><select id="m_plano" class="sel"><option value="essencial">Essencial</option><option value="profissional">Profissional</option><option value="premium">Premium</option></select></div>
-    <label class="check"><input type="checkbox" id="m_carencia" checked> Carência de 3 meses e ressarcimento na rescisão antecipada</label>
-    <div class="campo"><label for="m_ressarc">Valor do ressarcimento</label><input type="text" id="m_ressarc" value="R$ 197,00"></div>
+    <label class="check"><input type="checkbox" id="m_carencia" checked> Carência de 6 meses e ressarcimento na rescisão antecipada</label>
+    <div class="campo"><label for="m_ressarc">Valor do ressarcimento (vazio = valor do plano mais caro)</label><input type="text" id="m_ressarc" placeholder="automático: plano mais caro"></div>
     <div class="campo"><label for="m_excedente">Valor de cada nota excedente</label><input type="text" id="m_excedente" value="R$ 20,00"></div>
     </div>
     <div class="campo so-nr"><label for="valor">Valor mensal</label><input type="text" id="valor" value="R$ 300,00"></div>
@@ -36681,6 +36681,13 @@ function planos(){
   });
 }
 function planoMEI(){ const L = planos(); return L.find(x => x.id === val("m_plano").value) || L[0]; }
+function ressarcimentoMEI(){
+  const digitado = val("m_ressarc").value.trim();
+  if(digitado) return digitado;
+  let melhor = null;
+  planos().forEach(pl => { const v = valorEstrito(pl.valor); if(!v.invalido && !v.vazio && (!melhor || v.n > melhor.n)) melhor = {n: v.n, txt: fmtMoeda(v.n)}; });
+  return melhor ? melhor.txt : "R$ 197,00";
+}
 function aplicarPlano(){ val("valor").value = planoMEI().valor; }
 
 function servicosMEI(I, sec){
@@ -36706,7 +36713,7 @@ function montarContratoMEI(){
   const aviso = Math.max(1, parseInt(val("aviso_dias").value, 10) || 30);
   const atraso = Math.max(1, parseInt(val("atraso_dias").value, 10) || 30);
   const plano = planoMEI();
-  const ressarc = val("m_ressarc").value.trim() || "R$ 197,00";
+  const ressarc = ressarcimentoMEI();
 
   const b = [];
   b.push({k:"titulo", segs:[SEG("CONTRATO DE ASSESSORIA CONTÁBIL", true), {t:"PARA MICROEMPREENDEDOR INDIVIDUAL (MEI)", b:true, e:false, quebra:true}]});
@@ -36731,7 +36738,7 @@ function montarContratoMEI(){
   b.push(P(SEG("4.1. Pelos serviços, o CONTRATANTE pagará o valor mensal de "), B(val("valor").value), SEG(", vencível todo dia "), V(val("venc").value), SEG(".")));
   b.push(P("4.2. O valor será reajustado anualmente pelo índice IPCA/IBGE."));
   b.push(P("4.3. Mora: o não pagamento na data do vencimento sujeitará o CONTRATANTE à multa moratória de 2% (dois por cento) sobre o valor devido, acrescida de juros de mora de 1% (um por cento) ao mês, calculados pro rata die, além da atualização monetária pelo índice previsto no item 4.2."));
-  if(marcado("m_carencia")) b.push(P(`4.4. Isenção e carência: a isenção dos honorários de abertura do CNPJ MEI está vinculada à manutenção do contrato por, no mínimo, 3 (três) meses. Em caso de rescisão antecipada por culpa ou vontade do CONTRATANTE, este pagará à CONTRATADA o valor de ${ressarc} a título de ressarcimento pelos serviços iniciais prestados.`));
+  if(marcado("m_carencia")) b.push(P(`4.4. Isenção e carência: a isenção dos honorários de abertura do CNPJ MEI está vinculada à manutenção do contrato por, no mínimo, 6 (seis) meses. Em caso de rescisão antecipada por culpa ou vontade do CONTRATANTE, este pagará à CONTRATADA o valor de ${ressarc} a título de ressarcimento pelos serviços iniciais prestados.`));
 
   b.push(H("CLÁUSULA QUINTA - DA VIGÊNCIA E RESCISÃO"));
   b.push(P(SEG("5.1. O contrato vigora por prazo indeterminado a partir de "), V(inicio), SEG(".")));
@@ -36765,7 +36772,7 @@ function montarPropostaMEI(){
   const I = (...segs) => ({k:"item", segs: segs.map(s => typeof s === "string" ? SEG(s) : s)});
   const validade = Math.max(1, parseInt(val("validade").value, 10) || 15);
   const plano = planoMEI();
-  const ressarc = val("m_ressarc").value.trim() || "R$ 197,00";
+  const ressarc = ressarcimentoMEI();
 
   const b = [];
   b.push({k:"titulo", segs:[SEG("PROPOSTA DE ASSESSORIA CONTÁBIL", true), {t:"PARA MICROEMPREENDEDOR INDIVIDUAL (MEI)", b:true, e:false, quebra:true}]});
@@ -36791,7 +36798,7 @@ function montarPropostaMEI(){
   const vAb = val("mei_abertura").value.trim();
   const vAbTxt = vAb ? (vAb.startsWith("R$") ? vAb : "R$ " + vAb) : "";
   b.push(P(`4.1. Abertura sem custo de registro: a emissão do CNPJ MEI no Portal do Empreendedor não tem custo para a CLIENTE. ${vAbTxt ? "Os honorários de orientação inicial e formalização são de " + vAbTxt + ", independente do plano contratado." : "Os honorários cobrem a orientação inicial e a formalização feita pelo escritório, conforme o plano contratado."}`));
-  if(marcado("m_carencia")) b.push(P(`4.2. Regra de permanência: a permanência mínima é de 90 (noventa) dias. Caso o contrato seja rescindido antes desse prazo por iniciativa do CLIENTE, será cobrada taxa de ressarcimento técnico de ${ressarc}.`));
+  if(marcado("m_carencia")) b.push(P(`4.2. Regra de permanência: a permanência mínima é de 6 (seis) meses. Caso o contrato seja rescindido antes desse prazo por iniciativa do CLIENTE, será cobrada taxa de ressarcimento técnico de ${ressarc}.`));
   b.push(P(`4.${marcado("m_carencia") ? 3 : 2}. Regularização total: monitoramento constante para evitar o cancelamento do CNPJ e a perda de direitos previdenciários.`));
 
   b.push(H("5. NOTAS IMPORTANTES"));
