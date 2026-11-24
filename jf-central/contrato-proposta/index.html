@@ -255,6 +255,7 @@
     <div class="grupo-titulo so-aditivo">Termo aditivo</div>
     <div class="campo so-aditivo"><label for="ad_data">Data do contrato que será aditado</label><input type="date" id="ad_data"></div>
     <div class="campo so-aditivo"><label for="ad_art">Tipo de cliente</label><select id="ad_art" class="sel"><option value="a">Empresa (A CONTRATANTE)</option><option value="o">MEI ou pessoa física (O CONTRATANTE)</option></select></div>
+    <label class="check so-aditivo"><input type="checkbox" id="ad_reaj"> Acrescentar cláusula de reajuste anual dos honorários pelo IPCA (use nos contratos que não têm, como os de MEI)</label>
     <label class="check so-aditivo"><input type="checkbox" id="ad_carta" checked> Incluir a entrega da Carta de Responsabilidade do período abaixo</label>
     <div class="grupo-titulo so-per">Período-base da Carta de Responsabilidade</div>
     <div class="campo so-per"><label for="ca_ini">Início do período-base</label><input type="date" id="ca_ini" value="2026-01-01"></div>
@@ -37436,6 +37437,11 @@ function montarAditivo(){
   textosLegais(art).forEach((segs, i) => b.push(I(SEG(String.fromCharCode(97 + i) + ") "), ...segs)));
   let n = 2;
   const ORD = ["PRIMEIRA","SEGUNDA","TERCEIRA","QUARTA"];
+  if(marcado("ad_reaj")){
+    b.push(H("CLÁUSULA " + ORD[n-1] + " - DO REAJUSTE DOS HONORÁRIOS"));
+    b.push(P(n + ".1. Os honorários mensais serão reajustados anualmente pelo índice IPCA/IBGE."));
+    n++;
+  }
   if(marcado("ad_carta")){
     b.push(H("CLÁUSULA " + ORD[n-1] + " - DA CARTA DE RESPONSABILIDADE"));
     b.push(P(SEG(n + ".1. " + CT + " entregará à CONTRATADA, junto com a assinatura deste termo, a Carta de Responsabilidade da Administração referente ao período-base de "), V(dataCurta(val("ca_ini").value)), SEG(" a "), V(dataCurta(val("ca_fim").value)), SEG(".")));
