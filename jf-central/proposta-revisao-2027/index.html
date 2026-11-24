@@ -417,16 +417,20 @@ function aplica(d,j){var feitos=[];
   if(CFG.end&&partes.length&&setv(CFG.end,partes.join(", ")))feitos.push("endereço");
   var cep=pega(j,"cep");if(CFG.cep&&cep&&setv(CFG.cep,fmtCep(cep)))feitos.push("CEP");
   var cd=pega(j,"cnae_fiscal_descricao");var all=listaCnaes(j,cn,cd);var fr=all.filter(function(x){return DB[x.c]&&DB[x.c].f});
-  if(CFG.eleg&&fr.length&&setv(CFG.eleg,"sim"))feitos.push("elegibilidade (Sujeita ao Fator R)");
+  var desc=all.filter(function(x){return !DB[x.c]});var prFR=!!(all.length&&DB[all[0].c]&&DB[all[0].c].f);var eleg="";
+  if(fr.length)eleg=prFR?"sim":"mista";else if(all.length&&!desc.length)eleg="nao";
+  var eEl=CFG.eleg?$(CFG.eleg):null;var elegOk=!!(eleg&&eEl&&(eEl.value==="revisar"||eEl.value==="")&&setv(CFG.eleg,eleg));
+  if(elegOk)feitos.push("elegibilidade ("+({sim:"Sujeita ao Fator R",nao:"Não sujeita ao Fator R",mista:"Atividade mista / requer análise"})[eleg]+")");
   limpa();var m=document.createElement("div");m.className="m";
   linha(feitos.length?"Preenchido: "+feitos.join(", ")+". Revise antes de usar.":"A consulta voltou, mas esta ferramenta não tem campo para esses dados.",m);
   var sit=pega(j,"descricao_situacao_cadastral","situacaoCadastral");
   if(sit){var dt=fmtData(pega(j,"data_situacao_cadastral"));var l=linha("Situação cadastral: "+sit+(dt?" (desde "+dt+")":""),m);if(String(sit).toUpperCase()!=="ATIVA"){l.style.fontWeight="700";l.style.color="#b3261e"}}
   if(cn)linha("Atividade principal: "+fmtCnae(cn)+(cd?" — "+cd:""),m);
   if(all.length){
-    if(fr.length){var w=linha("Atenção ao Fator R: "+(fr.length>1?fr.length+" CNAEs constam":"1 CNAE consta")+" na lista de atividades sujeitas ao Fator R"+(CFG.eleg?" (elegibilidade marcada como 'Sujeita ao Fator R'; confirme se a atividade é exercida de fato)":"")+":",m);w.style.fontWeight="700";
+    if(fr.length){var w=linha("Atenção ao Fator R: "+(fr.length>1?fr.length+" CNAEs constam":"1 CNAE consta")+" na lista de atividades sujeitas ao Fator R"+(elegOk?" (elegibilidade marcada como '"+({sim:"Sujeita ao Fator R",mista:"Atividade mista / requer análise"})[eleg]+"'; confirme se a atividade é exercida de fato)":"")+":",m);w.style.fontWeight="700";
       fr.forEach(function(x){linha("• "+fmtCnae(x.c)+" — "+x.d+(x.p?" (principal)":" (secundário)"),m)})}
-    else linha("Nenhum dos "+all.length+" CNAE(s) consta na lista de Fator R desta ferramenta. Isso não prova que não haja Fator R, pois a lista é curta: confira na LC 123, art. 18.",m);
+    else if(!desc.length)linha("Todos os "+all.length+" CNAE(s) foram reconhecidos e nenhum é sujeito ao Fator R (anexo de cada um em \"Ver todos os CNAEs\"). Confirme a atividade efetivamente exercida.",m);
+    else linha(desc.length+" de "+all.length+" CNAE(s) não estão na lista desta ferramenta (anexo não identificado) e nenhum dos reconhecidos é sujeito ao Fator R. Elegibilidade deixada em \"Ainda não analisada\": confira na LC 123, art. 18.",m);
     var dtl=document.createElement("details");dtl.style.marginTop="4px";var sm=document.createElement("summary");sm.textContent="Ver todos os CNAEs e o anexo ("+all.length+")";sm.style.cursor="pointer";dtl.appendChild(sm);
     all.forEach(function(x){var l=document.createElement("div");l.style.cssText="margin:3px 0;font-size:12px";l.textContent=fmtCnae(x.c)+" — "+x.d+(x.p?" (principal)":"")+": "+tagCnae(x.c);dtl.appendChild(l)});m.appendChild(dtl)}
   var porte=pega(j,"porte","descricao_porte");if(porte)linha("Porte: "+porte,m);
@@ -439,6 +443,7 @@ btn.onclick=function(){var d=digits(inp.value);
   if(consentido)busca(d);else pergunta(d)};
 })();
 </script>
+
 
 
 <script>
