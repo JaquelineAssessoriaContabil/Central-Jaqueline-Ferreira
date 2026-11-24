@@ -128,7 +128,9 @@ body[data-tab="proposta"] #impressao{display:block}
       <div class="grid">
         <div><label for="cliente">Nome do cliente / empresa</label><input type="text" id="cliente" autocomplete="off"></div>
         <div><label for="regime">Regime</label>
-          <select id="regime"><option value="mei">MEI</option><option value="simples">Simples Nacional</option><option value="lp">Lucro Presumido</option></select></div>
+          <select id="regime"><option value="mei">MEI</option><option value="simples">Simples Nacional</option><option value="hibrido">Simples Nacional Híbrido</option><option value="lp">Lucro Presumido</option><option value="lr">Lucro Real</option></select></div>
+        <div id="gModo"><label for="modo">Como calcular</label><select id="modo"><option value="tabela">Tabela por faturamento mensal</option><option value="formula">Conta por itens (base + atividade + notas)</option></select></div>
+        <div id="gFat"><label for="fat">Faturamento mensal médio (R$)</label><input type="number" id="fat" min="0" step="0.01" value="30000"></div>
         <div id="gAtiv"><label for="ativ">Atividade principal</label>
           <select id="ativ"><option value="servicos">Serviços</option><option value="comercio">Comércio</option><option value="industria">Indústria</option></select></div>
         <div id="gSec"><label>Atividades secundárias (marque se tiver)</label>
@@ -138,6 +140,12 @@ body[data-tab="proposta"] #impressao{display:block}
         <div><label for="notas">Notas fiscais por mês</label><input type="number" id="notas" min="0" step="1" value="30"></div>
         <div id="gFunc"><label for="func">Funcionários</label><input type="number" id="func" min="0" step="1" value="1"></div>
         <div id="gBase"><label for="base">Honorário base (R$)</label><input type="number" id="base" min="0" step="0.01"></div>
+        <div id="gPerfil"><label for="perfil">Como é o cliente (dá trabalho?)</label><select id="perfil"><option value="0"></option><option value="1"></option><option value="2"></option></select></div>
+        <div id="gExtras"><label>Serviços a mais no mensal (marque os que entram)</label>
+          <div class="chk"><input type="checkbox" id="ex0"><label for="ex0" id="exl0" style="margin:0;color:#000"></label></div>
+          <div class="chk"><input type="checkbox" id="ex1"><label for="ex1" id="exl1" style="margin:0;color:#000"></label></div>
+          <input type="text" id="ex_desc" placeholder="Outro serviço (descreva)" maxlength="80" autocomplete="off" style="margin-top:6px">
+          <input type="number" id="ex_val" min="0" step="0.01" placeholder="Valor mensal do outro serviço (R$)" style="margin-top:6px"></div>
         <div id="gAj"><label for="aj">Ajuste comercial (%)</label><input type="number" id="aj" step="0.1" value="0"></div>
       </div>
       <div id="avisoMei" class="aviso" hidden></div>
@@ -212,13 +220,19 @@ body[data-tab="proposta"] #impressao{display:block}
   </section>
 
   <section class="aba" id="a-parametros">
-    <div class="aviso">Os valores abaixo são <b>exemplos</b>, exceto os planos MEI (R$ 167, 197 e 227). Troque pelos seus preços reais.</div>
+    <div class="aviso">Os valores abaixo são <b>exemplos</b>, exceto os planos MEI (R$ 167, 197 e 227). A tabela por faturamento vem de uma referência de outro escritório: confira antes de usar com cliente. Troque pelos seus preços reais.</div>
     <div class="card">
       <h2>Planos MEI (por faixa de notas)</h2>
       <div class="grid" id="parMei"></div>
     </div>
     <div class="card">
-      <h2>Simples Nacional e Lucro Presumido</h2>
+      <h2>Tabela por faturamento mensal (modo “Tabela”)</h2>
+      <p style="font-size:13px;color:#555;margin:0 0 8px">Valores iniciais copiados da tabela de referência recebida (Escofer, nov/2026). São <b>exemplo</b>: troque pelos seus preços. Valores em R$ por mês.</p>
+      <div id="parTab"></div>
+      <div class="grid" id="parTab2"></div>
+    </div>
+    <div class="card">
+      <h2>Simples Nacional e Lucro Presumido (modo “Conta por itens”)</h2>
       <div class="grid" id="parGeral"></div>
     </div>
     <div class="card">
@@ -244,7 +258,8 @@ body[data-tab="proposta"] #impressao{display:block}
       <ul>
         <li><b>MEI:</b> o valor é fixo pela faixa de notas por mês.</li>
         <li><b>Simples / Presumido:</b> base × multiplicador do regime + atividade principal + atividades secundárias marcadas (cada uma pelo % da aba Parâmetros) + notas + funcionários excedentes, depois o ajuste comercial.</li>
-        <li>Os planos Essencial, Profissional e Premium multiplicam o total e arredondam para reais inteiros.</li>
+        <li><b>Modo “Tabela por faturamento”:</b> o valor de cada plano vem da tabela (regime × faixa de faturamento mensal) + funcionários acima do incluso + serviços a mais marcados + acréscimo pelo perfil do cliente + ajuste comercial, arredondado para reais inteiros.</li>
+        <li><b>Modo “Conta por itens”:</b> os planos Essencial, Profissional e Premium multiplicam o total e arredondam para reais inteiros.</li>
       </ul></div>
   </section>
 </div>
@@ -271,19 +286,32 @@ var PADRAO={
   ativ:{servicos:20000,comercio:15000,industria:30000},
   notas:[{ate:20,v:0},{ate:100,v:20000},{ate:999999,v:40000}],
   funcIsentos:3, funcExtra:5000, secPct:100,
-  pac:[{nome:"Essencial",m:1.00},{nome:"Profissional",m:1.18},{nome:"Premium",m:1.36}]
+  pac:[{nome:"Essencial",m:1.00},{nome:"Profissional",m:1.18},{nome:"Premium",m:1.36}],
+  tabNomes:["Essencial","Performance","Estratégico"],
+  tabFaixas:[50000,100000,200000,400000,800000],
+  tab:{
+    simples:[[45000,65000,84500],[65000,92000,118500],[95000,132000,169500],[140000,193000,246000],[200000,274000,348000]],
+    hibrido:[[53000,75500,98000],[77000,108000,139000],[112000,155000,198000],[165000,227000,288000],[236000,323000,409000]],
+    lp:[[85000,119000,153000]],
+    lr:[[120000,166000,212000]]
+  },
+  tabFuncInc:1, tabFuncExtra:7000,
+  addons:[{nome:"Gestão de escala",v:8000},{nome:"Integração Open Finance",v:3990}],
+  perfil:[{nome:"Tranquilo (organizado, pouco contato)",pct:0},{nome:"Atento (pede retorno com frequência)",pct:10},{nome:"Exigente (muito contato e retrabalho)",pct:20}]
 };
+function completar(){for(var k in PADRAO){if(S.params[k]===undefined)S.params[k]=JSON.parse(JSON.stringify(PADRAO[k]))}}
 var S={params:JSON.parse(JSON.stringify(PADRAO)),hist:[],conferido:false};
-function carregar(){try{var r=localStorage.getItem(KEY);if(r){var o=JSON.parse(r);if(o&&o.params){S.params=o.params;S.hist=o.hist||[];S.conferido=!!o.conferido}}}catch(e){}}
+function carregar(){try{var r=localStorage.getItem(KEY);if(r){var o=JSON.parse(r);if(o&&o.params){S.params=o.params;S.hist=o.hist||[];S.conferido=!!o.conferido;completar()}}}catch(e){}}
 function gravar(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast("Não foi possível salvar neste navegador.")}}
 
 /* ---------- cálculo ---------- */
 function entrada(){
   return {cliente:$("cliente").value.trim(),regime:$("regime").value,ativ:$("ativ").value,sec:["servicos","comercio","industria"].filter(function(k){return $("sec_"+k).checked&&k!==$("ativ").value}),
     notas:Math.max(0,parseInt($("notas").value,10)||0),func:Math.max(0,parseInt($("func").value,10)||0),
-    base:cents($("base").value),aj:parseFloat($("aj").value)||0};
+    base:cents($("base").value),aj:parseFloat($("aj").value)||0,
+    modo:$("modo").value,fat:cents($("fat").value),perfil:parseInt($("perfil").value,10)||0,ex:[0,1].filter(function(i){return $("ex"+i).checked}),exd:$("ex_desc").value.trim(),exv:cents($("ex_val").value)};
 }
-var NOMES={mei:"MEI",simples:"Simples Nacional",lp:"Lucro Presumido"},ANOMES={servicos:"Serviços",comercio:"Comércio",industria:"Indústria"};
+var NOMES={mei:"MEI",simples:"Simples Nacional",hibrido:"Simples Nacional Híbrido",lp:"Lucro Presumido",lr:"Lucro Real"},ANOMES={servicos:"Serviços",comercio:"Comércio",industria:"Indústria"};
 function calcular(e){
   var P=S.params,r={linhas:[],total:0,mei:null,foraMei:false};
   if(e.regime==="mei"){
@@ -291,7 +319,8 @@ function calcular(e){
     if(!f){r.foraMei=true;f=P.mei[P.mei.length-1]}
     r.mei=f;r.linhas.push(["Plano MEI "+f.nome+" (até "+f.ate+" notas/mês)",f.v]);r.total=f.v;r.sub=f.v;return r;
   }
-  var mult=e.regime==="lp"?P.multLP:P.multSimples;
+  if(e.modo==="tabela"){return calcTabela(e,r)}
+  var mult=(e.regime==="lp"||e.regime==="lr")?P.multLP:P.multSimples;
   var b=Math.round(e.base*mult);r.linhas.push(["Honorário base × "+String(mult).replace(".",",")+" ("+NOMES[e.regime]+")",b]);
   var a=P.ativ[e.ativ]||0;r.linhas.push(["Atividade principal: "+ANOMES[e.ativ],a]);
   var spct=(P.secPct==null?100:P.secPct);
@@ -303,7 +332,31 @@ function calcular(e){
   var aj=Math.round(sub*e.aj/100);if(e.aj!==0)r.linhas.push(["Ajuste comercial ("+String(e.aj).replace(".",",")+"%)",aj]);
   r.total=sub+aj;return r;
 }
+function mil(v){return "R$ "+String(v/100000).replace(".",",")+" mil"}
+function rotuloFaixa(i){var F=S.params.tabFaixas;return i===0?"até "+mil(F[0]*100):mil(F[i-1]*100)+" a "+mil(F[i]*100)}
+function calcTabela(e,r){
+  var P=S.params,rows=P.tab[e.regime]||P.tab.simples,fi=0,multi=rows.length>1;
+  if(multi){fi=-1;for(var i=0;i<P.tabFaixas.length;i++){if(e.fat<=P.tabFaixas[i]*100){fi=i;break}}
+    if(fi<0){r.foraTab=true;fi=rows.length-1}}
+  var row=rows[fi],pi=Math.min(plano,P.tabNomes.length-1);r.tab=true;r.planos=[];
+  P.tabNomes.forEach(function(nm,j){
+    var L=[],t=row[j];
+    L.push(["Tabela "+NOMES[e.regime]+(multi?", faturamento "+rotuloFaixa(fi):"")+" — plano "+nm,t]);
+    var fx=Math.max(0,e.func-P.tabFuncInc)*P.tabFuncExtra;
+    L.push(["Funcionários ("+e.func+"; "+P.tabFuncInc+" incluso)",fx]);
+    var ex=0;e.ex.forEach(function(k){var a=P.addons[k];if(a){ex+=a.v;L.push(["Serviço a mais: "+a.nome,a.v])}});
+    if(e.exv>0){ex+=e.exv;L.push(["Serviço a mais: "+(e.exd||"outro serviço"),e.exv])}
+    var sub=t+fx+ex,pf=P.perfil[e.perfil]||{nome:"",pct:0},ap=Math.round(sub*pf.pct/100);
+    if(pf.pct!==0)L.push(["Perfil do cliente: "+pf.nome+" (+"+String(pf.pct).replace(".",",")+"%)",ap]);
+    var aj=Math.round(sub*e.aj/100);if(e.aj!==0)L.push(["Ajuste comercial ("+String(e.aj).replace(".",",")+"%)",aj]);
+    var tot=sub+ap+aj,rd=Math.round(tot/100)*100;
+    if(rd!==tot)L.push(["Arredondamento para reais inteiros",rd-tot]);
+    r.planos.push({nome:nm,linhas:L,total:rd});
+  });
+  r.linhas=r.planos[pi].linhas;r.total=r.planos[pi].total;r.sub=r.total;return r;
+}
 function pacotes(e,r){
+  if(r.tab){return r.planos.map(function(p){return {nome:p.nome,v:p.total}})}
   if(e.regime==="mei"){return S.params.mei.map(function(m){return {nome:m.nome,v:m.v,ate:m.ate}})}
   return S.params.pac.map(function(p){return {nome:p.nome,v:Math.round(r.total*p.m/100)*100}});
 }
@@ -313,16 +366,21 @@ var ESCOPO={
   Premium:["Tudo do Profissional","Reunião mensal curta de resultados","Prioridade no atendimento"]
 };
 var MEI_ESC={Essencial:["Emissão do DAS-MEI e DASN-SIMEI","Controle do limite de faturamento","Atendimento por WhatsApp em horário comercial"],Profissional:["Tudo do Essencial","Orientação sobre notas fiscais","Relatório mensal de situação fiscal"],Premium:["Tudo do Profissional","Reunião mensal curta","Prioridade no atendimento"]};
+ESCOPO.Performance=ESCOPO.Profissional;ESCOPO.Estratégico=ESCOPO.Premium;
 function escopo(nome,mei){return (mei?MEI_ESC:ESCOPO)[nome]||[]}
 
 var plano=1;
 function render(){
   var e=entrada(),r=calcular(e),pk=pacotes(e,r),mei=e.regime==="mei";
-  $("gAtiv").style.display=mei?"none":"";$("gSec").style.display=mei?"none":"";$("gFunc").style.display=mei?"none":"";$("gBase").style.display=mei?"none":"";$("gAj").style.display=mei?"none":"";
+  var tb=(!mei&&e.modo==="tabela"),fm=(!mei&&!tb);
+  $("gModo").style.display=mei?"none":"";$("gFat").style.display=tb?"":"none";$("gPerfil").style.display=tb?"":"none";$("gExtras").style.display=tb?"":"none";
+  $("gAtiv").style.display=fm?"":"none";$("gSec").style.display=fm?"":"none";$("gBase").style.display=fm?"":"none";$("gFunc").style.display=mei?"none":"";$("gAj").style.display=mei?"none":"";
   ["servicos","comercio","industria"].forEach(function(k){var cb=$("sec_"+k),ig=($("ativ").value===k);cb.disabled=ig;if(ig)cb.checked=false});
   var av=$("avisoMei");
   if(mei&&r.foraMei){av.hidden=false;av.className="aviso erro";av.textContent="Mais de "+S.params.mei[S.params.mei.length-1].ate+" notas por mês: acima da faixa do MEI. Avalie outro regime ou combine um valor à parte."}
   else if(mei){av.hidden=false;av.className="aviso";av.textContent="MEI: o plano é definido pela quantidade de notas por mês."}
+  else if(r.foraTab){av.hidden=false;av.className="aviso erro";av.textContent="Faturamento acima de "+mil(S.params.tabFaixas[S.params.tabFaixas.length-1]*100)+" por mês: a tabela prevê orçamento individual. Os valores abaixo usam a última faixa só como referência."}
+  else if(tb){av.hidden=false;av.className="aviso";av.textContent="Valores da tabela por faturamento: confira se são os seus preços (aba Parâmetros)."}
   else av.hidden=true;
   if(plano>=pk.length)plano=pk.length-1;
   if(mei&&!r.foraMei){for(var i=0;i<pk.length;i++){if(r.mei.nome===pk[i].nome){plano=i;break}}}
@@ -379,7 +437,7 @@ function htmlMemoria(k){
   var linhas=k.c.r.linhas.map(function(l){return "<tr><td>"+esc(l[0])+"</td><td style='text-align:right'>"+brl(l[1])+"</td></tr>"}).join("");
   var h=parseFloat($("horas").value)||0;
   return "<div class='doc'><h2>Memória de cálculo</h2><p class='peq'>USO INTERNO — não enviar ao cliente · "+hoje()+"</p>"+
-  "<h3>Cliente</h3><p><b>"+esc(k.nome)+"</b> · "+NOMES[k.e.regime]+(k.c.mei?"":" · "+ANOMES[k.e.ativ]+((k.e.sec&&k.e.sec.length)?" (secundárias: "+k.e.sec.map(function(x){return ANOMES[x]}).join(", ")+")":""))+" · "+k.e.notas+" notas/mês"+(k.c.mei?"":" · "+k.e.func+" funcionários")+"</p>"+
+  "<h3>Cliente</h3><p><b>"+esc(k.nome)+"</b> · "+NOMES[k.e.regime]+(k.c.mei?"":(k.c.tab?" · faturamento mensal "+brl(k.e.fat):" · "+ANOMES[k.e.ativ]+((k.e.sec&&k.e.sec.length)?" (secundárias: "+k.e.sec.map(function(x){return ANOMES[x]}).join(", ")+")":"")))+" · "+k.e.notas+" notas/mês"+(k.c.mei?"":" · "+k.e.func+" funcionários")+"</p>"+
   "<h3>Composição</h3><table><tbody>"+linhas+"<tr><th>Total calculado</th><th style='text-align:right'>"+brl(k.c.r.total)+"</th></tr></tbody></table>"+
   "<h3>Plano escolhido</h3><p>"+esc(k.p.nome)+": <b>"+brl(k.p.v)+"</b> por mês"+(h>0?" · "+brl(Math.round(k.p.v/h))+" por hora ("+h+" h/mês)":"")+"</p></div>";
 }
@@ -406,12 +464,21 @@ $("hist").addEventListener("click",function(ev){var b=ev.target.closest("[data-d
   if(pend===id){S.hist=S.hist.filter(function(h){return h.id!==id});pend=null;gravar();toast("Excluído.")}else{pend=id;setTimeout(function(){if(pend===id){pend=null;desenharHist()}},3000)}
   desenharHist()});
 $("btExp").addEventListener("click",function(){var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(S)],{type:"application/json"}));a.download="honorarios-jf-backup.json";a.click();setTimeout(function(){URL.revokeObjectURL(a.href)},1000)});
-$("fileImp").addEventListener("change",function(){var f=this.files[0];if(!f)return;var rd=new FileReader();rd.onload=function(){try{var o=JSON.parse(rd.result);if(!o||!o.params||!Array.isArray(o.hist))throw 0;S=o;gravar();parametros();desenharHist();$("conf").checked=!!S.conferido;doc();toast("Cópia restaurada.")}catch(e){toast("Arquivo inválido.")}};rd.readAsText(f);this.value=""});
+$("fileImp").addEventListener("change",function(){var f=this.files[0];if(!f)return;var rd=new FileReader();rd.onload=function(){try{var o=JSON.parse(rd.result);if(!o||!o.params||!Array.isArray(o.hist))throw 0;S=o;completar();gravar();parametros();desenharHist();$("conf").checked=!!S.conferido;doc();toast("Cópia restaurada.")}catch(e){toast("Arquivo inválido.")}};rd.readAsText(f);this.value=""});
 
 /* ---------- parâmetros (tela) ---------- */
 function num(id,label,val,step){return "<div><label for='"+id+"'>"+label+"</label><input type='number' id='"+id+"' step='"+(step||"0.01")+"' value='"+val+"'></div>"}
+function tabHTML(reg){var P=S.params,rows=P.tab[reg];
+  return "<h3 style='font-size:14px;margin:12px 0 4px'>"+NOMES[reg]+"</h3><table class='t'><tr><th>Faturamento mensal</th>"+P.tabNomes.map(function(n){return "<th class='r'>"+esc(n)+"</th>"}).join("")+"</tr>"+
+   rows.map(function(row,i){return "<tr><td>"+(rows.length>1?rotuloFaixa(i):"Todas as faixas")+"</td>"+row.map(function(v,j){return "<td><input type='number' step='0.01' id='tb_"+reg+"_"+i+"_"+j+"' value='"+(v/100).toFixed(2)+"' aria-label='"+esc(NOMES[reg]+" "+(rows.length>1?rotuloFaixa(i):"")+" "+P.tabNomes[j])+"'></td>"}).join("")+"</tr>"}).join("")+"</table>"}
 function parametros(){
   var P=S.params;
+  $("parTab").innerHTML=["simples","hibrido","lp","lr"].map(tabHTML).join("");
+  $("parTab2").innerHTML=num("pTi","Funcionários inclusos na tabela",P.tabFuncInc,"1")+num("pTe","Funcionário adicional (R$/mês)",(P.tabFuncExtra/100).toFixed(2))+
+   P.addons.map(function(a,i){return num("pAd"+i,a.nome+" (R$/mês)",(a.v/100).toFixed(2))}).join("")+
+   P.perfil.map(function(p,i){return num("pPf"+i,"Acréscimo: "+p.nome+" (%)",p.pct,"1")}).join("");
+  P.addons.forEach(function(a,i){$("exl"+i).textContent=a.nome+" (+"+brl(a.v)+"/mês)"});
+  [].forEach.call($("perfil").options,function(o,i){var p=P.perfil[i];o.textContent=p.nome+(p.pct?" (+"+String(p.pct).replace(".",",")+"%)":"")});
   $("parMei").innerHTML=P.mei.map(function(m,i){return num("mv"+i,m.nome+" — até "+m.ate+" notas (R$)",(m.v/100).toFixed(2))}).join("");
   $("parGeral").innerHTML=num("pBase","Honorário base padrão (R$)",(P.base/100).toFixed(2))+num("pMS","Multiplicador Simples",P.multSimples,"0.01")+num("pML","Multiplicador Lucro Presumido",P.multLP,"0.01")+
    num("pAs","Atividade: serviços (R$)",(P.ativ.servicos/100).toFixed(2))+num("pAc","Atividade: comércio (R$)",(P.ativ.comercio/100).toFixed(2))+num("pAi","Atividade: indústria (R$)",(P.ativ.industria/100).toFixed(2))+
@@ -422,6 +489,10 @@ function parametros(){
 }
 function lerParametros(){
   var P=S.params;
+  ["simples","hibrido","lp","lr"].forEach(function(reg){P.tab[reg].forEach(function(row,i){row.forEach(function(v,j){row[j]=cents($("tb_"+reg+"_"+i+"_"+j).value)})})});
+  P.tabFuncInc=Math.max(0,parseInt($("pTi").value,10)||0);P.tabFuncExtra=cents($("pTe").value);
+  P.addons.forEach(function(a,i){a.v=cents($("pAd"+i).value)});
+  P.perfil.forEach(function(p,i){var n=parseFloat($("pPf"+i).value);p.pct=isNaN(n)?0:Math.max(0,n)});
   P.mei.forEach(function(m,i){m.v=cents($("mv"+i).value)});
   P.base=cents($("pBase").value);P.multSimples=parseFloat($("pMS").value)||1;P.multLP=parseFloat($("pML").value)||1;
   P.ativ.servicos=cents($("pAs").value);P.ativ.comercio=cents($("pAc").value);P.ativ.industria=cents($("pAi").value);
@@ -438,7 +509,7 @@ $("btResetPar").addEventListener("click",function(){var b=this;if(!pendReset){pe
 $("tabs").addEventListener("click",function(ev){var b=ev.target.closest("button");if(!b)return;
   document.body.setAttribute("data-tab",b.getAttribute("data-t"));[].forEach.call($("tabs").children,function(x){x.className=x===b?"on":""});
   if(b.getAttribute("data-t")==="proposta")doc();if(b.getAttribute("data-t")==="historico")desenharHist()});
-["cliente","regime","ativ","sec_servicos","sec_comercio","sec_industria","notas","func","base","aj","horas","custoh","pQtd","pMes","pIni"].forEach(function(id){$(id).addEventListener("input",render);$(id).addEventListener("change",render)});
+["cliente","regime","modo","fat","perfil","ex0","ex1","ex_desc","ex_val","ativ","sec_servicos","sec_comercio","sec_industria","notas","func","base","aj","horas","custoh","pQtd","pMes","pIni"].forEach(function(id){$(id).addEventListener("input",render);$(id).addEventListener("change",render)});
 ["tipoDoc","docCli","valid","venc"].forEach(function(id){$(id).addEventListener("input",doc);$(id).addEventListener("change",doc)});
 $("pacotes").addEventListener("change",function(ev){var i=ev.target.getAttribute("data-i");if(i!==null){plano=parseInt(i,10);render()}});
 $("regime").addEventListener("change",function(){plano=1;render()});
