@@ -17,6 +17,8 @@ Cada simulador é um arquivo único (`index.html`), sem servidor e sem enviar da
 | `checklist-fechamento-mensal/` | Checklist de Fechamento Mensal |
 | `checklist-obrigacoes-acessorias/` | Checklist de Obrigações Acessórias |
 | `checklist-documentos-societarios/` | Checklist de Documentos Societários |
+| `reforma-sem-surto/` | Reforma Sem Surto — para entender: resumo em linguagem simples do material de Reforma Tributária, com datas e fontes conferidas |
+| `dominio/` | JF Domínio: guia dos 210 mapas do Sistema Domínio por departamento (as imagens ficam só no computador da Jaqueline; não entram no repositório) |
 
 `index.html` na raiz é o menu: um seletor "O que você quer usar" que abre a ferramenta escolhida.
 
@@ -25,3 +27,5 @@ Cada simulador é um arquivo único (`index.html`), sem servidor e sem enviar da
 2. Acrescentar uma `<option>` no seletor de `index.html` (raiz).
 
 Apoio à conferência. Não substitui a análise da contadora nem a legislação vigente.
+
+**Buscar CNPJ (opcional):** Fator R, Contrato e Proposta, Declarações DP, Proposta de Revisão 2027, Jornadas e os dois checklists (Fechamento e Obrigações) têm o botão "Buscar CNPJ". Só envia o CNPJ ao BrasilAPI (terceiros, espelho da base da Receita) depois de confirmação na tela. Não grava nada. Dados podem estar defasados: conferir no Comprovante da Receita.

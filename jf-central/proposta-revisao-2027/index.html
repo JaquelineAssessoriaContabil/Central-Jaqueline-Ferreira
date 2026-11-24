@@ -338,5 +338,81 @@ $("btnLimpar").addEventListener("click",function(){
 $("data").value=isoLocal(new Date());
 montar();
 </script>
+<script>
+/* JF • Buscar CNPJ — consulta opcional. Só envia o CNPJ digitado quando a usuária clica e confirma. Nada é gravado. */
+(function(){"use strict";
+var CFG={"cnpj": "cnpj", "nome": "empresa"};
+var BASE="https://brasilapi.com.br/api/cnpj/v1/";
+var RECEITA="https://solucoes.receita.fazenda.gov.br/Servicos/cnpjreva/Cnpjreva_Solicitacao.asp";
+var consentido=false;
+function $(i){return i?document.getElementById(i):null}
+var inp=$(CFG.cnpj);if(!inp)return;
+var st=document.createElement("style");
+st.textContent=".jfq{margin:6px 0 10px;font-size:13px;line-height:1.45}.jfq button{font:inherit;font-size:13px;border:1px solid #C5A29E;background:#fff;color:#8E6F6B;border-radius:999px;padding:6px 14px;cursor:pointer;margin:2px 6px 2px 0}.jfq button:hover{border-color:#8E6F6B}.jfq button.p{background:#8E6F6B;color:#fff;border-color:#8E6F6B}.jfq .m{background:#F6EFED;border-left:4px solid #C9A15E;border-radius:8px;padding:8px 10px;margin-top:6px;color:#000}.jfq .m.e{border-left-color:#b3261e;background:#fdf1f0}.jfq .m div{margin:2px 0}.jfq a{color:#8E6F6B;font-weight:600}@media print{.jfq{display:none!important}}";
+document.head.appendChild(st);
+var box=document.createElement("div");box.className="jfq";
+var btn=document.createElement("button");btn.type="button";btn.textContent="Buscar CNPJ";btn.className="p";
+var msg=document.createElement("div");
+box.appendChild(btn);box.appendChild(msg);
+var host=inp.closest("label")||inp;host.insertAdjacentElement("afterend",box);
+function digits(s){return String(s||"").replace(/\D/g,"")}
+function valido(d){if(d.length!==14||/^(\d)\1+$/.test(d))return false;
+  function dv(n){var p=n-7,s=0;for(var i=0;i<n;i++){s+=+d.charAt(i)*p--;if(p<2)p=9}var r=s%11;return r<2?0:11-r}
+  return dv(12)===+d.charAt(12)&&dv(13)===+d.charAt(13)}
+function fmtCnpj(d){return d.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/,"$1.$2.$3/$4-$5")}
+function fmtCnae(v){var s=digits(v);return s.length===7?s.slice(0,4)+"-"+s.charAt(4)+"/"+s.slice(5):s}
+function fmtCep(v){var s=digits(v);return s.length===8?s.slice(0,5)+"-"+s.slice(5):s}
+function fmtData(s){var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(s||"");return m?m[3]+"/"+m[2]+"/"+m[1]:""}
+function titulo(s){return String(s||"").toLowerCase().replace(/(^|[\s\-\/])([a-zà-ú])/g,function(_,a,b){return a+b.toUpperCase()}).replace(/\b(Da|De|Do|Das|Dos|E)\b/g,function(x){return x.toLowerCase()})}
+function setv(id,val){var el=$(id);if(!el||val===undefined||val===null||val==="")return false;el.value=val;el.dispatchEvent(new Event("input",{bubbles:true}));el.dispatchEvent(new Event("change",{bubbles:true}));return true}
+function linha(txt,parent){var d=document.createElement("div");d.textContent=txt;parent.appendChild(d);return d}
+function link(parent,txt){var a=document.createElement("a");a.href=RECEITA;a.target="_blank";a.rel="noopener noreferrer";a.textContent=txt;parent.appendChild(a)}
+function limpa(){msg.textContent=""}
+function aviso(txt,erro,comLink){limpa();var m=document.createElement("div");m.className="m"+(erro?" e":"");var l=linha(txt,m);if(comLink){l.appendChild(document.createTextNode(" "));link(l,"Abrir a consulta da Receita")}msg.appendChild(m);return m}
+function pergunta(d){limpa();var m=document.createElement("div");m.className="m";
+  linha("Para buscar, o CNPJ "+fmtCnpj(d)+" será enviado ao BrasilAPI (site de terceiros, que espelha a base da Receita). Só o CNPJ é enviado e nada fica gravado. Deseja continuar?",m);
+  var ok=document.createElement("button");ok.type="button";ok.className="p";ok.textContent="Confirmar e buscar";
+  var no=document.createElement("button");no.type="button";no.textContent="Cancelar";
+  ok.onclick=function(){consentido=true;busca(d)};no.onclick=limpa;
+  m.appendChild(ok);m.appendChild(no);msg.appendChild(m)}
+function busca(d){aviso("Buscando…",false);btn.disabled=true;
+  var ac=("AbortController" in window)?new AbortController():null,to=setTimeout(function(){if(ac)ac.abort()},12000);
+  fetch(BASE+d,{headers:{"Accept":"application/json"},signal:ac?ac.signal:undefined}).then(function(r){
+    clearTimeout(to);
+    if(r.status===404)throw new Error("nf");
+    if(r.status===429)throw new Error("rl");
+    if(!r.ok)throw new Error("http");
+    return r.json()}).then(function(j){btn.disabled=false;aplica(d,j)}).catch(function(e){btn.disabled=false;clearTimeout(to);
+    if(e&&e.message==="nf")aviso("CNPJ não encontrado na base consultada. Confira os números ou consulte direto na Receita.",true,true);
+    else if(e&&e.message==="rl")aviso("Muitas consultas seguidas. Aguarde um minuto e tente de novo.",true);
+    else aviso("Não foi possível consultar agora (sem internet, bloqueio do navegador ou serviço fora do ar). Preencha à mão ou use a consulta da Receita.",true,true)})}
+function pega(j){for(var i=1;i<arguments.length;i++){var v=j[arguments[i]];if(v!==undefined&&v!==null&&v!=="")return v}return ""}
+function aplica(d,j){var feitos=[];
+  var razao=pega(j,"razao_social","razaoSocial");
+  if(setv(CFG.cnpj,fmtCnpj(d)))feitos.push("CNPJ");
+  if(setv(CFG.nome,razao))feitos.push("nome empresarial");
+  var cn=pega(j,"cnae_fiscal","cnaeFiscal");if(setv(CFG.cnae,fmtCnae(cn)))feitos.push("CNAE principal");
+  var ini=pega(j,"data_inicio_atividade","dataInicioAtividade");if(CFG.abertura&&ini&&setv(CFG.abertura,String(ini).slice(0,7)))feitos.push("mês de abertura");
+  var log=[pega(j,"descricao_tipo_de_logradouro"),pega(j,"logradouro")].filter(Boolean).join(" ");
+  var partes=[titulo(log),pega(j,"numero"),titulo(pega(j,"complemento")),titulo(pega(j,"bairro"))];
+  partes=partes.filter(Boolean);var mun=titulo(pega(j,"municipio")),uf=pega(j,"uf");
+  if(mun)partes.push(mun+(uf?"/"+uf:""));
+  if(CFG.end&&partes.length&&setv(CFG.end,partes.join(", ")))feitos.push("endereço");
+  var cep=pega(j,"cep");if(CFG.cep&&cep&&setv(CFG.cep,fmtCep(cep)))feitos.push("CEP");
+  limpa();var m=document.createElement("div");m.className="m";
+  linha(feitos.length?"Preenchido: "+feitos.join(", ")+". Revise antes de usar.":"A consulta voltou, mas esta ferramenta não tem campo para esses dados.",m);
+  var sit=pega(j,"descricao_situacao_cadastral","situacaoCadastral");
+  if(sit){var dt=fmtData(pega(j,"data_situacao_cadastral"));var l=linha("Situação cadastral: "+sit+(dt?" (desde "+dt+")":""),m);if(String(sit).toUpperCase()!=="ATIVA"){l.style.fontWeight="700";l.style.color="#b3261e"}}
+  var cd=pega(j,"cnae_fiscal_descricao");if(cn)linha("Atividade principal: "+fmtCnae(cn)+(cd?" — "+cd:""),m);
+  var porte=pega(j,"porte","descricao_porte");if(porte)linha("Porte: "+porte,m);
+  if(j.opcao_pelo_simples!==undefined&&j.opcao_pelo_simples!==null)linha("Opção pelo Simples Nacional: "+(j.opcao_pelo_simples?"sim":"não")+" | MEI: "+(j.opcao_pelo_mei?"sim":"não"),m);
+  var f=document.createElement("div");f.style.cssText="margin-top:6px;font-size:12px;color:#555";
+  f.appendChild(document.createTextNode("Dados do BrasilAPI (cópia da base da Receita, atualizada periodicamente, pode estar defasada). Confira a situação atual no Comprovante de Inscrição. "));link(f,"Abrir a consulta da Receita");m.appendChild(f);msg.appendChild(m)}
+btn.onclick=function(){var d=digits(inp.value);
+  if(d.length!==14){aviso("Digite os 14 números do CNPJ antes de buscar.",true);return}
+  if(!valido(d)){aviso("Esse CNPJ não é válido (dígitos verificadores não conferem). Confira a digitação.",true);return}
+  if(consentido)busca(d);else pergunta(d)};
+})();
+</script>
 </body>
 </html>
