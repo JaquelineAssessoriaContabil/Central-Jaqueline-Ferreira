@@ -258,6 +258,7 @@
     <label class="check so-aditivo"><input type="checkbox" id="ad_reaj"> Acrescentar cláusula de reajuste anual dos honorários pelo IPCA (use nos contratos que não têm, como os de MEI)</label>
     <label class="check so-aditivo"><input type="checkbox" id="ad_ext" checked> Acrescentar cláusula de uso de sistemas e serviços de terceiros (Domínio, e-mail, nuvem, IA) e aviso de incidente</label>
     <div class="campo so-aditivo"><label for="ad_inc">Prazo para avisar o cliente de incidente de segurança (dias úteis)</label><input type="number" id="ad_inc" min="1" value="2"></div>
+    <label class="check so-aditivo"><input type="checkbox" id="ad_sisext"> Acrescentar cláusula dos sistemas do contratante (ERP, emissor de notas e plataformas próprias do cliente)</label>
     <label class="check so-aditivo"><input type="checkbox" id="ad_carta" checked> Incluir a entrega da Carta de Responsabilidade do período abaixo</label>
     <div class="grupo-titulo so-per">Período-base da Carta de Responsabilidade</div>
     <div class="campo so-per"><label for="ca_ini">Início do período-base</label><input type="date" id="ca_ini" value="2026-01-01"></div>
@@ -286,7 +287,8 @@
     <label class="check so-geral"><input type="checkbox" id="h_dez" checked> Cobrar honorário adicional de dezembro (cláusula 5.4)</label>
 
     <div class="grupo-titulo so-contrato">Proposta e assinatura</div>
-    <label class="check so-contrato"><input type="checkbox" id="c_prop"> Incluir cláusula da proposta (cláusula oitava), com aceite e assinatura eletrônica</label>
+    <label class="check so-contrato"><input type="checkbox" id="c_sisext"> Incluir cláusula dos sistemas do contratante (ERP, emissor de notas e plataformas próprias do cliente), só no contrato de empresa</label>
+    <label class="check so-contrato"><input type="checkbox" id="c_prop"> Incluir cláusula da proposta, com aceite e assinatura eletrônica</label>
     <div class="campo so-contrato"><label for="c_data_prop">Data da proposta</label><input type="date" id="c_data_prop"></div>
     <div class="campo so-contrato"><label for="c_data_aceite">Data do aceite da proposta</label><input type="date" id="c_data_aceite"></div>
     <label class="check so-contrato"><input type="checkbox" id="sem_test"> Sem testemunhas (só assinatura das partes)</label>
@@ -37532,6 +37534,19 @@ function textosSistemasExternos(dias, art){
   ];
 }
 
+function textosSistemasContratante(art, comRef){
+  const f = art === "a";
+  const O = f ? "a" : "o", DO = f ? "da" : "do", AO = f ? "à" : "ao", PELA = f ? "pela" : "pelo";
+  const r71 = comRef ? "ao item 7.1" : "às obrigações previstas no contrato";
+  const r21 = comRef ? "do item 2.1" : "de entrega da documentação previsto no contrato";
+  return [
+    "Os sistemas de gestão empresarial (ERP), emissores de documentos fiscais, plataformas financeiras, controles de ponto e quaisquer outros sistemas de terceiros utilizados " + PELA + " CONTRATANTE (“Sistemas " + DO + " Contratante”) são de responsabilidade e custo " + DO + " CONTRATANTE, inclusive contratação, licenciamento, manutenção e suporte.",
+    "Em complemento " + r71 + ", cabe " + AO + " CONTRATANTE a correta parametrização fiscal e tributária dos Sistemas " + DO + " Contratante e a exatidão e a tempestividade dos dados neles inseridos. A CONTRATADA não responde por erros decorrentes de parametrização incorreta, de falhas operacionais dos usuários " + DO + " CONTRATANTE ou de defeitos técnicos desses sistemas.",
+    "Se " + O + " CONTRATANTE disponibilizar acesso ou integrar os Sistemas " + DO + " Contratante ao sistema da CONTRATADA, essa integração serve apenas para facilitar a importação de dados, e a CONTRATADA não atua como suporte técnico, administradora de banco de dados ou auditora de segurança desses sistemas.",
+    "Havendo indisponibilidade, perda de dados, falha de comunicação ou alteração de layout nos Sistemas " + DO + " Contratante que impeça ou atrase a entrega das informações, " + O + " CONTRATANTE fornecerá os documentos por outro meio, em tempo hábil, observado o prazo " + r21 + ". A CONTRATADA não responde pelo atraso decorrente dessa falha, sem prejuízo do que a lei prevê."
+  ];
+}
+
 function clausulaLegal(P, H, ord, num, art){
   const out = [H("CLÁUSULA " + ord + " - DAS OBRIGAÇÕES LEGAIS E PROFISSIONAIS")];
   textosLegais(art).forEach((segs, i) => out.push(P(SEG(num + "." + (i + 1) + ". "), ...segs)));
@@ -37557,7 +37572,7 @@ function montarAditivo(){
   b.push(P("1.1. Ficam acrescidas ao contrato, sob o título “Das obrigações legais e profissionais”, as seguintes disposições, que passam a integrá-lo:"));
   textosLegais(art).forEach((segs, i) => b.push(I(SEG(String.fromCharCode(97 + i) + ") "), ...segs)));
   let n = 2;
-  const ORD = ["PRIMEIRA","SEGUNDA","TERCEIRA","QUARTA","QUINTA"];
+  const ORD = ["PRIMEIRA","SEGUNDA","TERCEIRA","QUARTA","QUINTA","SEXTA"];
   if(marcado("ad_reaj")){
     b.push(H("CLÁUSULA " + ORD[n-1] + " - DO REAJUSTE DOS HONORÁRIOS"));
     b.push(P(n + ".1. Os honorários mensais serão reajustados anualmente pelo índice IPCA/IBGE."));
@@ -37566,6 +37581,11 @@ function montarAditivo(){
   if(marcado("ad_ext")){
     b.push(H("CLÁUSULA " + ORD[n-1] + " - DO USO DE SISTEMAS E SERVIÇOS DE TERCEIROS"));
     textosSistemasExternos(val("ad_inc").value, art).forEach((s, i) => b.push(P(n + "." + (i + 1) + ". " + s)));
+    n++;
+  }
+  if(marcado("ad_sisext")){
+    b.push(H("CLÁUSULA " + ORD[n-1] + " - DOS SISTEMAS DO CONTRATANTE"));
+    textosSistemasContratante(art, false).forEach((s, i) => b.push(P(n + "." + (i + 1) + ". " + s)));
     n++;
   }
   if(marcado("ad_carta")){
@@ -37681,13 +37701,20 @@ function montarBlocos(){
   b.push(...clausulaLegal(P, H, "SÉTIMA", "7", "a"));
 
   const comProp = marcado("c_prop");
-  if(comProp){
-    b.push(H("CLÁUSULA OITAVA - DA PROPOSTA"));
-    b.push(P(SEG("8.1. Este contrato decorre da proposta de prestação de serviços contábeis emitida pela CONTRATADA em "), V(dataCurta(val("c_data_prop").value)), SEG(" e aceita pelo CONTRATANTE em "), V(dataCurta(val("c_data_aceite").value)), SEG(". Em caso de divergência entre a proposta e este instrumento, prevalecerão as condições deste contrato.")));
-    b.push(P("8.2. O aceite da proposta e a assinatura deste contrato poderão ser feitos por meio eletrônico, inclusive por mensagem eletrônica (WhatsApp ou e-mail) ou por assinatura eletrônica ou digital, com validade jurídica para as partes, nos termos do art. 784 do Código de Processo Civil."));
+  const ORDC = ["PRIMEIRA","SEGUNDA","TERCEIRA","QUARTA","QUINTA","SEXTA","SÉTIMA","OITAVA","NONA","DÉCIMA"];
+  let nc = 8;
+  if(marcado("c_sisext")){
+    b.push(H("CLÁUSULA " + ORDC[nc-1] + " - DOS SISTEMAS DO CONTRATANTE"));
+    textosSistemasContratante("a", true).forEach((s, i) => b.push(P(nc + "." + (i + 1) + ". " + s)));
+    nc++;
   }
-  b.push(H(comProp ? "CLÁUSULA NONA - DO FORO" : "CLÁUSULA OITAVA - DO FORO"));
-  b.push(P(SEG(comProp ? "9.1. As partes elegem o Foro da Comarca de " : "8.1. As partes elegem o Foro da Comarca de "), V(val("foro").value.toUpperCase()), SEG(" para dirimir quaisquer controvérsias oriundas deste instrumento.")));
+  if(comProp){
+    b.push(H("CLÁUSULA " + ORDC[nc-1] + " - DA PROPOSTA"));
+    b.push(P(SEG(nc + ".1. Este contrato decorre da proposta de prestação de serviços contábeis emitida pela CONTRATADA em "), V(dataCurta(val("c_data_prop").value)), SEG(" e aceita pelo CONTRATANTE em "), V(dataCurta(val("c_data_aceite").value)), SEG(". Em caso de divergência entre a proposta e este instrumento, prevalecerão as condições deste contrato.")));
+    b.push(P(nc + ".2. O aceite da proposta e a assinatura deste contrato poderão ser feitos por meio eletrônico, inclusive por mensagem eletrônica (WhatsApp ou e-mail) ou por assinatura eletrônica ou digital, com validade jurídica para as partes, nos termos do art. 784 do Código de Processo Civil."));
+  }
+  b.push(H("CLÁUSULA " + ORDC[(comProp ? nc + 1 : nc) - 1] + " - DO FORO"));
+  b.push(P(SEG((comProp ? nc + 1 : nc) + ".1. As partes elegem o Foro da Comarca de "), V(val("foro").value.toUpperCase()), SEG(" para dirimir quaisquer controvérsias oriundas deste instrumento.")));
 
   b.push(P(marcado("sem_test") ? "E, para firmeza e como prova de assim haverem contratado, firmam este instrumento particular, impresso em duas vias de igual teor e forma, a tudo presentes." : "E, para firmeza e como prova de assim haverem contratado, firmam este instrumento particular, impresso em duas vias de igual teor e forma, assinado pelas partes contratantes e pelas testemunhas abaixo, a tudo presentes."));
   b.push(P(V(val("cidade").value.toUpperCase()), SEG(", "), V(assinatura), SEG(".")));

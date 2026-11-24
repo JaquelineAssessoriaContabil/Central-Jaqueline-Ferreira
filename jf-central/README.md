@@ -34,6 +34,8 @@ O botão também lista o CNAE principal e os secundários e, na Calculadora de F
 
 **Contratos, cláusula de sistemas de terceiros (24/11/2026):** os contratos (empresa, MEI, Cam e baixa) e o termo aditivo incluem cláusula informando que o escritório usa sistemas e serviços de terceiros (contábil/fiscal, e-mail, nuvem, mensagens, portais públicos, IA), com prazo para avisar o cliente de incidente (padrão 2 dias úteis, editável) e responsabilidade do cliente pelos dados que envia. Texto-rascunho: pedir revisão jurídica antes de usar.
 
+**Cláusula "Dos sistemas do contratante" (opcional):** no contrato de empresa e no termo aditivo, caixa marcável. Diz que ERP, emissor de notas e plataformas do cliente são de responsabilidade dele (parametrização e dados), que a integração é só facilitadora e que, em falha do sistema do cliente, ele envia os documentos por outro meio no prazo. Não isenta multas por completo (mantém "sem prejuízo do que a lei prevê"). Texto-rascunho: pedir revisão jurídica.
+
 **Salvamento automático (F5 zera):** Fator R, Contrato e Proposta, Declarações DP, Proposta de Revisão 2027, Jornadas, os dois checklists (Fechamento e Obrigações), Carta de Adequação e Simples × Híbrido guardam o que é digitado neste navegador (nada é enviado). O botão "Limpar" apaga, com confirmação em dois cliques. Atenção: o dado fica neste computador; limpe antes de usar em máquina de outra pessoa.
 
 **CNPJs já consultados:** depois de cada Buscar CNPJ, a ferramenta guarda no navegador o CNPJ, o nome e o resultado. Ao digitar o CNPJ (ou escolher na lista que aparece), os campos e o resultado voltam sem nova consulta. O botão "Apagar CNPJs salvos" limpa a lista, com confirmação em dois cliques. O F5 não apaga essa lista.
