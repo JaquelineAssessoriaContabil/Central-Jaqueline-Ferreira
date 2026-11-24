@@ -293,7 +293,7 @@
     <div class="campo so-baixa"><label for="bx_prop">Data da proposta aceita (opcional)</label><input type="date" id="bx_prop"></div>
     <div class="campo so-baixa"><label for="bx_orgao">Órgão de registro</label><input type="text" id="bx_orgao" value="Junta Comercial do Estado de Santa Catarina (JUCESC)" placeholder="ex.: OAB-SC, Junta Comercial de SC"></div>
     <div class="campo so-baixa"><label for="bx_integral">Honorário da baixa (valor integral)</label><input type="text" id="bx_integral" value="R$ 1.300,00" placeholder="ex.: R$ 1.300,00"></div>
-    <div class="campo so-baixa"><label for="bx_desc">Desconto comercial de fidelidade (deixe vazio se não houver)</label><input type="text" id="bx_desc" placeholder="ex.: R$ 443,34"></div>
+    <div class="campo so-baixa"><label for="bx_desc">Desconto comercial (deixe vazio se não houver)</label><input type="text" id="bx_desc" placeholder="ex.: R$ 443,34"></div>
     <div class="campo so-baixa"><label for="bx_abat">Abatimento (deixe vazio se não houver)</label><input type="text" id="bx_abat" placeholder="ex.: R$ 206,66"></div>
     <div class="campo so-baixa"><label for="bx_abat_txt">Texto do abatimento</label><input type="text" id="bx_abat_txt" value="referente ao 13º honorário proporcional já pago"></div>
     <div class="campo so-baixa"><label for="bx_pag">Forma e prazo de pagamento</label><input type="text" id="bx_pag" value="a combinar"></div>
@@ -37454,7 +37454,7 @@ function montarContratoBaixa(){
   b.push(CL("DOS HONORÁRIOS"));
   let h = 1;
   b.push(P(SEG(`${num()}.${h++}. Pelos serviços, o CONTRATANTE pagará à CONTRATADA honorários no valor integral de `), V(integral.vazio || integral.inv ? "" : R(integral.c)), SEG(".")));
-  if(temDesc) b.push(P(`${num()}.${h++}. Sobre esse valor incide desconto comercial de fidelidade de ${R(desc.c)}` + (cond ? ", nas condições da cláusula terceira." : ".")));
+  if(temDesc) b.push(P(`${num()}.${h++}. Sobre esse valor incide desconto comercial${cond ? " de fidelidade" : ""} de ${R(desc.c)}` + (cond ? ", nas condições da cláusula terceira." : ".")));
   if(temAbat) b.push(P(`${num()}.${h++}. Fica abatido o valor de ${R(abat.c)}, ${val("bx_abat_txt").value.trim().replace(/\.+$/, "") || "conforme acordado entre as partes"}.`));
   if(temDesc || temAbat) b.push(P(SEG(`${num()}.${h++}. O saldo líquido a pagar é de `), V(saldoOk ? R(saldoC) : ""), SEG(".")));
   b.push(P(SEG(`${num()}.${h++}. Forma e prazo de pagamento: `), V(val("bx_pag").value.trim()), SEG(".")));
