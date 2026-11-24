@@ -109,7 +109,7 @@
 
     <div class="grupo-titulo primeiro">Documento</div>
     <div class="campo"><label for="tipo">O que você quer gerar</label>
-      <select id="tipo" class="sel"><option value="contrato">Contrato de prestação de serviços</option><option value="proposta">Proposta de honorários</option><option value="contrato_mei">Contrato para MEI (simples)</option><option value="proposta_mei">Proposta para MEI (simples)</option><option value="contrato_cam">Contrato MEI Caminhoneiro</option><option value="proposta_cam">Proposta MEI Caminhoneiro</option><option value="rescisao">Rescisão de contrato de prestação de serviços</option><option value="proposta_avulsa">Proposta de serviço avulso (baixa, abertura, regularização)</option><option value="proposta_avulsa_sem_reg">Proposta de baixa e abertura (empresa em dia, sem regularização)</option><option value="proposta_abertura">Proposta de abertura de empresa</option><option value="proposta_mensal">Proposta de honorários mensais</option></select>
+      <select id="tipo" class="sel"><option value="contrato">Contrato de prestação de serviços</option><option value="proposta">Proposta de honorários</option><option value="contrato_mei">Contrato para MEI (simples)</option><option value="proposta_mei">Proposta para MEI (simples)</option><option value="contrato_cam">Contrato MEI Caminhoneiro</option><option value="proposta_cam">Proposta MEI Caminhoneiro</option><option value="rescisao">Rescisão de contrato de prestação de serviços</option><option value="carta_resp">Carta de Responsabilidade da Administração (anual)</option><option value="proposta_avulsa">Proposta de serviço avulso (baixa, abertura, regularização)</option><option value="proposta_avulsa_sem_reg">Proposta de baixa e abertura (empresa em dia, sem regularização)</option><option value="proposta_abertura">Proposta de abertura de empresa</option><option value="proposta_mensal">Proposta de honorários mensais</option></select>
     </div>
 
     <div class="grupo-titulo">Cliente</div>
@@ -250,6 +250,13 @@
     </div>
 
     <div class="campo so-mei"><label for="mei_abertura">Valor da orientação e formalização MEI (independente do plano)</label><input type="text" id="mei_abertura" value="R$ 300,00"></div>
+    <div class="campo so-exec"><label for="c_exec">Serviços que o cliente executa por conta própria (texto padrão; edite se precisar)</label><input type="text" id="c_exec" value="emissão de notas fiscais, guarda e conservação dos documentos originais, pagamento das guias nos vencimentos e manutenção dos controles internos da empresa"></div>
+
+    <div class="grupo-titulo so-carta">Carta de Responsabilidade (período-base)</div>
+    <div class="campo so-carta"><label for="ca_ini">Início do período-base</label><input type="date" id="ca_ini" value="2026-01-01"></div>
+    <div class="campo so-carta"><label for="ca_fim">Fim do período-base</label><input type="date" id="ca_fim" value="2026-12-31"></div>
+    <label class="check so-carta"><input type="checkbox" id="ca_estoque" checked> A empresa mantém estoques (desmarque para empresa de serviços)</label>
+
     <div class="grupo-titulo so-nr">Honorários e vigência</div>
     <div class="so-cam">
     <div class="campo"><label for="cam_abertura">Honorário de abertura</label><input type="text" id="cam_abertura" value="R$ 300,00"></div>
@@ -36585,6 +36592,7 @@ const ESCRITORIO = {
   endereco: "Rua Manoel de Oliveira, 30, Bairro Nossa Senhora Aparecida, Videira/SC, CEP 89562-784",
   rep: "Jaqueline do Prado Ferreira",
   crc: "048028/O-0",
+  crcOrg: "013019/O-4",
   cpf: "069.005.039-93"
 };
 
@@ -36714,11 +36722,13 @@ function montarContratoMEI(){
   b.push(P("6.1. Limite MEI: caso o faturamento do CONTRATANTE exceda o limite legal do MEI (atualmente R$ 81.000,00 anuais), as partes deverão repactuar os valores de honorários para o regime de Microempresa (ME), cessando os efeitos deste contrato para a modalidade MEI."));
   b.push(P("6.2. Proteção de dados (LGPD): o CONTRATANTE autoriza o tratamento de seus dados pessoais pela CONTRATADA exclusivamente para o cumprimento das obrigações fiscais e acessórias previstas neste instrumento, nos termos da Lei nº 13.709/2018."));
 
-  b.push(H("CLÁUSULA SÉTIMA - DO FORO"));
-  b.push(P(SEG("7.1. As partes elegem o Foro da Comarca de "), V(val("foro").value.toUpperCase()), SEG(" para dirimir quaisquer controvérsias oriundas deste instrumento.")));
+  b.push(...clausulaLegal(P, H, "SÉTIMA", "7", "o"));
 
-  b.push(H("CLÁUSULA OITAVA - DA VALIDADE DIGITAL"));
-  b.push(P("8.1. As partes reconhecem a validade jurídica das assinaturas eletrônicas e digitais realizadas em plataformas especializadas, conferindo ao presente instrumento força de título executivo extrajudicial, conforme art. 784, III, do CPC."));
+  b.push(H("CLÁUSULA OITAVA - DO FORO"));
+  b.push(P(SEG("8.1. As partes elegem o Foro da Comarca de "), V(val("foro").value.toUpperCase()), SEG(" para dirimir quaisquer controvérsias oriundas deste instrumento.")));
+
+  b.push(H("CLÁUSULA NONA - DA VALIDADE DIGITAL"));
+  b.push(P("9.1. As partes reconhecem a validade jurídica das assinaturas eletrônicas e digitais realizadas em plataformas especializadas, conferindo ao presente instrumento força de título executivo extrajudicial, conforme art. 784, III, do CPC."));
 
   b.push(P("E, por estarem de acordo, firmam este instrumento particular, impresso em duas vias de igual teor e forma, assinado pelas partes e pelas testemunhas abaixo, a tudo presentes."));
   b.push(P(V(val("cidade").value.toUpperCase()), SEG(", "), V(assinatura), SEG(".")));
@@ -37165,11 +37175,13 @@ function montarContratoCam(){
   b.push(P("7.1. Limite MEI: caso o faturamento do CONTRATANTE exceda o limite legal do MEI (atualmente R$ 81.000,00 anuais), as partes deverão repactuar os valores de honorários para o regime de Microempresa (ME), cessando os efeitos deste contrato para a modalidade MEI."));
   b.push(P("7.2. Proteção de dados (LGPD): o CONTRATANTE autoriza o tratamento de seus dados pessoais pela CONTRATADA exclusivamente para o cumprimento das obrigações fiscais e acessórias previstas neste instrumento, nos termos da Lei nº 13.709/2018."));
 
-  b.push(H("CLÁUSULA OITAVA - DO FORO"));
-  b.push(P(SEG("8.1. As partes elegem o Foro da Comarca de "), V(val("foro").value.toUpperCase()), SEG(" para dirimir quaisquer controvérsias oriundas deste instrumento.")));
+  b.push(...clausulaLegal(P, H, "OITAVA", "8", "o"));
 
-  b.push(H("CLÁUSULA NONA - DA VALIDADE DIGITAL"));
-  b.push(P("9.1. As partes reconhecem a validade jurídica das assinaturas eletrônicas e digitais realizadas em plataformas especializadas, conferindo ao presente instrumento força de título executivo extrajudicial, conforme art. 784, III, do CPC."));
+  b.push(H("CLÁUSULA NONA - DO FORO"));
+  b.push(P(SEG("9.1. As partes elegem o Foro da Comarca de "), V(val("foro").value.toUpperCase()), SEG(" para dirimir quaisquer controvérsias oriundas deste instrumento.")));
+
+  b.push(H("CLÁUSULA DÉCIMA - DA VALIDADE DIGITAL"));
+  b.push(P("10.1. As partes reconhecem a validade jurídica das assinaturas eletrônicas e digitais realizadas em plataformas especializadas, conferindo ao presente instrumento força de título executivo extrajudicial, conforme art. 784, III, do CPC."));
 
   b.push(P("E, por estarem de acordo, firmam este instrumento particular, impresso em duas vias de igual teor e forma, assinado pelas partes e pelas testemunhas abaixo, a tudo presentes."));
   b.push(P(V(val("cidade").value.toUpperCase()), SEG(", "), V(assinatura), SEG(".")));
@@ -37383,7 +37395,53 @@ function montarRescisao(){
   return b;
 }
 
+/* ---------- Cláusulas exigidas pela Res. CFC 1.590/2020 (art. 2º, c, i, j, k) ---------- */
+function clausulaLegal(P, H, ord, num, art){
+  const CT = art === "a" ? "A CONTRATANTE" : "O CONTRATANTE";
+  return [
+    H("CLÁUSULA " + ord + " - DAS OBRIGAÇÕES LEGAIS E PROFISSIONAIS"),
+    P(SEG(num + ".1. " + CT + " executará, por sua conta e responsabilidade, os seguintes serviços: "), V(val("c_exec").value), SEG(".")),
+    P(num + ".2. " + CT + " fornecerá à CONTRATADA, anualmente, ao término de cada exercício social, a Carta de Responsabilidade da Administração, em modelo disponibilizado pela CONTRATADA, nos termos da Resolução CFC nº 1.590/2020 e da ITG 1000."),
+    P(num + ".3. A recusa ou a omissão na entrega da Carta autoriza a CONTRATADA a adotar as salvaguardas cabíveis, inclusive rescindir este contrato, observadas as normas profissionais."),
+    P(num + ".4. " + CT + " declara ter ciência da Lei nº 9.613/1998 (prevenção à lavagem de dinheiro) e de que a CONTRATADA, na condição de profissional da contabilidade, está sujeita aos deveres de identificação de clientes, registro de operações e comunicação de operações suspeitas aos órgãos competentes, nos termos da lei e das normas profissionais."),
+    P(num + ".5. Qualquer alteração dos serviços, dos valores ou das condições deste contrato será feita por termo aditivo escrito, que poderá ser assinado por meio eletrônico.")
+  ];
+}
+
+function montarCartaResp(){
+  const cNome = val("c_razao").value.trim();
+  const P = (...segs) => ({k:"p", segs: segs.map(s => typeof s === "string" ? SEG(s) : s)});
+  const I = (...segs) => ({k:"item", segs: segs.map(s => typeof s === "string" ? SEG(s) : s)});
+  const b = [];
+  b.push({k:"titulo", segs:[SEG("CARTA DE RESPONSABILIDADE DA ADMINISTRAÇÃO", true)]});
+  b.push(P(V(val("cidade").value.toUpperCase()), SEG(", "), V(dataLonga(val("data_ass").value)), SEG(".")));
+  b.push(P(SEG("À", true)));
+  b.push(P(SEG(ESCRITORIO.razao, true)));
+  b.push(P(SEG("CRC/SC nº " + ESCRITORIO.crcOrg + " · CNPJ nº " + ESCRITORIO.cnpj)));
+  b.push(P(SEG(ESCRITORIO.endereco + ".")));
+  b.push(P("Prezados Senhores,"));
+  b.push(P(SEG("Em cumprimento à ITG 1000 e à Resolução CFC nº 1.590/2020, nós, administradores e responsáveis legais da empresa "), V(cNome), SEG(", CNPJ nº "), V(val("c_cnpj").value), SEG(", declaramos que as informações e os documentos referentes ao período-base de "), V(dataCurta(val("ca_ini").value)), SEG(" a "), V(dataCurta(val("ca_fim").value)), SEG(", fornecidos a essa organização contábil para a escrituração contábil, a elaboração das demonstrações contábeis, o cumprimento das obrigações acessórias, a apuração de impostos e a geração de arquivos eletrônicos, são completos e fidedignos. Declaramos ainda que:")));
+  const decl = [
+    "os controles internos são de responsabilidade da administração e são adequados ao tipo de atividade e ao volume de transações da empresa;",
+    "não foi realizada nenhuma operação considerada ilegal pela legislação vigente;",
+    "os documentos emitidos e os recebidos de fornecedores são idôneos;"
+  ];
+  if(marcado("ca_estoque")) decl.push("os estoques registrados em conta própria foram avaliados, contados e levantados fisicamente, refletindo a realidade do período encerrado;");
+  decl.push("as informações do sistema de gestão e controle interno são controladas e validadas com documentação de suporte, sendo a administração responsável pelo banco de dados e pelos arquivos eletrônicos gerados.");
+  decl.forEach((t, i) => b.push(I(String.fromCharCode(97 + i) + ") ", t)));
+  b.push(P("Não temos conhecimento de fatos adicionais, ocorridos no período-base e até a data desta carta, que afetem ou possam afetar as demonstrações contábeis ou a continuidade das operações da empresa."));
+  b.push(P("Confirmamos, ainda, a inexistência de:"));
+  ["fraude envolvendo a administração ou empregados em cargos de responsabilidade ou de confiança;",
+   "fraude envolvendo terceiros, com possível efeito relevante nas demonstrações contábeis;",
+   "violação ou possível violação de leis, normas ou regulamentos cujos efeitos devessem ser divulgados ou gerar provisão para contingências passivas."
+  ].forEach((t, i) => b.push(I(String.fromCharCode(97 + i) + ") ", t)));
+  b.push(P("Atenciosamente,"));
+  b.push({k:"assin1", nome: val("c_rep").value.trim(), cpf: val("c_cpf").value.trim(), cont: cNome, cnpj: val("c_cnpj").value.trim()});
+  return b;
+}
+
 function montarBlocos(){
+  if(tipoAtual() === "carta_resp") return montarCartaResp();
   if(tipoAtual() === "proposta_abertura") return montarAbertura();
   if(tipoAtual() === "proposta_mensal") return montarMensal();
   if(tipoAtual().startsWith("proposta_avulsa")) return montarPropostaAvulsa();
@@ -37443,14 +37501,16 @@ function montarBlocos(){
   b.push(P(SEG(`6.2. A rescisão pode ocorrer a qualquer tempo, com aviso prévio por escrito de ${aviso} (${extenso(aviso)}) dias.`)));
   b.push(P(SEG(`6.3. A falta de pagamento por mais de ${atraso} (${extenso(atraso)}) dias faculta à CONTRATADA a suspensão dos serviços e rescisão imediata.`)));
 
+  b.push(...clausulaLegal(P, H, "SÉTIMA", "7", "a"));
+
   const comProp = marcado("c_prop");
   if(comProp){
-    b.push(H("CLÁUSULA SÉTIMA - DA PROPOSTA"));
-    b.push(P(SEG("7.1. Este contrato decorre da proposta de prestação de serviços contábeis emitida pela CONTRATADA em "), V(dataCurta(val("c_data_prop").value)), SEG(" e aceita pelo CONTRATANTE em "), V(dataCurta(val("c_data_aceite").value)), SEG(". Em caso de divergência entre a proposta e este instrumento, prevalecerão as condições deste contrato.")));
-    b.push(P("7.2. O aceite da proposta e a assinatura deste contrato poderão ser feitos por meio eletrônico, inclusive por mensagem eletrônica (WhatsApp ou e-mail) ou por assinatura eletrônica ou digital, com validade jurídica para as partes, nos termos do art. 784 do Código de Processo Civil."));
+    b.push(H("CLÁUSULA OITAVA - DA PROPOSTA"));
+    b.push(P(SEG("8.1. Este contrato decorre da proposta de prestação de serviços contábeis emitida pela CONTRATADA em "), V(dataCurta(val("c_data_prop").value)), SEG(" e aceita pelo CONTRATANTE em "), V(dataCurta(val("c_data_aceite").value)), SEG(". Em caso de divergência entre a proposta e este instrumento, prevalecerão as condições deste contrato.")));
+    b.push(P("8.2. O aceite da proposta e a assinatura deste contrato poderão ser feitos por meio eletrônico, inclusive por mensagem eletrônica (WhatsApp ou e-mail) ou por assinatura eletrônica ou digital, com validade jurídica para as partes, nos termos do art. 784 do Código de Processo Civil."));
   }
-  b.push(H(comProp ? "CLÁUSULA OITAVA - DO FORO" : "CLÁUSULA SÉTIMA - DO FORO"));
-  b.push(P(SEG(comProp ? "8.1. As partes elegem o Foro da Comarca de " : "7.1. As partes elegem o Foro da Comarca de "), V(val("foro").value.toUpperCase()), SEG(" para dirimir quaisquer controvérsias oriundas deste instrumento.")));
+  b.push(H(comProp ? "CLÁUSULA NONA - DO FORO" : "CLÁUSULA OITAVA - DO FORO"));
+  b.push(P(SEG(comProp ? "9.1. As partes elegem o Foro da Comarca de " : "8.1. As partes elegem o Foro da Comarca de "), V(val("foro").value.toUpperCase()), SEG(" para dirimir quaisquer controvérsias oriundas deste instrumento.")));
 
   b.push(P(marcado("sem_test") ? "E, para firmeza e como prova de assim haverem contratado, firmam este instrumento particular, impresso em duas vias de igual teor e forma, a tudo presentes." : "E, para firmeza e como prova de assim haverem contratado, firmam este instrumento particular, impresso em duas vias de igual teor e forma, assinado pelas partes contratantes e pelas testemunhas abaixo, a tudo presentes."));
   b.push(P(V(val("cidade").value.toUpperCase()), SEG(", "), V(assinatura), SEG(".")));
@@ -37472,6 +37532,13 @@ function blocoHTML(bl){
   if(bl.k === "h") return `<h3 class="bl">${htmlSegs(bl.segs)}</h3>`;
   if(bl.k === "item") return `<p class="bl item">${htmlSegs(bl.segs)}</p>`;
   if(bl.k === "p") return `<p class="bl${bl.extra ? " qual" : ""}">${htmlSegs(bl.segs)}</p>`;
+  if(bl.k === "assin1"){
+    const nm = bl.nome ? escH(bl.nome) : '<span class="vazio">' + "_".repeat(30) + '</span>';
+    const cp = bl.cpf ? escH(bl.cpf) : '<span class="vazio">' + "_".repeat(14) + '</span>';
+    const ce = bl.cont ? escH(bl.cont) : '<span class="vazio">' + "_".repeat(30) + '</span>';
+    const cj = bl.cnpj ? escH(bl.cnpj) : '<span class="vazio">' + "_".repeat(18) + '</span>';
+    return `<div class="bl"><div class="assin" style="grid-template-columns:minmax(0,75%)"><div class="linha"><b>Administrador e representante legal</b><div class="nome">${nm}</div><div>CPF nº ${cp}</div><div>${ce} · CNPJ nº ${cj}</div></div></div></div>`;
+  }
   if(bl.k === "assin" && bl.proposta){
     const cn = bl.cont ? escH(bl.cont) : '<span class="vazio">' + "_".repeat(30) + '</span>';
     const cc = bl.contCnpj ? escH(bl.contCnpj) : '<span class="vazio">' + "_".repeat(20) + '</span>';
@@ -37532,6 +37599,14 @@ function renderPrevia(blocos){
 }
 
 function checarCampos(){
+  if(tipoAtual() === "carta_resp"){
+    const req = ["c_razao","c_cnpj","c_rep","c_cpf","cidade","data_ass","ca_ini","ca_fim"];
+    const falt = req.filter(id => !val(id).value.trim());
+    const av = val("aviso");
+    av.style.display = falt.length ? "block" : "none";
+    av.textContent = falt.length ? `Faltam ${falt.length} campo(s). Eles aparecem como ______ na carta.` : "";
+    return;
+  }
   if(isRescisao()){
     const req = ["c_razao","c_cnpj","c_rep","c_cpf","cidade","data_ass","rs_data_proposta","rs_data_contrato","rs_efetiva","foro"];
     if(val("rs_opcao").value === "B") req.push("rs_valor","rs_venc_b");
@@ -37596,6 +37671,11 @@ async function baixarWord(){
     else if(bl.k === "h") filhos.push(new docx.Paragraph({keepNext:true, spacing:{before:240, after:80}, children: runs(bl.segs)}));
     else if(bl.k === "item") filhos.push(new docx.Paragraph({alignment: docx.AlignmentType.JUSTIFIED, spacing:{after:80}, indent:{left:284}, children: runs(bl.segs)}));
     else if(bl.k === "p") filhos.push(new docx.Paragraph({alignment: docx.AlignmentType.JUSTIFIED, spacing:{after: bl.extra ? 240 : 120}, children: runs(bl.segs)}));
+    else if(bl.k === "assin1"){
+      const txt1 = (t, b=false) => new docx.Paragraph({keepNext:true, keepLines:true, children:[new docx.TextRun({text:t, bold:b, font:FONTE, size:TAM-2})]});
+      filhos.push(new docx.Paragraph({keepNext:true, spacing:{before:720}, children:[new docx.TextRun({text:"______________________________________________", font:FONTE, size:TAM-2})]}));
+      filhos.push(txt1("Administrador e representante legal", true), txt1(bl.nome || "__________________________________"), txt1("CPF nº " + (bl.cpf || "______________")), txt1((bl.cont || "__________________________________") + " · CNPJ nº " + (bl.cnpj || "__________________")));
+    }
     else if(bl.k === "assin" && bl.proposta){
       const linha = () => new docx.Paragraph({keepLines:true, spacing:{before:720}, children:[new docx.TextRun({text:"______________________________________________", font:FONTE, size:TAM-2})]});
       const txt = (t, b=false) => new docx.Paragraph({keepNext:true, keepLines:true, children:[new docx.TextRun({text:t, bold:b, font:FONTE, size:TAM-2})]});
@@ -37637,15 +37717,17 @@ async function baixarWord(){
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   const nome = (val("c_razao").value.trim() || "cliente").replace(/[^\w\- ]+/g, "").replace(/\s+/g, "_");
-  const prefixo = (isRescisao() ? "Rescisao" : isProposta() ? "Proposta" : "Contrato") + (isMEI() ? "_MEI" : "") + (isCam() ? "_MEI_Caminhoneiro" : "");
+  const prefixo = (tipoAtual() === "carta_resp" ? "Carta_Responsabilidade" : isRescisao() ? "Rescisao" : isProposta() ? "Proposta" : "Contrato") + (isMEI() ? "_MEI" : "") + (isCam() ? "_MEI_Caminhoneiro" : "");
   a.href = url; a.download = `${prefixo}_${nome}.docx`;
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 2000);
 }
 
 function ajustarCampos(){
-  const proposta = isProposta(), mei = isMEI(), cam = isCam(), resc = isRescisao();
-  document.querySelectorAll(".so-contrato").forEach(el => el.style.display = (proposta || resc) ? "none" : "");
+  const proposta = isProposta(), mei = isMEI(), cam = isCam(), resc = isRescisao(), carta = tipoAtual() === "carta_resp";
+  document.querySelectorAll(".so-contrato").forEach(el => el.style.display = (proposta || resc || carta) ? "none" : "");
+  document.querySelectorAll(".so-exec").forEach(el => el.style.display = (proposta || resc || carta) ? "none" : "");
+  document.querySelectorAll(".so-carta").forEach(el => el.style.display = carta ? "" : "none");
   document.querySelectorAll(".so-proposta").forEach(el => el.style.display = proposta ? "" : "none");
   const avu = tipoAtual().startsWith("proposta_avulsa");
   const novo = tipoAtual() === "proposta_abertura" || tipoAtual() === "proposta_mensal";
@@ -37658,18 +37740,18 @@ function ajustarCampos(){
     lbl.style.display = campo.style.display = semReg ? "none" : "";
     if(semReg){ val("sv_lp").checked = false; }
   }
-  document.querySelectorAll(".so-geral").forEach(el => el.style.display = (mei || cam || resc || avu || novo) ? "none" : "");
+  document.querySelectorAll(".so-geral").forEach(el => el.style.display = (mei || cam || resc || avu || novo || carta) ? "none" : "");
   document.querySelectorAll(".so-avulso").forEach(el => el.style.display = avu ? "" : "none");
   const outrosOn = marcado("outros_on");
   ["1","2","3","4"].forEach(k => ["av_s"+k+"_nome","av_s"+k+"_desc","av_s"+k+"_valor"].forEach(id => { const c = val(id).closest(".campo"); if(c) c.style.display = (avu && !outrosOn) ? "none" : ""; }));
   document.querySelectorAll(".so-mei").forEach(el => el.style.display = mei ? "" : "none");
   document.querySelectorAll(".so-cam").forEach(el => el.style.display = cam ? "" : "none");
   document.querySelectorAll(".so-nao-cam").forEach(el => el.style.display = cam ? "none" : "");
-  document.querySelectorAll(".so-nr").forEach(el => el.style.display = resc ? "none" : "");
-  ["valor","venc","inicio"].forEach(id => val(id).closest(".campo").style.display = (resc || avu || novo) ? "none" : "");
+  document.querySelectorAll(".so-nr").forEach(el => el.style.display = (resc || carta) ? "none" : "");
+  ["valor","venc","inicio"].forEach(id => val(id).closest(".campo").style.display = (resc || avu || novo || carta) ? "none" : "");
   document.querySelectorAll(".so-rescisao").forEach(el => el.style.display = resc ? "" : "none");
   document.querySelectorAll(".so-optb").forEach(el => el.style.display = (resc && val("rs_opcao").value === "B") ? "" : "none");
-  const nome = resc ? "Termo de Rescisão" : (proposta ? "Proposta" : "Contrato") + (mei ? " para MEI" : cam ? " MEI Caminhoneiro" : "");
+  const nome = carta ? "Carta de Responsabilidade" : resc ? "Termo de Rescisão" : (proposta ? "Proposta" : "Contrato") + (mei ? " para MEI" : cam ? " MEI Caminhoneiro" : "");
   document.title = "Gerador de " + nome;
   document.querySelector(".painel h1").textContent = "Gerador de " + nome;
 }
