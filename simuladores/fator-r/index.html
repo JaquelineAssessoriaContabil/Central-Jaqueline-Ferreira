@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Calculadora Fator R | JF Assessoria Contábil</title>
+<style>
+:root{
+  --rose:#D98BA4; --rose-d:#B9677F; --rose-l:#F8EBEF; --rose-xl:#FDF7F9;
+  --gold:#D4AF37; --gold-d:#9C7C1C; --gold-l:#FBF5DF;
+  --ink:#000; --muted:#666; --line:#EBDDE2; --bg:#FCF9FA;
+  --green:#10B981; --green-d:#0B7A56; --green-l:#E7F7F0;
+  --red:#B4414F; --red-l:#FBECEE;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Segoe UI",Arial,sans-serif}
+.wrap{max-width:1180px;margin:26px auto;padding:0 18px}
+.top{display:flex;align-items:center;gap:18px;background:linear-gradient(120deg,#fff 0%,var(--rose-l) 100%);border:1px solid var(--line);border-bottom:3px solid var(--gold);border-radius:18px;padding:24px 28px;margin-bottom:18px}
+.logo{flex:none;width:68px;height:68px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--rose),var(--gold));color:#fff;font:700 26px Georgia,serif;letter-spacing:1px;box-shadow:0 4px 14px #d98ba455}
+.brand{font-size:11px;letter-spacing:2.5px;color:var(--gold-d);font-weight:700}
+.top h1{margin:4px 0 3px;font:700 27px Georgia,serif;color:var(--ink)}
+.top p{margin:0;color:var(--muted);font-size:14px}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;margin:15px 0;box-shadow:0 5px 18px #d98ba412}
+.section-title{display:flex;align-items:center;gap:10px;margin:0 0 15px;font:700 18px Georgia,serif;color:var(--ink)}
+.num{flex:none;background:var(--rose-l);color:var(--rose-d);width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font:700 14px "Segoe UI",Arial,sans-serif;border:1px solid var(--rose)}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:12px;font-weight:700;color:var(--muted)}
+input,select{width:100%;border:1px solid var(--line);border-radius:9px;padding:10px 12px;background:#fff;color:var(--ink);font:inherit;min-width:0}
+input:focus,select:focus,button:focus-visible{outline:2px solid var(--rose);outline-offset:1px;border-color:var(--rose)}
+input:disabled{background:#f3eff1;color:#aaa;cursor:not-allowed}
+.hint{font-size:12.5px;color:var(--muted);margin:8px 0 0}
+.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+button{border:0;border-radius:10px;padding:11px 18px;font:700 14px "Segoe UI",Arial,sans-serif;cursor:pointer;transition:filter .15s}
+button:hover{filter:brightness(.95)}
+.primary{background:var(--rose);color:#fff}
+.secondary{background:var(--rose-l);color:var(--rose-d)}
+.ghost{background:#f3f0f1;color:#333}
+.table-wrap{overflow-x:auto;margin-top:12px;border:1px solid var(--line);border-radius:12px}
+table{width:100%;border-collapse:collapse;min-width:820px}
+th,td{padding:8px 8px;border-bottom:1px solid var(--line);text-align:left;font-size:12.5px}
+th{color:var(--muted);background:var(--rose-xl);font-weight:700;position:sticky;top:0}
+td input{padding:8px;font-size:13px;min-width:112px;text-align:right}
+td.month{font-weight:700;white-space:nowrap}
+td.tot,th.tot{text-align:right;font-weight:700;white-space:nowrap}
+tfoot td{background:var(--gold-l);font-weight:700;border-bottom:0}
+tr.off td{opacity:.55}
+.notice{border-left:4px solid var(--gold);background:var(--gold-l);padding:11px 14px;border-radius:7px;color:#5b4a14;font-size:13px;margin:10px 0}
+.notice.rose{border-left-color:var(--rose);background:var(--rose-xl);color:#5a2f3d}
+.notice b{color:#000}
+.results{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:16px}
+.metric{background:var(--rose-xl);border:1px solid var(--line);border-radius:13px;padding:14px}
+.metric small{display:block;color:var(--muted);font-size:11.5px;margin-bottom:4px}
+.metric strong{font-size:20px;color:#000}
+.metric.hl{border-color:var(--gold);background:var(--gold-l)}
+.status{display:inline-block;padding:6px 12px;border-radius:30px;font-size:13px;font-weight:700}
+.ok{background:var(--green-l);color:var(--green-d)}
+.no{background:var(--red-l);color:var(--red)}
+.warn{background:var(--gold-l);color:var(--gold-d)}
+.result-panel{display:none}.result-panel.show{display:block}
+.bar{position:relative;height:12px;background:#f0e6ea;border-radius:10px;margin:18px 0 6px;overflow:visible}
+.bar span{display:block;height:100%;border-radius:10px;background:linear-gradient(90deg,var(--rose),var(--gold));width:0;transition:width .4s}
+.bar i{position:absolute;top:-5px;bottom:-5px;width:2px;background:#000;left:100%}
+.bar-lbl{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}
+#conclusao p{margin:8px 0 0}
+.mem{font-size:13.5px}
+.mem p{margin:7px 0}
+.err{color:var(--red);font-size:12.5px;margin-top:6px;display:none}
+.foot{color:var(--muted);font-size:11.5px;text-align:center;margin:24px 0 36px;line-height:1.7}
+.foot b{color:var(--rose-d)}
+.printhead{display:none}
+@media(max-width:860px){.grid{grid-template-columns:1fr 1fr}.results{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.grid,.results{grid-template-columns:1fr}.wrap{padding:0 11px}.card{padding:15px}.top{padding:18px;flex-direction:column;align-items:flex-start}.top h1{font-size:23px}}
+@media print{
+  body{background:#fff;font-size:12px}.wrap{max-width:none;margin:0;padding:0}
+  .actions,#preencher,#limpar,.noprint{display:none!important}
+  .card,.top{box-shadow:none;break-inside:avoid}
+  .table-wrap{overflow:visible}table{min-width:0}td input{border:0;padding:0;min-width:0;background:none}
+  .printhead{display:block;font-size:12px;margin:0 0 8px}
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+
+<header class="top">
+  <div class="logo" aria-hidden="true">JF</div>
+  <div>
+    <div class="brand">JAQUELINE FERREIRA • ASSESSORIA CONTÁBIL</div>
+    <h1>Calculadora de Fator R</h1>
+    <p>Simulação e conferência da folha para o Simples Nacional • uso interno</p>
+  </div>
+</header>
+
+<section class="card">
+  <h2 class="section-title"><span class="num">1</span> Identificação e elegibilidade</h2>
+  <div class="grid">
+    <div class="field"><label for="empresa">Empresa / cliente</label><input id="empresa" placeholder="Nome empresarial" autocomplete="off"></div>
+    <div class="field"><label for="cnpj">CNPJ</label><input id="cnpj" placeholder="00.000.000/0000-00" inputmode="numeric" maxlength="18" autocomplete="off"></div>
+    <div class="field"><label for="apuracao">Período de apuração (PA) do DAS</label><input id="apuracao" type="month"></div>
+    <div class="field"><label for="abertura">Mês de abertura no CNPJ <span style="font-weight:400">(se tem menos de 13 meses)</span></label><input id="abertura" type="month"></div>
+    <div class="field"><label for="cnae">CNAE principal</label><input id="cnae" placeholder="Ex.: 8650-0/03" autocomplete="off"></div>
+    <div class="field"><label for="elegibilidade">Análise de elegibilidade</label>
+      <select id="elegibilidade">
+        <option value="revisar">Ainda não analisada</option>
+        <option value="sim">Sujeita ao Fator R</option>
+        <option value="nao">Não sujeita ao Fator R</option>
+        <option value="mista">Atividade mista / requer análise</option>
+      </select>
+    </div>
+    <div class="field" style="grid-column:1/-1"><label for="atividade">Serviço efetivamente prestado</label><input id="atividade" placeholder="Descreva a atividade realmente exercida" autocomplete="off"></div>
+  </div>
+  <p class="hint">A elegibilidade depende do serviço efetivamente prestado e do enquadramento legal, não só do CNAE. A conclusão de anexo só aparece quando a opção <b>“Sujeita ao Fator R”</b> estiver marcada.</p>
+</section>
+
+<section class="card">
+  <h2 class="section-title"><span class="num">2</span> Lançamentos da janela de cálculo</h2>
+  <div class="notice rose" id="janelaInfo"></div>
+  <div class="notice"><b>Como lançar a folha:</b> use o valor <b>bruto</b> pago em cada mês (regime de caixa): salários, férias, 13º no mês do pagamento, pró-labore e autônomos. Some a <b>CPP</b> (inclusive a parcela recolhida dentro do DAS) e o <b>FGTS</b>, somente se efetivamente recolhidos. Distribuição de lucros não entra.</div>
+  <div class="actions"><button class="secondary" id="preencher" type="button">Preencher exemplo fictício</button><button class="ghost" id="limpar" type="button">Limpar valores</button></div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Competência</th><th>Receita bruta (R$)</th><th>Salários (R$)</th><th>Pró-labore (R$)</th><th>Autônomos (R$)</th><th>CPP recolhida, inclusive no DAS (R$)</th><th>FGTS recolhido (R$)</th><th class="tot">Folha do mês</th></tr></thead>
+      <tbody id="linhas"></tbody>
+      <tfoot id="totais"></tfoot>
+    </table>
+  </div>
+  <div id="blocoInicio" style="display:none">
+    <div class="notice rose" style="margin-top:14px"><b>Mês de início de atividade:</b> como o PA é o próprio mês de abertura, a regra usa os valores do <b>próprio PA</b>. Informe a folha e a receita do mês.</div>
+    <div class="grid" style="margin-top:10px">
+      <div class="field"><label for="paFolha">Folha do PA (R$)</label><input id="paFolha" inputmode="decimal" placeholder="0,00"></div>
+      <div class="field"><label for="paReceita">Receita bruta do PA (R$)</label><input id="paReceita" inputmode="decimal" placeholder="0,00"></div>
+    </div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 class="section-title"><span class="num">3</span> Resultado da simulação</h2>
+  <div class="actions" style="margin-top:0"><button class="primary" id="calcular" type="button">Calcular Fator R</button><button class="secondary" id="imprimir" type="button">Imprimir / salvar em PDF</button></div>
+  <div class="err" id="erro" role="alert"></div>
+  <div class="result-panel" id="resultado">
+    <div class="printhead" id="printhead"></div>
+    <div class="results">
+      <div class="metric"><small id="lblRbt">RBT12 · receita bruta</small><strong id="rbt">R$ 0,00</strong></div>
+      <div class="metric"><small id="lblFs">FS12 · folha com encargos</small><strong id="fs">R$ 0,00</strong></div>
+      <div class="metric hl"><small>Fator R</small><strong id="fator">0,00%</strong></div>
+      <div class="metric"><small>Folha necessária para 28%</small><strong id="meta">R$ 0,00</strong></div>
+    </div>
+    <div class="bar" aria-hidden="true"><span id="barra"></span><i></i></div>
+    <div class="bar-lbl"><span>0%</span><span>limite 28%</span></div>
+    <div id="conclusao" style="margin:14px 0 4px"></div>
+    <div id="detalhe" class="hint"></div>
+  </div>
+</section>
+
+<section class="card mem">
+  <h2 class="section-title"><span class="num">4</span> Memória de cálculo e base legal</h2>
+  <p><b>Fórmula:</b> Fator R = FS12 ÷ RBT12 × 100.</p>
+  <p><b>RBT12:</b> receita bruta acumulada (mercado interno + externo) da janela de 12 meses.</p>
+  <p><b>FS12:</b> valor bruto pago a pessoas físicas pelo trabalho (empregados, pró-labore e autônomos), acrescido da CPP (inclusive a recolhida dentro do Simples) e do FGTS efetivamente recolhidos, pelo regime de caixa.</p>
+  <p><b>Janela de 12 meses:</b> até o PA de dez/2026, são os 12 meses imediatamente anteriores ao PA. A partir do PA de jan/2027, a janela passa a ser os 12 meses anteriores ao <u>mês anterior</u> ao PA (LC 123/2006, art. 18, com a redação da LC 214/2025).</p>
+  <p><b>Enquadramento:</b> para atividade sujeita ao Fator R, ≥ 28% indica Anexo III; abaixo de 28%, Anexo V.</p>
+  <p><b>Início de atividade até 2026:</b> no mês de abertura usa-se folha ÷ receita do próprio PA; depois, enquanto houver menos de 13 meses de atividade, receita e folha são anualizadas (média × 12), o que dá a mesma razão da soma dos meses de atividade (Res. CGSN 140/2018, art. 26).</p><p><b>Início de atividade a partir de 2027:</b> os 2 primeiros meses de atividade têm fator R = 28%; do 3º mês em diante, anualização sobre a janela deslocada (Res. CGSN 190/2026).</p><p><b>Casos extremos:</b> folha sem receita = 28%; receita sem folha ou ambas zeradas = 1%.</p>
+  <div class="notice noprint">Ferramenta de apoio à conferência. Não substitui a validação do CNAE, do serviço efetivamente prestado, da composição da FS12/RBT12 e do PGDAS-D. Confira sempre a legislação vigente antes de transmitir a apuração.</div>
+</section>
+
+<div class="foot">
+  <b>Jaqueline Ferreira Assessoria Contábil Ltda</b> • CRC SC-013019/O-4 • Jaqueline do Prado Ferreira, CRC SC-048028/O-0<br>
+  <a href="mailto:contato@jaquelineferreiracontadora.com.br" style="color:var(--rose-d);text-decoration:none">contato@jaquelineferreiracontadora.com.br</a><br>Calculadora Fator R • uso interno • os dados ficam apenas no seu navegador e não são enviados nem salvos
+</div>
+
+</main>
+
+<script>
+/* ============ Lógica pura (testável) ============ */
+const CAMPOS=['receita','salarios','prolabore','autonomos','cpp','fgts'];
+const MESES=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+
+// "1.234,56" | "1234,56" | "1234.56" | "1.234" -> centavos (inteiro)
+function paraCentavos(v){
+  let s=String(v==null?'':v).trim().replace(/[R$\s]/g,'');
+  if(!s)return 0;
+  let neg=false; if(s[0]==='-'){neg=true;s=s.slice(1)}
+  if(s.includes(',')) s=s.replace(/\./g,'').replace(',','.');
+  else if(/^\d{1,3}(\.\d{3})+$/.test(s)) s=s.replace(/\./g,'');   // 1.234 = mil duzentos e trinta e quatro
+  const n=parseFloat(s);
+  if(!Number.isFinite(n))return 0;
+  const c=Math.round(n*100);
+  return neg?-c:c;
+}
+function somaMes(chave,n){const[a,m]=chave.split('-').map(Number);const t=a*12+(m-1)+n;return `${Math.floor(t/12)}-${String(t%12+1).padStart(2,'0')}`}
+function janela(pa){ // 12 competências em ordem cronológica
+  const deslocamento = pa>='2027-01' ? 2 : 1;
+  const ks=[]; for(let i=12;i>=1;i--) ks.push(somaMes(pa,-(i+deslocamento-1)));
+  return ks;
+}
+function rotulo(chave){const[a,m]=chave.split('-');return `${MESES[+m-1]}/${a}`}
+function folhaMes(v){v=v||{};return (v.salarios||0)+(v.prolabore||0)+(v.autonomos||0)+(v.cpp||0)+(v.fgts||0)}
+
+/* valores: { 'AAAA-MM': {receita, salarios, ...} } em centavos */
+function calcular({pa,abertura,valores,paFolha=0,paReceita=0}){
+  const ks=janela(pa);
+  const ativos=abertura?ks.filter(k=>k>=abertura):ks;
+  let rbt=0,fs=0;
+  ativos.forEach(k=>{const v=valores[k]||{};rbt+=v.receita||0;fs+=folhaMes(v)});
+  const n=ativos.length;
+  const r={janela:ks,meses:n,rbt,fs,rbt12:rbt,fs12:fs,modo:'normal',regra:null,fator:null,anexo3:null,faltam:0,meta:0};
+
+  if(abertura && pa>='2027-01' && abertura>=somaMes(pa,-1)){   // 2027+: 2 primeiros meses = 28% (Res. CGSN 190/2026)
+    r.modo='dois-meses';r.fator=28;r.anexo3=true;r.rbt12=0;r.fs12=0;
+    r.regra='A partir de 2027, nos 2 primeiros meses de atividade o fator R é considerado 0,28 (Res. CGSN 190/2026, art. 26, § 6º).';
+    return r;
+  }
+  if(abertura && abertura>=pa){                 // até 2026: mês de início de atividade
+    r.modo='inicio'; r.rbt12=paReceita; r.fs12=paFolha;
+    if(paFolha>0&&paReceita===0){r.fator=28;r.anexo3=true;r.regra='Folha informada e receita zero no mês de início: fator R = 28% (regra do art. 26 da Res. CGSN 140).'}
+    else if(paFolha===0&&paReceita>0){r.fator=1;r.anexo3=false;r.regra='Receita sem folha no mês de início: fator R = 1% (regra do art. 26 da Res. CGSN 140).'}
+    else if(paFolha>0&&paReceita>0){r.fator=paFolha*100/paReceita;r.anexo3=paFolha*100>=paReceita*28}
+    else{r.erro='Informe a folha e/ou a receita do mês de início.'}
+    r.meta=Math.ceil(paReceita*28/100);r.faltam=Math.max(0,r.meta-paFolha);
+    return r;
+  }
+  if(n===0){r.erro='Não há meses de atividade dentro da janela. Para esse caso (início de atividade próximo ao PA, sobretudo a partir de 2027) confira a regra no PGDAS-D.';return r}
+  if(n<12){r.modo='anualizado';r.rbt12=Math.round(rbt/n*12);r.fs12=Math.round(fs/n*12)}
+  if(fs===0&&rbt===0){r.fator=1;r.anexo3=false;r.regra='Folha e receita zeradas na janela: fator R = 1%.'}
+  else if(fs>0&&rbt===0){r.fator=28;r.anexo3=true;r.regra='Folha sem receita na janela: fator R = 28%.'}
+  else if(fs===0&&rbt>0){r.fator=1;r.anexo3=false;r.regra='Receita sem folha na janela: fator R = 1%.'}
+  else{r.fator=fs*100/rbt;r.anexo3=fs*100>=rbt*28}
+  r.meta=Math.ceil(rbt*28/100);r.faltam=Math.max(0,r.meta-fs);
+  return r;
+}
+if(typeof module!=='undefined')module.exports={paraCentavos,janela,calcular,somaMes};
+
+/* ============ Interface ============ */
+if(typeof document!=='undefined'){
+const $=id=>document.getElementById(id);
+const brl=c=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format((c||0)/100);
+const pct=f=>(Math.floor(f*100)/100).toFixed(2).replace('.',',')+'%';   // trunca: 27,999 não vira "28,00"
+const store={};   // valores por competência, preservados ao trocar o PA
+
+function paAtual(){
+  let pa=$('apuracao').value;
+  if(!pa){const d=new Date();d.setMonth(d.getMonth()-1);pa=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;}
+  return pa;
+}
+function fmtInput(el){const c=paraCentavos(el.value);el.value=el.value.trim()===''?'':(c/100).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}
+
+function montar(){
+  const pa=paAtual(),ab=$('abertura').value,ks=janela(pa);
+  const tb=$('linhas');tb.innerHTML='';
+  ks.forEach(k=>{
+    const off=ab&&k<ab;
+    const tr=document.createElement('tr');if(off)tr.className='off';
+    const v=store[k]||{};
+    tr.innerHTML=`<td class="month">${rotulo(k)}${off?' <small>(antes da abertura)</small>':''}</td>`+
+      CAMPOS.map(c=>`<td><input inputmode="decimal" placeholder="0,00" data-k="${k}" data-c="${c}" aria-label="${c} ${rotulo(k)}" ${off?'disabled':''} value="${v[c]?(v[c]/100).toLocaleString('pt-BR',{minimumFractionDigits:2}):''}"></td>`).join('')+
+      `<td class="tot" data-tot="${k}">${off?'—':brl(folhaMes(v))}</td>`;
+    tb.appendChild(tr);
+  });
+  const fim=pa>='2027-01'?'(PA a partir de jan/2027: a janela termina dois meses antes do PA)':'(os 12 meses anteriores ao PA)';
+  $('janelaInfo').innerHTML=`<b>Janela considerada:</b> ${rotulo(ks[0])} a ${rotulo(ks[11])} ${fim}.`;
+  $('blocoInicio').style.display=(ab&&ab>=pa&&pa<'2027-01')?'block':'none';
+  totais();
+}
+function totais(){
+  const ks=janela(paAtual()),ab=$('abertura').value;
+  const t={receita:0,salarios:0,prolabore:0,autonomos:0,cpp:0,fgts:0};
+  ks.forEach(k=>{if(ab&&k<ab)return;const v=store[k]||{};CAMPOS.forEach(c=>t[c]+=v[c]||0);const cel=document.querySelector(`[data-tot="${k}"]`);if(cel)cel.textContent=brl(folhaMes(v))});
+  const f=folhaMes(t);
+  $('totais').innerHTML=`<tr><td>Total</td>${CAMPOS.map(c=>`<td style="text-align:right">${brl(t[c])}</td>`).join('')}<td class="tot">${brl(f)}</td></tr>`;
+}
+$('linhas').addEventListener('input',e=>{
+  const el=e.target;if(!el.dataset.k)return;
+  (store[el.dataset.k]=store[el.dataset.k]||{})[el.dataset.c]=paraCentavos(el.value);totais();
+});
+$('linhas').addEventListener('focusout',e=>{if(e.target.dataset&&e.target.dataset.k)fmtInput(e.target)});
+['paFolha','paReceita'].forEach(id=>$(id).addEventListener('focusout',e=>fmtInput(e.target)));
+$('apuracao').addEventListener('change',montar);
+$('abertura').addEventListener('change',montar);
+$('cnpj').addEventListener('input',e=>{let d=e.target.value.replace(/\D/g,'').slice(0,14);
+  d=d.replace(/^(\d{2})(\d)/,'$1.$2').replace(/^(\d{2})\.(\d{3})(\d)/,'$1.$2.$3').replace(/\.(\d{3})(\d)/,'.$1/$2').replace(/(\d{4})(\d)/,'$1-$2');e.target.value=d});
+
+$('calcular').onclick=()=>{
+  const pa=paAtual(),ab=$('abertura').value||null,el=$('elegibilidade').value;
+  const erro=$('erro');erro.style.display='none';
+  const r=calcular({pa,abertura:ab,valores:store,paFolha:paraCentavos($('paFolha').value),paReceita:paraCentavos($('paReceita').value)});
+  if(r.erro){erro.textContent=r.erro;erro.style.display='block';$('resultado').classList.remove('show');return}
+  const anual=r.modo==='anualizado',dois=r.modo==='dois-meses';
+  $('lblRbt').textContent=r.modo==='inicio'?'Receita do PA':anual?`RBT12 anualizada (${r.meses} meses de atividade)`:'RBT12 · receita bruta';
+  $('lblFs').textContent=r.modo==='inicio'?'Folha do PA':anual?'FS12 anualizada':'FS12 · folha com encargos';
+  $('rbt').textContent=dois?'—':brl(r.rbt12);$('fs').textContent=dois?'—':brl(r.fs12);
+  $('fator').textContent=pct(r.fator);$('meta').textContent=dois?'—':brl(r.meta);
+  $('barra').style.width=Math.min(100,r.fator/28*100)+'%';
+  let c='';
+  if(el==='sim'){
+    c=r.anexo3
+      ?`<span class="status ok">Fator R ${pct(r.fator)} · igual ou superior a 28% · Anexo III</span><p>Considerando os valores informados e a elegibilidade confirmada.</p>`
+      :`<span class="status no">Fator R ${pct(r.fator)} · inferior a 28% · Anexo V</span><p>Faltam <b>${brl(r.faltam)}</b> de folha na janela para chegar a 28%, mantida a receita informada.</p>`;
+  }else if(el==='nao'){
+    c='<span class="status warn">Atividade marcada como não sujeita ao Fator R</span><p>O percentual é apenas referência e não define o anexo da atividade.</p>';
+  }else{
+    c='<span class="status warn">Elegibilidade pendente</span><p>Percentual calculado apenas como referência. Confirme a elegibilidade da atividade (campo 1) antes de usar o resultado para definir o anexo.</p>';
+  }
+  if(r.regra)c+=`<p class="hint"><b>Regra especial aplicada:</b> ${r.regra}</p>`;
+  if(!r.regra&&r.rbt===0&&r.modo!=='inicio')c+='<p class="hint">Nenhuma receita informada na janela.</p>';
+  $('conclusao').innerHTML=c;
+  const j=`${rotulo(r.janela[0])} a ${rotulo(r.janela[11])}`;
+  $('detalhe').textContent=dois?'Valor fixo pela regra dos 2 primeiros meses de atividade; não depende dos lançamentos.':r.modo==='inicio'
+    ?`Cálculo: ${brl(r.fs12)} ÷ ${brl(r.rbt12)} (valores do próprio PA, mês de início de atividade).`
+    :`Janela ${j}${anual?`, anualizada (${r.meses} meses de atividade)`:''}. Cálculo: ${brl(r.fs12)} ÷ ${brl(r.rbt12)} × 100. Confira a composição da folha e o PGDAS-D antes de transmitir.`;
+  const nome=$('empresa').value.trim(),cnpj=$('cnpj').value.trim(),pae=rotulo(pa);
+  $('printhead').innerHTML=`<b>${nome||'Empresa não informada'}</b>${cnpj?' • CNPJ '+cnpj:''} • PA ${pae}`;
+  $('resultado').classList.add('show');
+  $('resultado').scrollIntoView({behavior:'smooth',block:'nearest'});
+};
+$('preencher').onclick=()=>{
+  const ks=janela(paAtual()),ab=$('abertura').value;
+  ks.forEach(k=>{if(ab&&k<ab)return;store[k]={receita:2500000,salarios:0,prolabore:200000,autonomos:0,cpp:0,fgts:0}});
+  $('elegibilidade').value='sim';montar();
+};
+$('limpar').onclick=()=>{Object.keys(store).forEach(k=>delete store[k]);$('paFolha').value='';$('paReceita').value='';$('erro').style.display='none';$('resultado').classList.remove('show');montar()};
+$('imprimir').onclick=()=>{if(!$('resultado').classList.contains('show'))$('calcular').click();window.print()};
+montar();
+}
+</script>
+</body>
+</html>
