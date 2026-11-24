@@ -34,8 +34,8 @@ footer{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px sol
 .it .rs{font-size:10px;color:#8a6a1f;background:#fbf0d6;border-radius:4px;padding:1px 5px;margin-left:4px;font-weight:600}
 .tool{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:-6px 0 14px;font-size:13px}.tool span{color:#444}
 #pv{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;z-index:10}#pv.on{display:flex;justify-content:center;align-items:flex-start;overflow:auto;padding:16px}
-#pvBox{background:#fff;border-radius:14px;width:min(1180px,100%);display:flex;gap:0;overflow:hidden}
-#pvForm{flex:1;min-width:0;padding:16px 18px}#pvImgBox{display:none;width:44%;background:#f3eceb;padding:10px;overflow:auto;max-height:90vh}#pvImgBox.on{display:block}#pvImgBox img{width:100%;height:auto;border-radius:6px}
+#pvBox{background:#fff;border-radius:14px;width:min(1400px,100%);display:flex;gap:0;overflow:hidden}
+#pvForm{flex:1;min-width:0;padding:16px 18px}#pvImgBox{display:none;width:46%;position:sticky;top:0;align-self:flex-start;background:#f3eceb;padding:10px;overflow:auto;max-height:90vh}#pvImgBox.on{display:block}#pvImgBox img{width:100%;height:auto;border-radius:6px}
 #pvForm h2{margin:0 0 4px;font-size:18px}#pvForm .sub{font-size:12px;color:#555;margin-bottom:10px}
 .g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
 #pvForm label{display:block;font-size:12px;color:#555;margin:10px 0 3px}#pvForm input[type=text],#pvForm select,#pvForm textarea{width:100%;padding:8px 10px;border:1px solid var(--linha);border-radius:8px;font:inherit;font-size:13.5px}
@@ -127,7 +127,7 @@ function novoPop(m){var p=PRE[m.n]?JSON.parse(JSON.stringify(PRE[m.n])):null;
   p.titulo=m.t;p.dep=NAMES[m.b][1];p.freq=p.freq||"Mensal";p.resp="Jaqueline do Prado Ferreira";p.ver="1.0";p.data=hoje();p.rev=false;p.ref=m.n;p.rasc=!!PRE[m.n];return p}
 var curPop=null,curPopM=null;
 function listaCampos(id,arr,rot){var h="";arr.forEach(function(t,i){h+='<div class="li"><b>'+(i+1)+'.</b><textarea data-l="'+id+'" data-i="'+i+'" aria-label="'+rot+' '+(i+1)+'">'+esc(t)+'</textarea><button class="x" data-rm="'+id+'" data-i="'+i+'" title="Remover" aria-label="Remover">×</button></div>'});return h}
-function abrePop(m){curPopM=m;curPop=POPS[m.n]?JSON.parse(JSON.stringify(POPS[m.n])):novoPop(m);desenhaPop();$("pv").className="on";var bx=$("pvImgBox");bx.className="";var src=srcMapa(m);if(src){$("pvImg").src=src}}
+function abrePop(m){curPopM=m;curPop=POPS[m.n]?JSON.parse(JSON.stringify(POPS[m.n])):novoPop(m);desenhaPop();$("pv").className="on";var bx=$("pvImgBox");var src=srcMapa(m);if(src){$("pvImg").src=src;bx.className="on"}else bx.className=""}
 function desenhaPop(){var p=curPop,m=curPopM,F=$("pvForm");
   F.innerHTML='<h2>'+esc(codePop(m))+' — Procedimento Operacional Padrão</h2><div class="sub">Baseado no mapa '+("00"+m.n).slice(-3)+' do Sistema Domínio. Complete com o jeito do escritório.</div>'+
   (p.rasc&&!p.rev?'<div class="rsAv">Rascunho preenchido a partir do mapa. <b>Confira com o mapa ao lado e com o seu Domínio</b>, ajuste o que precisar e marque “Revisei este POP”.</div>':'')+
