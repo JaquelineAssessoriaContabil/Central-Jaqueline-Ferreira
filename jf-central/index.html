@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Simuladores | Jaqueline Ferreira Assessoria Contábil</title>
+<style>
+:root{--bg:#f7f4f5;--ink:#332b30;--muted:#766a70;--line:#eadfe4;--rose:#a95f7b;--gold:#b28a50}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,sans-serif;display:flex;flex-direction:column}
+header{background:linear-gradient(120deg,#fff,#f6e9ee);border-bottom:1px solid var(--line);padding:14px 18px;display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center}
+.brand{color:var(--rose);font-weight:800;letter-spacing:.12em;font-size:11px}
+h1{font-size:22px;margin:2px 0 0;color:#563b48}
+.pick{margin-left:auto;display:flex;flex-direction:column;gap:3px;min-width:min(100%,360px)}
+.pick label{font-size:12px;color:var(--muted)}
+select{font:inherit;padding:10px 12px;border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:10px;background:#fff;color:var(--ink)}
+select:focus{outline:2px solid var(--rose)}
+.bar{display:flex;justify-content:flex-end;padding:6px 18px;font-size:12px}
+.bar a{color:var(--rose)}
+iframe{flex:1;width:100%;border:0;background:#fff}
+.vazio{flex:1;display:grid;place-items:center;color:var(--muted);text-align:center;padding:24px}
+.vazio[hidden],iframe[hidden],.bar[hidden]{display:none}
+footer{padding:8px 16px;color:var(--muted);font-size:11px;text-align:center}
+</style>
+</head>
+<body>
+<header>
+<div><div class="brand">JAQUELINE FERREIRA • ASSESSORIA CONTÁBIL</div><h1>Simuladores</h1></div>
+<div class="pick"><label for="sel">O que você quer usar</label>
+<select id="sel"><option value="">Escolha uma ferramenta…</option><optgroup label="Fiscal"><option value="simples-hibrido">Simples Integral × Híbrido</option><option value="carta-reforma-tributaria">Carta de Adequação à Reforma Tributária</option><option value="fator-r">Calculadora de Fator R</option><option value="checklist-fechamento-mensal">Checklist de Fechamento Mensal</option><option value="checklist-obrigacoes-acessorias">Checklist de Obrigações Acessórias</option></optgroup><optgroup label="Pessoal"><option value="declaracoes-dp">Declarações DP</option><option value="jornadas-remuneracao">Jornadas e Remuneração</option></optgroup><optgroup label="Contábil"><option value="" disabled>(ainda sem ferramentas)</option></optgroup><optgroup label="Societário"><option value="checklist-documentos-societarios">Checklist de Documentos Societários</option></optgroup><optgroup label="Escritório"><option value="calculadora-honorarios">Calculadora de Honorários</option><option value="proposta-revisao-2027">Proposta de Revisão para 2027</option><option value="contrato-proposta">Contratos e Propostas</option></optgroup></select></div>
+</header>
+<div class="bar" id="bar" hidden><a id="full" href="#">Abrir em tela cheia ↗</a></div>
+<div class="vazio" id="vazio">Escolha uma ferramenta no seletor acima.</div>
+<iframe id="fr" title="Ferramenta" hidden></iframe>
+<footer>JF • Assessoria Contábil — Ferramentas auxiliares. Não substituem a análise do caso concreto.</footer>
+<script>
+(function(){
+var sel=document.getElementById('sel'),fr=document.getElementById('fr'),vz=document.getElementById('vazio'),bar=document.getElementById('bar'),full=document.getElementById('full');
+function abrir(d){
+  var ok=false;for(var i=0;i<sel.options.length;i++)if(sel.options[i].value===d)ok=true;
+  if(!d||!ok){fr.hidden=true;bar.hidden=true;vz.hidden=false;fr.removeAttribute('src');sel.value='';return;}
+  sel.value=d;fr.src=d+'/index.html';full.href=d+'/index.html';fr.hidden=false;bar.hidden=false;vz.hidden=true;
+  document.title=sel.options[sel.selectedIndex].text+' | Simuladores JF';
+}
+sel.addEventListener('change',function(){location.hash=sel.value;});
+window.addEventListener('hashchange',function(){abrir(location.hash.slice(1));});
+abrir(location.hash.slice(1));
+})();
+</script>
+</body>
+</html>

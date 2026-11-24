@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checklist de Obrigações Acessórias</title>
+<style>
+@page { size: A4 landscape; margin: 8mm; }
+:root { --rose:#8B5A6B; --gold:#C5A059; --ink:#2B2326; --muted:#7A6D70; --line:#D9CCCE; --bg:#FAF6F6; }
+* { box-sizing:border-box; }
+body { margin:0; font-family:'Poppins','Segoe UI',Arial,sans-serif; color:var(--ink); font-size:10.5px; background:#fff; }
+header { border-bottom:2px solid var(--gold); padding-bottom:6px; margin-bottom:8px; }
+.tag { font-size:9px; color:var(--muted); letter-spacing:.5px; text-transform:uppercase; }
+h1 { margin:2px 0 6px; font-size:17px; color:var(--rose); }
+.fields { display:flex; gap:14px; align-items:flex-end; flex-wrap:wrap; }
+.field { display:flex; flex-direction:column; gap:2px; }
+.field label { font-size:9px; text-transform:uppercase; letter-spacing:.4px; color:var(--rose); }
+.field input[type=text] { font-family:inherit; font-size:11px; color:var(--ink); border:none; border-bottom:1px solid var(--gold); background:transparent; padding:2px 0; outline:none; min-width:300px; }
+.field input.cnpj { min-width:180px; }
+.regimes { display:flex; gap:18px; align-items:center; margin-top:4px; }
+.regimes label { display:flex; gap:6px; align-items:center; font-size:10.5px; cursor:pointer; }
+.regimes input[type=checkbox] { width:14px; height:14px; accent-color:var(--rose); }
+.ctx { background:var(--bg); border:1px solid var(--line); padding:7px 9px; margin-bottom:8px; }
+.sec-title { font-size:11.5px; margin:0 0 5px; color:var(--rose); }
+.grid { display:grid; grid-template-columns:repeat(2, 1fr); gap:8px 18px; }
+.card { border:1px solid var(--line); border-radius:4px; padding:6px 8px; break-inside:avoid; }
+.card-head { display:flex; gap:8px; align-items:center; border-bottom:1px solid var(--line); padding-bottom:4px; margin-bottom:4px; }
+.card-head b { font-size:11px; color:var(--rose); }
+.card-head .who { font-size:9px; color:var(--muted); margin-left:auto; text-align:right; white-space:nowrap; }
+ul { list-style:none; margin:0; padding:0; }
+li { padding:2px 0; display:flex; align-items:flex-start; gap:6px; line-height:1.35; }
+.box { display:inline-block; width:11px; height:11px; border:1.5px solid var(--rose); border-radius:2px; flex:0 0 11px; margin-top:2px; }
+.alert { background:#FFF8E7; border:1px solid var(--gold); border-left:4px solid var(--gold); padding:4px 7px; font-size:9.5px; margin:3px 0; }
+.section-break { margin-top:10px; }
+.pagebreak { break-before:page; }
+.note { font-size:9px; color:var(--muted); margin-top:8px; }
+@media print { .field input[type=text] { border-bottom:1px solid var(--gold); } }
+</style></head><body>
+
+<header>
+  <div class="tag">Checklist fiscal</div>
+  <h1>Obrigações acessórias e documentos por regime tributário</h1>
+  <div class="fields">
+    <div class="field"><label for="empresa">Nome da empresa</label><input id="empresa" type="text" placeholder="Digite o nome empresarial"></div>
+    <div class="field"><label for="cnpj">CNPJ</label><input id="cnpj" class="cnpj" type="text" inputmode="numeric" placeholder="00.000.000/0000-00"></div>
+  </div>
+  <div class="field" style="margin-top:8px">
+    <label>Regime tributário</label>
+    <div class="regimes">
+      <label><input type="checkbox" name="regime" value="mei"> MEI</label>
+      <label><input type="checkbox" name="regime" value="simples"> Simples Nacional</label>
+      <label><input type="checkbox" name="regime" value="lp"> Lucro Presumido</label>
+      <label><input type="checkbox" name="regime" value="lr"> Lucro Real</label>
+    </div>
+  </div>
+</header>
+
+<section class="ctx">
+  <div class="sec-title">Antes de começar — dados do cliente</div>
+  <div class="grid">
+    <ul>
+      <li><span class="box"></span>Regime tributário e data de opção</li>
+      <li><span class="box"></span>CNAE principal e secundários (define anexo, ICMS, ISS)</li>
+      <li><span class="box"></span>Possui funcionários (eSocial/FGTS) ou pró-labore?</li>
+    </ul>
+    <ul>
+      <li><span class="box"></span>Opera com mercadorias (ICMS/IPI) ou só serviços (ISS)?</li>
+      <li><span class="box"></span>Faz retenções na fonte (IRRF, PIS/COFINS/CSLL, INSS)?</li>
+      <li><span class="box"></span>Emite NF-e, NFC-e ou NFS-e? Certificado e-CNPJ ativo?</li>
+    </ul>
+  </div>
+</section>
+
+<section class="section-break reg-section" data-reg="simples">
+  <div class="sec-title">Simples Nacional (ME e EPP)</div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-head"><b>PGDAS-D e DAS</b><span class="who">Mensal · dia 20 do mês seguinte</span></div>
+      <ul>
+        <li><span class="box"></span>Transmitir PGDAS-D com a receita do mês (inclusive zerada)</li>
+        <li><span class="box"></span>Gerar e pagar o DAS; segregar receitas sujeitas a ICMS/ISS</li>
+        <li><span class="box"></span>Conferir sublimites estaduais e receitas excluídas do DAS</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-head"><b>DEFIS</b><span class="who">Anual · 31 de março</span></div>
+      <ul>
+        <li><span class="box"></span>Declaração socioeconômica e fiscal do ano anterior</li>
+        <li><span class="box"></span>Conferir receita do ano contra as declarações mensais</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-head"><b>Folha e encargos (se houver empregados)</b><span class="who">Mensal · conforme calendário</span></div>
+      <ul>
+        <li><span class="box"></span>eSocial (eventos periódicos e folha de pagamento)</li>
+        <li><span class="box"></span>FGTS Digital (recolhimento e GRRF)</li>
+        <li><span class="box"></span>EFD-Reinf, se houver retenções ou cessão de mão de obra</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-head"><b>Escrituração fiscal</b><span class="who">Conforme atividade</span></div>
+      <ul>
+        <li><span class="box"></span>EFD ICMS/IPI, se houver operações com mercadorias (prazo por UF)</li>
+        <li><span class="box"></span>Registro de receitas por tipo (conferir com a UF/município)</li>
+        <li><span class="box"></span>Escrituração de notas de entrada e saída (NF-e/NFS-e)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section-break reg-section" data-reg="mei">
+  <div class="sec-title">MEI — Microempreendedor Individual</div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-head"><b>DAS-MEI</b><span class="who">Mensal · dia 20 do mês seguinte</span></div>
+      <ul>
+        <li><span class="box"></span>Gerar o DAS-MEI pelo Portal do Simples Nacional</li>
+        <li><span class="box"></span>Controlar o limite anual de R$ 81 mil (proporcional no ano de abertura)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-head"><b>DASN-SIMEI</b><span class="who">Anual · 31 de maio</span></div>
+      <ul>
+        <li><span class="box"></span>Declarar a receita bruta total do ano anterior</li>
+        <li><span class="box"></span>Declarar empregados (se houver) e movimentação de mercadorias</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-head"><b>Relatório de receitas e notas</b><span class="who">Mensal / sob demanda</span></div>
+      <ul>
+        <li><span class="box"></span>Manter registro mensal das receitas (relatório mensal)</li>
+        <li><span class="box"></span>Emitir NF-e quando o cliente for PJ ou exigir (verificar UF)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-head"><b>Empregado do MEI (se houver)</b><span class="who">Conforme calendário</span></div>
+      <ul>
+        <li><span class="box"></span>eSocial e FGTS Digital</li>
+        <li><span class="box"></span>Guia de INSS e salário conforme piso da categoria</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section-break pagebreak reg-section" data-reg="lp">
+  <div class="sec-title">Lucro Presumido</div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-head"><b>IRPJ e CSLL</b><span class="who">Trimestral ou mensal (estimativa)</span></div>
+      <ul>
+        <li><span class="box"></span>Apurar base presumida por atividade (8%, 12%, 16%, 32%...)</li>
+        <li><span class="box"></span>Pagar IRPJ (15% + adicional) e CSLL (9%) por DARF</li>
+        <li><span class="box"></span>Vencimento: último dia útil do mês seguinte ao trimestre</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-head"><b>PIS e COFINS cumulativos</b><span class="who">Mensal · dia 25 do mês seguinte</span></div>
+      <ul>
+        <li><span class="box"></span>Apurar 0,65% (PIS) e 3% (COFINS) sobre receita bruta</li>
+        <li><span class="box"></span>Conferir retenções sofridas de clientes (IN RFB 1.234/2012)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-head"><b>DCTFWeb</b><span class="who">Mensal · conforme calendário</span></div>
+      <ul>
+        <li><span class="box"></span>Declarar IRPJ, CSLL, PIS, COFINS e retenções</li>
+        <li><span class="box"></span>Conferir pagamentos contra o DARF gerado</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-head"><b>ECF e ECD</b><span class="who">Anual · conforme calendário</span></div>
+      <ul>
+        <li><span class="box"></span>ECF (Escrituração Contábil Fiscal) — último dia útil de julho</li>
+        <li><span class="box"></span>ECD (SPED Contábil) — conferir prazo do exercício</li>
+        <li><span class="box"></span>Conferir Livro Diário e Razão autenticados (ou termo de abertura)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-head"><b>EFD-Reinf e DIRF</b><span class="who">Mensal / anual</span></div>
+      <ul>
+        <li><span class="box"></span>EFD-Reinf: retenções de IRRF, CSRF, INSS e serviços tomados</li>
+        <li><span class="box"></span>DIRF: informar retenções do ano (conferir obrigatoriedade)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-head"><b>ICMS, ISS e folha</b><span class="who">Conforme atividade</span></div>
+      <ul>
+        <li><span class="box"></span>EFD ICMS/IPI (se houver mercadorias) e ISS (declaração municipal)</li>
+        <li><span class="box"></span>eSocial e FGTS Digital (folha e encargos)</li>
+        <li><span class="box"></span>NF-e / NFS-e emitidas e recebidas (conferir escrituração)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section-break reg-section" data-reg="lr">
+  <div class="sec-title">Lucro Real</div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-head"><b>IRPJ e CSLL</b><span class="who">Mensal (estimativa) ou trimestral</span></div>
+      <ul>
+        <li><span class="box"></span>Apurar lucro real com adições e exclusões (LALUR/LACS)</li>
+        <li><span class="box"></span>Controlar prejuízo fiscal (compensação até 30% do lucro)</li>
+        <li><span class="box"></span>Pagar estimativas mensais ou ajuste trimestral</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-head"><b>PIS e COFINS não cumulativos</b><span class="who">Mensal · conforme calendário</span></div>
+      <ul>
+        <li><span class="box"></span>Apurar 1,65% (PIS) e 7,6% (COFINS) com créditos admitidos</li>
+        <li><span class="box"></span>Controlar créditos sobre insumos, energia, aluguel, depreciação</li>
+        <li><span class="box"></span>EFD-Contribuições (prazo: 10º dia útil do 2º mês seguinte)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-head"><b>DCTFWeb</b><span class="who">Mensal · conforme calendário</span></div>
+      <ul>
+        <li><span class="box"></span>Declarar IRPJ, CSLL, PIS, COFINS e retenções</li>
+        <li><span class="box"></span>Conferir cálculo das estimativas do mês</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-head"><b>ECF e ECD</b><span class="who">Anual · conforme calendário</span></div>
+      <ul>
+        <li><span class="box"></span>ECF com LALUR/LACS integrados e demonstrações</li>
+        <li><span class="box"></span>ECD com balanço e Livro Diário/Razão</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-head"><b>EFD-Reinf, DIRF e JCP</b><span class="who">Mensal / anual</span></div>
+      <ul>
+        <li><span class="box"></span>EFD-Reinf e DIRF (retenções na fonte)</li>
+        <li><span class="box"></span>JCP: conferir limite de dedução e retenção de IRRF (15%)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-head"><b>ICMS, ISS, folha e NF-e</b><span class="who">Conforme atividade</span></div>
+      <ul>
+        <li><span class="box"></span>EFD ICMS/IPI e EFD-Contribuições (escrituração)</li>
+        <li><span class="box"></span>eSocial, FGTS Digital e declaração de ISS</li>
+        <li><span class="box"></span>Conferir NF-e/NFS-e emitidas e recebidas</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section-break">
+  <div class="sec-title">Alertas — verificar antes de fechar o mês</div>
+  <div class="grid">
+    <div class="alert"><b>PRAZO:</b> prazos variam por ano, UF e município; conferir sempre no calendário oficial da RFB e da SEFAZ.</div>
+    <div class="alert"><b>DESENQUADRAMENTO:</b> receita do Simples acima do limite (R$ 4,8 mi) ou MEI acima de R$ 81 mil leva a migrar de regime.</div>
+    <div class="alert"><b>DISPENSAS:</b> confirmar dispensas por regime e atividade antes de deixar uma obrigação de fora.</div>
+    <div class="alert"><b>REFORMA TRIBUTÁRIA:</b> a partir de 2026 há testes de CBS/IBS; acompanhar obrigações novas no calendário.</div>
+  </div>
+</section>
+
+<p class="note">Base legal: LC 123/2006 (Simples Nacional), Lei 9.249/95 e Lei 9.430/96 (LP), Lei 10.637/02 e 10.833/03 (PIS/COFINS), Decreto 9.580/2018 (RIR/2018), IN RFB vigentes (conferir as atualizações). Este checklist é um apoio de conferência e não substitui a verificação do calendário oficial e da legislação vigente.</p>
+
+<script>
+// Marque o(s) regime(s) para mostrar só as obrigações deles. Sem marcar nenhum, mostra todas.
+const regimes = [...document.querySelectorAll('input[name=regime]')];
+function atualizarRegimes() {
+  const marcados = regimes.filter(r => r.checked).map(r => r.value);
+  document.querySelectorAll('.reg-section').forEach(s => {
+    s.style.display = (marcados.length === 0 || marcados.includes(s.dataset.reg)) ? '' : 'none';
+  });
+}
+regimes.forEach(r => r.addEventListener('change', atualizarRegimes));
+</script>
+</body></html>

@@ -1,0 +1,26 @@
+# JF Central
+
+Ferramentas de uso interno da Jaqueline Ferreira Assessoria Contábil: simuladores, calculadoras, checklists e modelos de documentos.
+Cada simulador é um arquivo único (`index.html`), sem servidor e sem enviar dados para fora.
+
+| Pasta | Simulador |
+|---|---|
+| `fator-r/` | Calculadora de Fator R (Simples Nacional) |
+| `jornadas-remuneracao/` | Jornadas e Remuneração (v12, 23/11/2026) |
+| `simples-hibrido/` | Simples Integral × Híbrido (CBS/IBS pelo regime regular) |
+| `carta-reforma-tributaria/` | Carta de Adequação à Reforma Tributária |
+| `calculadora-honorarios/` | Calculadora de Honorários (MEI, Simples, Presumido) |
+| `proposta-revisao-2027/` | Proposta de Revisão para 2027 (Simples e Lucro Presumido), no papel timbrado |
+| `contrato-proposta/` | Contrato e Proposta de Prestação de Serviços |
+| `declaracoes-dp/` | Gerador de Declarações DP |
+| `checklist-fechamento-mensal/` | Checklist de Fechamento Mensal |
+| `checklist-obrigacoes-acessorias/` | Checklist de Obrigações Acessórias |
+| `checklist-documentos-societarios/` | Checklist de Documentos Societários |
+
+`index.html` na raiz é o menu: um seletor "O que você quer usar" que abre a ferramenta escolhida.
+
+## Novo simulador
+1. Criar a pasta `nome-do-simulador/` com um `index.html`.
+2. Acrescentar uma `<option>` no seletor de `index.html` (raiz).
+
+Apoio à conferência. Não substitui a análise da contadora nem a legislação vigente.

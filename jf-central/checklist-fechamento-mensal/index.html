@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checklist de Fechamento Fiscal Mensal</title>
+<style>
+@page { size: A4 landscape; margin: 8mm; }
+:root { --rose:#8B5A6B; --gold:#C5A059; --ink:#2B2326; --muted:#7A6D70; --line:#D9CCCE; --bg:#FAF6F6; }
+* { box-sizing:border-box; }
+body { margin:0; font-family:'Poppins','Segoe UI',Arial,sans-serif; color:var(--ink); font-size:10.5px; background:#fff; }
+header { border-bottom:2px solid var(--gold); padding-bottom:6px; margin-bottom:8px; }
+.tag { font-size:9px; color:var(--muted); letter-spacing:.5px; text-transform:uppercase; }
+h1 { margin:2px 0 6px; font-size:17px; color:var(--rose); }
+.fields { display:flex; gap:14px; align-items:flex-end; flex-wrap:wrap; }
+.field { display:flex; flex-direction:column; gap:2px; }
+.field label { font-size:9px; text-transform:uppercase; letter-spacing:.4px; color:var(--rose); }
+.field input[type=text], .field input[type=month] { font-family:inherit; font-size:11px; color:var(--ink); border:none; border-bottom:1px solid var(--gold); background:transparent; padding:2px 0; outline:none; min-width:260px; }
+.field input.short { min-width:150px; }
+.regimes { display:flex; gap:18px; align-items:center; margin-top:4px; flex-wrap:wrap; }
+.regimes label { display:flex; gap:6px; align-items:center; font-size:10.5px; cursor:pointer; }
+.regimes input[type=checkbox] { width:14px; height:14px; accent-color:var(--rose); }
+.sec-title { font-size:11.5px; margin:0 0 5px; color:var(--rose); }
+.section-break { margin-top:10px; }
+.grid { display:grid; grid-template-columns:repeat(2, 1fr); gap:8px 18px; }
+.card { border:1px solid var(--line); border-radius:4px; padding:6px 8px; break-inside:avoid; }
+.card-head { display:flex; gap:8px; align-items:center; border-bottom:1px solid var(--line); padding-bottom:4px; margin-bottom:4px; }
+.card-head b { font-size:11px; color:var(--rose); }
+.card-head .who { font-size:9px; color:var(--muted); margin-left:auto; text-align:right; white-space:nowrap; }
+ul { list-style:none; margin:0; padding:0; }
+li { padding:2px 0; display:flex; align-items:flex-start; gap:6px; line-height:1.35; }
+.box { display:inline-block; width:11px; height:11px; border:1.5px solid var(--rose); border-radius:2px; flex:0 0 11px; margin-top:2px; }
+.alert { background:#FFF8E7; border:1px solid var(--gold); border-left:4px solid var(--gold); padding:4px 7px; font-size:9.5px; margin:3px 0; }
+.pagebreak { break-before:page; }
+.valor { font-family:inherit; font-size:10.5px; color:var(--ink); border:none; border-bottom:1px solid var(--gold); background:transparent; width:130px; outline:none; padding:0 2px; }
+.note { font-size:9px; color:var(--muted); margin-top:8px; }
+@media print { .field input { border-bottom:1px solid var(--gold); } .no-print { display:none; } }
+</style></head><body>
+
+<header>
+  <div class="tag">Fechamento fiscal mensal</div>
+  <h1>Checklist de fechamento do mês</h1>
+  <div class="fields">
+    <div class="field"><label for="empresa">Nome da empresa</label><input id="empresa" type="text" placeholder="Digite o nome empresarial"></div>
+    <div class="field"><label for="cnpj">CNPJ</label><input id="cnpj" class="short" type="text" inputmode="numeric" placeholder="00.000.000/0000-00"></div>
+    <div class="field"><label for="competencia">Competência</label><input id="competencia" type="month"></div>
+    <div class="field"><label for="resp">Responsável</label><input id="resp" class="short" type="text"></div>
+  </div>
+  <div class="field" style="margin-top:8px">
+    <label>Regime tributário (marque para mostrar só as etapas do regime)</label>
+    <div class="regimes">
+      <label><input type="checkbox" name="regime" value="mei"> MEI</label>
+      <label><input type="checkbox" name="regime" value="simples"> Simples Nacional</label>
+      <label><input type="checkbox" name="regime" value="lp"> Lucro Presumido</label>
+      <label><input type="checkbox" name="regime" value="lr"> Lucro Real</label>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="sec-title">1. Preparação — todo mês, para todos</div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-head"><b>Documentos do cliente</b><span class="who">Até o dia 5</span></div>
+      <ul>
+        <li><span class="box"></span>Notas fiscais de entrada e saída do mês recebidas</li>
+        <li><span class="box"></span>Extratos bancários e de cartões do período</li>
+        <li><span class="box"></span>Comprovantes de despesas, folha e pró-labore</li>
+        <li><span class="box"></span>Cupons e relatórios de vendas (PDV, maquininhas)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-head"><b>Lançamentos</b><span class="who">Até o dia 10</span></div>
+      <ul>
+        <li><span class="box"></span>Notas de entrada e saída lançadas e conferidas</li>
+        <li><span class="box"></span>Receitas do mês lançadas por tipo (venda, serviço, financeira)</li>
+        <li><span class="box"></span>Contas a pagar e a receber atualizadas</li>
+        <li><span class="box"></span>Notas canceladas ou denegadas identificadas</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-head"><b>Conciliação</b><span class="who">Até o dia 12</span></div>
+      <ul>
+        <li><span class="box"></span>Extratos conciliados com o razão / livro caixa</li>
+        <li><span class="box"></span>Saldo de caixa e bancos conferido com o extrato</li>
+        <li><span class="box"></span>Diferenças justificadas e anotadas</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-head"><b>Revisão</b><span class="who">Antes de apurar</span></div>
+      <ul>
+        <li><span class="box"></span>Receita do mês comparada com o mês anterior e com o mesmo mês do ano passado</li>
+        <li><span class="box"></span>Variações fora do normal explicadas com o cliente</li>
+        <li><span class="box"></span>Certificado digital (e-CNPJ) válido</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section-break">
+  <div class="sec-title">1b. Notas de serviços emitidas</div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-head"><b>NFS-e emitidas no mês</b><span class="who">Até o dia 10</span></div>
+      <ul>
+        <li><span class="box"></span>Todas as NFS-e do mês emitidas e conferidas</li>
+        <li><span class="box"></span>Total das notas conferido com a receita lançada</li>
+        <li><span class="box"></span>Valor total das notas do mês: R$ <input type="text" class="valor" placeholder="0,00"></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section-break" data-reg="simples">
+  <div class="sec-title">2. Simples Nacional (ME e EPP)</div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-head"><b>Receita e sublimites</b><span class="who">Até o dia 15</span></div>
+      <ul>
+        <li><span class="box"></span>Receita bruta do mês separada: comércio, indústria, serviços</li>
+        <li><span class="box"></span>Receitas com ICMS/ISS segregadas (ST, monofásico, exportação)</li>
+        <li><span class="box"></span>Receita acumulada 12 meses conferida (limite R$ 4,8 mi)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-head"><b>PGDAS-D e DAS</b><span class="who">Dia 20 do mês seguinte</span></div>
+      <ul>
+        <li><span class="box"></span>PGDAS-D transmitido com a receita do mês (inclusive zerada)</li>
+        <li><span class="box"></span>DAS gerado e conferido no Portal do Simples</li>
+        <li><span class="box"></span>DAS pago e comprovante arquivado</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section-break" data-reg="mei">
+  <div class="sec-title">3. MEI</div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-head"><b>Receita e limite</b><span class="who">Até o dia 10</span></div>
+      <ul>
+        <li><span class="box"></span>Receita do mês registrada no relatório mensal de receitas</li>
+        <li><span class="box"></span>Faturamento acumulado no ano conferido (limite R$ 81 mil)</li>
+        <li><span class="box"></span>Vendas a PJ ou com exigência de nota emitidas (verificar UF)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-head"><b>DAS-MEI</b><span class="who">Dia 20 do mês seguinte</span></div>
+      <ul>
+        <li><span class="box"></span>DAS-MEI gerado e pago no Portal do Simples Nacional</li>
+        <li><span class="box"></span>Comprovante de pagamento arquivado</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section-break pagebreak" data-reg="lp">
+  <div class="sec-title">4. Lucro Presumido</div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-head"><b>PIS e COFINS cumulativos</b><span class="who">Dia 25 do mês seguinte</span></div>
+      <ul>
+        <li><span class="box"></span>Base: receita bruta do mês (0,65% PIS e 3% COFINS)</li>
+        <li><span class="box"></span>Retenções sofridas de clientes deduzidas, se aplicável</li>
+        <li><span class="box"></span>DARF gerado e pago</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-head"><b>IRPJ e CSLL (estimativa ou trimestral)</b><span class="who">Conforme calendário</span></div>
+      <ul>
+        <li><span class="box"></span>Base presumida do mês ou trimestre calculada por atividade</li>
+        <li><span class="box"></span>DARF de IRPJ e CSLL gerado e pago na data certa</li>
+        <li><span class="box"></span>Adicional de IRPJ verificado (acima de R$ 20 mil no mês)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-head"><b>Retenções na fonte</b><span class="who">Até o dia 20</span></div>
+      <ul>
+        <li><span class="box"></span>IRRF, CSRF e INSS retidos em notas e pagamentos de serviços</li>
+        <li><span class="box"></span>ISS retido por tomador (verificar município)</li>
+        <li><span class="box"></span>DARF das retenções pagas</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-head"><b>Declarações do mês</b><span class="who">Conforme calendário</span></div>
+      <ul>
+        <li><span class="box"></span>DCTFWeb transmitida com os débitos do mês</li>
+        <li><span class="box"></span>EFD-Reinf com as retenções e serviços tomados</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section-break" data-reg="lr">
+  <div class="sec-title">5. Lucro Real</div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-head"><b>Estimativa mensal (IRPJ e CSLL)</b><span class="who">Último dia útil do mês seguinte</span></div>
+      <ul>
+        <li><span class="box"></span>Balancete de suspensão ou redução, se utilizado</li>
+        <li><span class="box"></span>Estimativa calculada sobre a receita ou o balancete</li>
+        <li><span class="box"></span>DARF de estimativa pago</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-head"><b>PIS e COFINS não cumulativos</b><span class="who">Dia 10 do mês seguinte (regra da DCTFWeb)</span></div>
+      <ul>
+        <li><span class="box"></span>Débitos (receita) apurados: 1,65% PIS e 7,6% COFINS</li>
+        <li><span class="box"></span>Créditos do mês conferidos (insumos, energia, aluguel, depreciação)</li>
+        <li><span class="box"></span>DARF ou compensação feita</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-head"><b>Retenções e declarações</b><span class="who">Conforme calendário</span></div>
+      <ul>
+        <li><span class="box"></span>IRRF, CSRF e INSS retidos conferidos e recolhidos</li>
+        <li><span class="box"></span>DCTFWeb e EFD-Reinf transmitidas</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-head"><b>Ajustes para o LALUR / LACS</b><span class="who">Mensal, para o ECF</span></div>
+      <ul>
+        <li><span class="box"></span>Adições e exclusões do mês anotadas (multas, provisões, JCP)</li>
+        <li><span class="box"></span>Prejuízo fiscal e base negativa atualizados</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section-break">
+  <div class="sec-title">6. Fiscal e folha — quando houver</div>
+  <div class="grid">
+    <div class="card" data-reg="simples lp lr">
+      <div class="card-head"><b>Folha de pagamento e FGTS</b><span class="who">FGTS dia 7 · INSS e IRRF dia 20</span></div>
+      <ul>
+        <li><span class="box"></span>Folha fechada e holerites conferidos</li>
+        <li><span class="box"></span>FGTS Digital recolhido (dia 7)</li>
+        <li><span class="box"></span>INSS e IRRF da folha pagos (dia 20)</li>
+        <li><span class="box"></span>eSocial com eventos do mês transmitidos</li>
+      </ul>
+    </div>
+    <div class="card" data-reg="mei">
+      <div class="card-head"><b>Empregado do MEI (se houver)</b><span class="who">FGTS dia 7 · INSS dia 20</span></div>
+      <ul>
+        <li><span class="box"></span>Salário e encargos pagos nas datas</li>
+        <li><span class="box"></span>eSocial transmitido</li>
+      </ul>
+    </div>
+    <div class="card" data-reg="simples lp lr">
+      <div class="card-head"><b>ICMS e EFD ICMS/IPI</b><span class="who">Conforme UF</span></div>
+      <ul>
+        <li><span class="box"></span>Operações com mercadorias conferidas (entradas, saídas, ST)</li>
+        <li><span class="box"></span>Arquivo EFD ICMS/IPI gerado (prazo da UF)</li>
+        <li><span class="box"></span>Guias de ICMS e DIFAL pagas</li>
+      </ul>
+    </div>
+    <div class="card" data-reg="simples lp lr">
+      <div class="card-head"><b>ISS e notas de serviço</b><span class="who">Conforme município</span></div>
+      <ul>
+        <li><span class="box"></span>NFS-e emitidas e tomadas conferidas</li>
+        <li><span class="box"></span>ISS apurado e pago no prazo do município</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section-break">
+  <div class="sec-title">7. Encerramento — para todos</div>
+  <div class="grid">
+    <div class="card">
+      <div class="card-head"><b>Arquivamento</b><span class="who">Até o fim do mês</span></div>
+      <ul>
+        <li><span class="box"></span>Guias de pagamento e recibos arquivados por mês</li>
+        <li><span class="box"></span>Recibos de transmissão das declarações salvos</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-head"><b>Entrega ao cliente</b><span class="who">Até o fim do mês</span></div>
+      <ul>
+        <li><span class="box"></span>Resumo do mês enviado (receita, impostos, valores a pagar)</li>
+        <li><span class="box"></span>Pendências do cliente registradas e cobradas</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section-break">
+  <div class="sec-title">Alertas</div>
+  <div class="grid">
+    <div class="alert"><b>DIAS FIXOS:</b> FGTS dia 7 · DAS e INSS/IRRF da folha dia 20 · PIS/COFINS cumulativo dia 25.</div>
+    <div class="alert"><b>PRAZOS VARIÁVEIS:</b> DCTFWeb, EFD-Reinf, EFD ICMS/IPI e ISS mudam por mês, UF e município. Conferir o calendário oficial.</div>
+    <div class="alert"><b>FERIADO OU FIM DE SEMANA:</b> se o vencimento cair em dia sem expediente bancário, antecipar o pagamento.</div>
+  </div>
+</section>
+
+<p class="note">Este checklist é um apoio de conferência. Confirme sempre os prazos no calendário oficial da RFB, da SEFAZ de cada UF e da prefeitura do município.</p>
+
+<script>
+const regimes = [...document.querySelectorAll('input[name=regime]')];
+function atualizarRegimes() {
+  const marcados = regimes.filter(r => r.checked).map(r => r.value);
+  document.querySelectorAll('[data-reg]').forEach(el => {
+    const tags = el.dataset.reg.split(' ');
+    const visivel = marcados.length === 0 || tags.some(t => marcados.includes(t));
+    el.style.display = visivel ? '' : 'none';
+  });
+}
+regimes.forEach(r => r.addEventListener('change', atualizarRegimes));
+</script>
+</body></html>
