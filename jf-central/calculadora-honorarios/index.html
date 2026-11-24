@@ -81,7 +81,7 @@ table.t td.r,table.t th.r{text-align:right}
 #toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#000;color:#fff;padding:10px 16px;border-radius:10px;opacity:0;pointer-events:none;transition:.25s;z-index:99}
 #toast.on{opacity:1}
 section.aba{display:none}
-body[data-tab="calculo"] #a-calculo,body[data-tab="proposta"] #a-proposta,body[data-tab="historico"] #a-historico,body[data-tab="parametros"] #a-parametros,body[data-tab="manual"] #a-manual{display:block}
+body[data-tab="calculo"] #a-calculo,body[data-tab="proposta"] #a-proposta,body[data-tab="historico"] #a-historico,body[data-tab="parametros"] #a-parametros,body[data-tab="avulsos"] #a-avulsos,body[data-tab="manual"] #a-manual{display:block}
 #impressao{display:none;padding:0 0 30px}
 body[data-tab="proposta"] #impressao{display:block}
 /* documento */
@@ -116,6 +116,7 @@ body[data-tab="proposta"] #impressao{display:block}
   </div>
   <nav class="tabs" id="tabs">
     <button data-t="calculo" class="on">Cálculo</button>
+    <button data-t="avulsos">Serviços avulsos</button>
     <button data-t="proposta">Proposta</button>
     <button data-t="historico">Histórico</button>
     <button data-t="parametros">Parâmetros</button>
@@ -219,6 +220,17 @@ body[data-tab="proposta"] #impressao{display:block}
     </div>
   </section>
 
+  <section class="aba" id="a-avulsos">
+    <div class="aviso">Preços de <b>exemplo</b> (tabela de referência da Escofer, nov/2026). Ajuste o valor de cada linha, marque o que entra e use “Salvar preços” para guardar os seus. “0,00” = a definir.</div>
+    <div class="card"><div id="avLista"></div></div>
+    <div class="card">
+      <h2>Resumo do orçamento avulso</h2>
+      <div class="grid"><div><label for="avCli">Cliente (opcional)</label><input type="text" id="avCli" maxlength="80" autocomplete="off"></div></div>
+      <div id="avResumo" style="margin:10px 0"></div>
+      <div class="row"><button class="btn" id="avSalvar">Salvar preços</button><button class="btn sec2" id="avCopiar">Copiar resumo para WhatsApp</button><button class="btn perigo" id="avLimpar">Limpar seleção</button></div>
+    </div>
+  </section>
+
   <section class="aba" id="a-parametros">
     <div class="aviso">Os valores abaixo são <b>exemplos</b>, exceto os planos MEI (R$ 167, 197 e 227). A tabela por faturamento vem de uma referência de outro escritório: confira antes de usar com cliente. Troque pelos seus preços reais.</div>
     <div class="card">
@@ -299,6 +311,20 @@ var PADRAO={
   addons:[{nome:"Gestão de escala",v:8000},{nome:"Integração Open Finance",v:3990}],
   perfil:[{nome:"Tranquilo (organizado, pouco contato)",pct:0},{nome:"Atento (pede retorno com frequência)",pct:10},{nome:"Exigente (muito contato e retrabalho)",pct:20}]
 };
+var AV0=[
+["Abertura, alteração e baixa","Constituição de empresa (a partir de)",145000],["Abertura, alteração e baixa","Alteração do contrato social",145000],["Abertura, alteração e baixa","Baixa de empresa",135000],["Abertura, alteração e baixa","Alteração do DBE / RFB PJ",37500],["Abertura, alteração e baixa","Alteração DBE (associação e escolas)",22000],["Abertura, alteração e baixa","Reativação de inscrição estadual",27000],["Abertura, alteração e baixa","Paralisação",45000],
+["MEI","Abertura",25000],["MEI","Baixa",16000],["MEI","Alteração de dados",27000],["MEI","Enquadramento (até 2 anos)",50000],["MEI","Emissão do processo",13000],["MEI","Declaração anual",18000],["MEI","Cadastro de nota fiscal / sistema",16000],["MEI","Emissão de nota fiscal",4000],["MEI","Bombeiro, alvará e sanitária (por órgão)",6000],
+["Consultoria e planejamento tributário","Planejamento tributário",155000],["Consultoria e planejamento tributário","Simulação e opção pelo Simples Híbrido",85000],
+["Certificado digital","Pessoa física",16000],["Certificado digital","Pessoa jurídica",18500],
+["Contratos e documentos","Compra e venda",27000],["Contratos e documentos","Compra e venda de carro",27000],["Contratos e documentos","Locação, arrendamento, parceria agrícola, permuta/comodato, prestação de serviço (cada)",21500],["Contratos e documentos","Declaração de união estável",5500],["Contratos e documentos","Declaração de residência",5500],["Contratos e documentos","Recibo",3500],
+["Certidões, cadastros e consultas","Certidão por departamento",2500],["Certidões, cadastros e consultas","Cadastro INCRA / CCIR (novo ou alteração)",38000],["Certidões, cadastros e consultas","Emissão de CCIR / INCRA atualizado",16000],["Certidões, cadastros e consultas","Cadastro da senha gov.br",5500],["Certidões, cadastros e consultas","Cadastro Receita PR",16000],["Certidões, cadastros e consultas","Levantamento de guia GPS",21500],["Certidões, cadastros e consultas","Levantamento de pendência e-CAC",5500],["Certidões, cadastros e consultas","Consulta de pendência em cartório",3500],["Certidões, cadastros e consultas","Extrato / pesquisa de pendências RFB",16000],["Certidões, cadastros e consultas","Extrato CNIS / INSS",23500],["Certidões, cadastros e consultas","CADIM",32000],["Certidões, cadastros e consultas","Baixa CEI",10700],["Certidões, cadastros e consultas","Emissão de guias",1000],
+["Declarações e obrigações fiscais","DIRF",22000],["Declarações e obrigações fiscais","IRPF",16000],["Declarações e obrigações fiscais","IRPJ / DEFIS / DCTF / DCTFWeb — omissões (por omissão/ano)",22000],["Declarações e obrigações fiscais","ITR",20000],["Declarações e obrigações fiscais","RAIS",16000],["Declarações e obrigações fiscais","Declaração de ITCMD",48000],
+["Previdenciário e trabalhista","Contagem de tempo INSS / CTPS",27000],["Previdenciário e trabalhista","Processo de aposentadoria",160000],
+["Regularizações e licenças","Parcelamento de débitos",20000],["Regularizações e licenças","Regularização de débitos",30000],["Regularizações e licenças","Renovação de bombeiro, sanitária e alvará",22000],
+["Departamento pessoal","Adicional por funcionário (a partir do 2º, por mês)",7000],["Departamento pessoal","CAT (Comunicação de Acidente de Trabalho)",30000],["Departamento pessoal","Procuração SST",7000],["Departamento pessoal","Holerite por fora",7000],["Departamento pessoal","Simulação de rescisão",5000],["Departamento pessoal","Gestão de escala (implantação; mais R$ 80,00 por mês na referência)",15000],["Departamento pessoal","Regularizações e serviços à parte (a verificar)",0],["Departamento pessoal","Atendimento no local do cliente (a verificar)",0],
+["Outros serviços","Recálculo",1000],["Outros serviços","Integração Open Finance (a partir de, por mês)",3990]
+].map(function(a){return {cat:a[0],nome:a[1],v:a[2]}});
+PADRAO.avulsos=AV0;
 function completar(){for(var k in PADRAO){if(S.params[k]===undefined)S.params[k]=JSON.parse(JSON.stringify(PADRAO[k]))}}
 var S={params:JSON.parse(JSON.stringify(PADRAO)),hist:[],conferido:false};
 function carregar(){try{var r=localStorage.getItem(KEY);if(r){var o=JSON.parse(r);if(o&&o.params){S.params=o.params;S.hist=o.hist||[];S.conferido=!!o.conferido;completar()}}}catch(e){}}
@@ -503,12 +529,41 @@ function lerParametros(){
 var pendReset=false;
 $("btSalvPar").addEventListener("click",function(){lerParametros();gravar();parametros();render();doc();toast("Parâmetros salvos.")});
 $("btResetPar").addEventListener("click",function(){var b=this;if(!pendReset){pendReset=true;b.textContent="Clique de novo para confirmar";setTimeout(function(){pendReset=false;b.textContent="Voltar aos valores de exemplo"},3000);return}
-  pendReset=false;b.textContent="Voltar aos valores de exemplo";S.params=JSON.parse(JSON.stringify(PADRAO));gravar();parametros();render();doc();toast("Valores de exemplo restaurados.")});
+  pendReset=false;b.textContent="Voltar aos valores de exemplo";S.params=JSON.parse(JSON.stringify(PADRAO));gravar();parametros();desenharAv();render();doc();toast("Valores de exemplo restaurados.")});
+
+/* ---------- serviços avulsos ---------- */
+var avSel={};
+function desenharAv(){
+  var A=S.params.avulsos,cat="",h="";
+  A.forEach(function(a,i){
+    if(a.cat!==cat){if(cat)h+="</tbody></table>";cat=a.cat;h+="<h2 style='margin-top:14px'>"+esc(cat)+"</h2><table class='t'><thead><tr><th style='width:34px'></th><th>Serviço</th><th style='width:70px'>Qtd</th><th style='width:130px' class='r'>Valor (R$)</th></tr></thead><tbody>"}
+    var s=avSel[i]||{on:false,q:1};
+    h+="<tr><td><input type='checkbox' data-av='"+i+"' "+(s.on?"checked":"")+" aria-label='Incluir "+esc(a.nome)+"'></td><td>"+esc(a.nome)+"</td><td><input type='number' min='1' step='1' value='"+s.q+"' data-q='"+i+"'></td><td><input type='number' min='0' step='0.01' value='"+(a.v/100).toFixed(2)+"' data-p='"+i+"'></td></tr>"});
+  $("avLista").innerHTML=h+"</tbody></table>";resumoAv();
+}
+function resumoAv(){
+  var A=S.params.avulsos,t=0,L=[];
+  A.forEach(function(a,i){var s=avSel[i];if(s&&s.on){var q=Math.max(1,s.q||1),v=a.v*q;t+=v;L.push({n:((a.cat==="MEI"||a.cat==="Certificado digital")?a.cat+" — ":"")+a.nome,q:q,v:v,u:a.v})}});
+  $("avResumo").innerHTML=L.length?"<table class='t'>"+L.map(function(l){return "<tr><td>"+esc(l.n)+(l.q>1?" × "+l.q:"")+"</td><td class='r'>"+brl(l.v)+"</td></tr>"}).join("")+"<tr><th>Total</th><th class='r'>"+brl(t)+"</th></tr></table>":"<p style='color:#666'>Marque os serviços acima.</p>";
+  return {L:L,t:t};
+}
+$("avLista").addEventListener("input",function(ev){var t=ev.target,i;
+  if((i=t.getAttribute("data-av"))!==null){avSel[i]=avSel[i]||{on:false,q:1};avSel[i].on=t.checked}
+  else if((i=t.getAttribute("data-q"))!==null){avSel[i]=avSel[i]||{on:false,q:1};avSel[i].q=Math.max(1,parseInt(t.value,10)||1)}
+  else if((i=t.getAttribute("data-p"))!==null){S.params.avulsos[i].v=cents(t.value)}
+  resumoAv()});
+$("avSalvar").addEventListener("click",function(){gravar();toast("Preços salvos.")});
+var avPend=false;
+$("avLimpar").addEventListener("click",function(){var b=this;if(!avPend){avPend=true;b.textContent="Clique de novo para confirmar";setTimeout(function(){avPend=false;b.textContent="Limpar seleção"},3000);return}
+  avPend=false;b.textContent="Limpar seleção";avSel={};desenharAv()});
+$("avCopiar").addEventListener("click",function(){var r=resumoAv();if(!r.L.length){toast("Marque ao menos um serviço.");return}
+  var t="*Orçamento de serviços — "+ESC.nome+"*\n"+($("avCli").value.trim()?"Cliente: "+$("avCli").value.trim()+"\n":"")+"\n"+r.L.map(function(l){return "• "+l.n+(l.q>1?" × "+l.q:"")+": "+brl(l.v)}).join("\n")+"\n\n*Total: "+brl(r.t)+"*\n\n"+ESC.resp+" · CRC "+ESC.crcP;
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){toast("Texto copiado.")},function(){toast("Não foi possível copiar.")})}else toast("Não foi possível copiar.")});
 
 /* ---------- eventos ---------- */
 $("tabs").addEventListener("click",function(ev){var b=ev.target.closest("button");if(!b)return;
   document.body.setAttribute("data-tab",b.getAttribute("data-t"));[].forEach.call($("tabs").children,function(x){x.className=x===b?"on":""});
-  if(b.getAttribute("data-t")==="proposta")doc();if(b.getAttribute("data-t")==="historico")desenharHist()});
+  if(b.getAttribute("data-t")==="proposta")doc();if(b.getAttribute("data-t")==="historico")desenharHist();if(b.getAttribute("data-t")==="avulsos")desenharAv()});
 ["cliente","regime","modo","fat","perfil","ex0","ex1","ex_desc","ex_val","ativ","sec_servicos","sec_comercio","sec_industria","notas","func","base","aj","horas","custoh","pQtd","pMes","pIni"].forEach(function(id){$(id).addEventListener("input",render);$(id).addEventListener("change",render)});
 ["tipoDoc","docCli","valid","venc"].forEach(function(id){$(id).addEventListener("input",doc);$(id).addEventListener("change",doc)});
 $("pacotes").addEventListener("change",function(ev){var i=ev.target.getAttribute("data-i");if(i!==null){plano=parseInt(i,10);render()}});
@@ -525,7 +580,7 @@ $("btWpp").addEventListener("click",function(){if(!liberado())return;var k=conte
   window.textoWhats=function(){return t};
   if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){toast("Texto copiado.")},function(){toast("Não foi possível copiar.")})}else toast("Não foi possível copiar.")});
 
-carregar();parametros();montarBlocos();$("conf").checked=!!S.conferido;desenharHist();render();doc();
+carregar();parametros();desenharAv();montarBlocos();$("conf").checked=!!S.conferido;desenharHist();render();doc();
 window.__jf={calcular:calcular,entrada:entrada,render:render};
 })();
 </script>
