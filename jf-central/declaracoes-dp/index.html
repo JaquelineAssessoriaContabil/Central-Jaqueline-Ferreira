@@ -56,24 +56,24 @@
 
     <div class="grupo primeiro">Documento</div>
     <div class="campo"><label for="modelo">O que você quer gerar</label>
-      <select id="modelo" class="sel"><option value="cancelamento_experiencia">Termo de cancelamento de término de contrato de experiência</option><option value="orientacao_demissao_empregador">Orientação padrão – demissão sem justa causa (empregador)</option></select>
+      <select id="modelo" class="sel"><option value="cancelamento_experiencia">Termo de cancelamento de término de contrato de experiência</option><option value="orientacao_demissao_empregador">Orientação padrão – demissão sem justa causa (empregador)</option><option value="termo_prolabore">Termo de ciência e responsabilidade – não retirada de pró-labore</option></select>
     </div>
 
     <div class="grupo">Empregador</div>
     <div class="campo"><label for="e_razao">Nome ou razão social</label><input type="text" id="e_razao"></div>
     <div class="campo"><label for="e_cnpj">CNPJ</label><input type="text" id="e_cnpj" placeholder="00.000.000/0000-00" inputmode="numeric"></div>
 
-    <div class="grupo">Empregada</div>
+    <div class="grupo" id="g_pessoa">Empregada</div>
     <div class="campo"><label for="f_nome">Nome completo</label><input type="text" id="f_nome"></div>
-    <div class="campo m-canc"><label for="f_cpf">CPF</label><input type="text" id="f_cpf" placeholder="000.000.000-00" inputmode="numeric"></div>
+    <div class="campo m-canc m-pro"><label for="f_cpf">CPF</label><input type="text" id="f_cpf" placeholder="000.000.000-00" inputmode="numeric"></div>
 
     <div class="grupo m-canc">Datas do contrato</div>
     <div class="campo m-canc"><label for="d_fim">Data em que terminaria o contrato de experiência</label><input type="text" id="d_fim" placeholder="dd/mm/aaaa" inputmode="numeric"></div>
     <div class="campo m-canc"><label for="d_ind">Data em que o contrato passa a vigorar por prazo indeterminado</label><input type="text" id="d_ind" placeholder="dd/mm/aaaa" inputmode="numeric"></div>
 
-    <div class="grupo m-canc">Assinatura</div>
-    <div class="campo m-canc"><label for="cidade">Cidade - UF</label><input type="text" id="cidade" placeholder="ex.: Videira - SC"></div>
-    <div class="campo m-canc"><label for="data_ass">Data da assinatura</label><input type="date" id="data_ass"></div>
+    <div class="grupo m-canc m-pro">Assinatura</div>
+    <div class="campo m-canc m-pro"><label for="cidade">Cidade - UF</label><input type="text" id="cidade" placeholder="ex.: Videira - SC"></div>
+    <div class="campo m-canc m-pro"><label for="data_ass">Data da assinatura</label><input type="date" id="data_ass"></div>
 
     <div class="grupo m-dem">Aviso prévio</div>
     <div class="campo m-dem"><label for="tipo_aviso">Tipo de aviso prévio</label>
@@ -87,6 +87,15 @@
     <div class="campo m-dem"><label for="v_liq">Valor líquido da rescisão</label><input type="text" id="v_liq" placeholder="R$ 0,00" inputmode="numeric"></div>
     <div class="campo m-dem"><label for="v_fgts">Valor estimado da multa de 40% + FGTS rescisório</label><input type="text" id="v_fgts" placeholder="R$ 0,00" inputmode="numeric"></div>
     <div class="campo m-dem"><label for="d_guia">Vencimento da guia rescisória (FGTS Digital)</label><input type="text" id="d_guia" placeholder="dd/mm/aaaa" inputmode="numeric"></div>
+
+    <div class="grupo m-pro">Pró-labore</div>
+    <div class="campo m-pro"><label for="p_cargo">Condição do sócio na empresa</label>
+      <select id="p_cargo" class="sel"><option value="adm">Sócio(a) administrador(a)</option><option value="socio">Sócio(a)</option></select>
+    </div>
+    <div class="campo m-pro"><label for="p_ini">Sem retirada a partir de</label><input type="text" id="p_ini" placeholder="dd/mm/aaaa" inputmode="numeric"></div>
+    <div class="campo m-pro"><label for="p_fim">Até (deixe em branco se for até nova comunicação por escrito)</label><input type="text" id="p_fim" placeholder="dd/mm/aaaa" inputmode="numeric"></div>
+    <div class="campo m-pro"><label for="p_motivo">Motivo informado pelo sócio (opcional)</label><textarea id="p_motivo" placeholder="ex.: a empresa está em início de atividade e sem faturamento"></textarea></div>
+    <label class="check m-pro"><input type="checkbox" id="p_fatorr"> Empresa do Simples Nacional com atividade sujeita ao Fator R (inclui o aviso sobre Anexo III/V)</label>
 
     <div class="grupo">Papel</div>
     <label class="check"><input type="checkbox" id="timb"> Mostrar o timbrado na prévia e no Word (desmarque para imprimir em papel timbrado já impresso)</label>
@@ -167,7 +176,7 @@ function cabecalhoTimbrado(){
 /* ----- Máscaras ----- */
 const MASCARAS = {
   e_cnpj: mascaraCNPJ, f_cpf: mascaraCPF, d_fim: mascaraData, d_ind: mascaraData,
-  d_desl: mascaraData, d_pag: mascaraData, d_guia: mascaraData, d_aviso: mascaraData, v_liq: mascaraDinheiro, v_fgts: mascaraDinheiro
+  d_desl: mascaraData, p_ini: mascaraData, p_fim: mascaraData, d_pag: mascaraData, d_guia: mascaraData, d_aviso: mascaraData, v_liq: mascaraDinheiro, v_fgts: mascaraDinheiro
 };
 Object.entries(MASCARAS).forEach(([id, fn]) => $(id).addEventListener("input", e => { e.target.value = fn(e.target.value); }));
 
@@ -239,8 +248,36 @@ function blocosDemissao(){
   b.push({t:"p", x:"Permaneço à disposição para eventuais dúvidas."});
   return b;
 }
+
+/* ----- Termo de ciência e responsabilidade: não retirada de pró-labore ----- */
+function blocosProlabore(){
+  const razao = c("e_razao"), nome = c("f_nome");
+  const adm = v("p_cargo") !== "socio";
+  const cond = adm ? "sócio(a) administrador(a)" : "sócio(a)";
+  const ini = c("p_ini"), fim = v("p_fim");
+  const per = fim ? `no período de ${ini} a ${fim}` : `a partir de ${ini}, até nova comunicação por escrito`;
+  const b = [];
+  b.push({t:"tit", x:"TERMO DE CIÊNCIA E RESPONSABILIDADE – NÃO RETIRADA DE PRÓ-LABORE"});
+  b.push({t:"p", x:`EMPRESA: ${razao} – CNPJ: ${c("e_cnpj")}`, negrito:true});
+  b.push({t:"p", x:`SÓCIO(A): ${nome} – CPF: ${c("f_cpf")}`, negrito:true});
+  b.push({t:"p", x:`Eu, ${nome}, inscrito(a) no CPF sob o nº ${c("f_cpf")}, ${cond} da empresa acima identificada, DECLARO que, por decisão própria, não haverá retirada de pró-labore ${per}.`});
+  if(v("p_motivo")) b.push({t:"p", x:`Motivo informado: ${v("p_motivo")}`});
+  b.push({t:"p", x:"Declaro, ainda, que fui orientado(a) pela contabilidade e estou ciente de que:"});
+  b.push({t:"p", x:"1. Previdência: o sócio que exerce atividade na empresa ou recebe remuneração pelo seu trabalho é segurado obrigatório da Previdência Social como contribuinte individual (art. 12, V, \"f\", da Lei 8.212/1991), e a contribuição é calculada sobre o pró-labore. Sem pró-labore, a empresa não apura nem recolhe essa contribuição, e o período pode não ser computado para aposentadoria, auxílio por incapacidade temporária, salário-maternidade, pensão por morte e carência. Eventual regularização da minha situação previdenciária, inclusive recolhimento por conta própria, é de minha responsabilidade."});
+  b.push({t:"p", x:"2. Folha e obrigações: a empresa não fará cálculo de INSS nem de Imposto de Renda Retido na Fonte sobre pró-labore, nem os lançamentos correspondentes na folha de pagamento e nas obrigações acessórias, enquanto não houver retirada."});
+  b.push({t:"p", x:"3. Retiradas de valores: nenhum valor pode ser retirado da empresa como remuneração do meu trabalho sem pró-labore regularmente processado. Eventual distribuição de lucros não substitui o pró-labore e segue regras próprias (lucro apurado e escriturado, e tributação vigente). Retiradas fora dessas regras podem ser requalificadas pela fiscalização."});
+  let n = 4;
+  if($("p_fatorr").checked) b.push({t:"p", x:`${n++}. Simples Nacional: o pró-labore compõe a folha de salários usada no cálculo do Fator R (art. 18 da Lei Complementar 123/2006). Sem ele, a relação entre folha e receita pode ficar abaixo de 28%, e a atividade sujeita ao Fator R passa a ser tributada pelo Anexo V, em vez do Anexo III, com alíquota maior.`});
+  b.push({t:"p", x:`${n++}. Comprovação de renda: não terei pró-labore como comprovante de renda perante bancos, financiamentos, órgãos públicos e outras instituições.`});
+  b.push({t:"p", x:`${n++}. Início do pró-labore: poderei solicitar o início da retirada a qualquer tempo, por escrito, à contabilidade. Ela valerá a partir da competência informada, sem efeito retroativo.`});
+  b.push({t:"p", x:`Assumo a responsabilidade por esta decisão e pelas consequências dela decorrentes, e declaro que as informações aqui prestadas são verdadeiras.`});
+  b.push({t:"p", x:`${v("cidade") ? v("cidade") : "__________ - __"}, ${dataLonga($("data_ass").value)}.`});
+  b.push({t:"sig2", nome: nome, papel: adm ? "Sócio(a) administrador(a)" : "Sócio(a)"});
+  return b;
+}
 function blocos(){
-  return modeloAtual() === "orientacao_demissao_empregador" ? blocosDemissao() : blocosCancelamento();
+  const m = modeloAtual();
+  return m === "orientacao_demissao_empregador" ? blocosDemissao() : (m === "termo_prolabore" ? blocosProlabore() : blocosCancelamento());
 }
 
 /* ----- Prévia ----- */
@@ -256,6 +293,7 @@ function alturaUtilPx(){
 function blocoHTML(b){
   if(b.t === "tit") return '<div class="tit">' + esc(b.x) + '</div>';
   if(b.t === "sig1") return '<div class="assin1"><div class="linha"></div><p><b>' + esc(b.nome) + '</b></p></div>';
+  if(b.t === "sig2") return '<div class="assin"><div><div class="linha"></div><p><b>' + esc(b.nome) + '</b></p><p>' + esc(b.papel) + '</p></div><div><div class="linha"></div><p><b>Jaqueline do Prado Ferreira</b></p><p>Contadora – CRC SC-048028/O-0</p></div></div>';
   if(b.t === "h") return '<h3>' + esc(b.x) + '</h3>';
   if(b.t === "li") return '<p style="margin:0 0 6px 18px;text-indent:-12px">• ' + esc(b.x) + '</p>';
   if(b.negrito) return '<p><b>' + esc(b.x) + '</b></p>';
@@ -282,10 +320,17 @@ function renderizar(){
   ).join("");
 }
 function ajustarModelo(){
-  const dem = modeloAtual() === "orientacao_demissao_empregador";
-  document.querySelectorAll(".m-canc").forEach(el => el.style.display = dem ? "none" : "");
-  document.querySelectorAll(".m-dem").forEach(el => el.style.display = dem ? "" : "none");
-  const trab = dem && v("tipo_aviso") === "trabalhado";
+  const m = modeloAtual();
+  const modo = m === "orientacao_demissao_empregador" ? "dem" : (m === "termo_prolabore" ? "pro" : "canc");
+  ["canc","dem","pro"].forEach(k => {
+    document.querySelectorAll(".m-" + k).forEach(el => {
+      const ok = ["canc","dem","pro"].some(x => modo === x && el.classList.contains("m-" + x));
+      el.style.display = ok ? "" : "none";
+    });
+  });
+  // elementos sem a classe do modo atual mas com classe de outro modo ficam ocultos acima; os que têm m-canc + m-pro aparecem em ambos
+  $("g_pessoa").textContent = modo === "pro" ? "Sócio(a)" : "Empregada";
+  const trab = modo === "dem" && v("tipo_aviso") === "trabalhado";
   document.querySelectorAll(".m-trab").forEach(el => el.style.display = trab ? "" : "none");
 }
 document.querySelectorAll("input, textarea, select").forEach(el => {
@@ -303,6 +348,14 @@ async function baixarWord(){
     if(b.t === "tit") filhos.push(new docx.Paragraph({alignment: CEN, spacing:{after:280}, children:[new docx.TextRun({text: b.x, bold:true, size:23})]}));
     else if(b.t === "h") filhos.push(new docx.Paragraph({keepNext:true, spacing:{before:240, after:100}, children:[new docx.TextRun({text: b.x, bold:true})]}));
     else if(b.t === "li") filhos.push(new docx.Paragraph({alignment: JUS, indent:{left:360, hanging:240}, spacing:{after:100, line:300}, children:[new docx.TextRun({text: "•\t" + b.x})]}));
+    else if(b.t === "sig2"){
+      filhos.push(new docx.Paragraph({spacing:{before:900}, children:[new docx.TextRun({text:"________________________________________________"})]}));
+      filhos.push(new docx.Paragraph({children:[new docx.TextRun({text: b.nome, bold:true})]}));
+      filhos.push(new docx.Paragraph({children:[new docx.TextRun({text: b.papel})]}));
+      filhos.push(new docx.Paragraph({spacing:{before:900}, children:[new docx.TextRun({text:"________________________________________________"})]}));
+      filhos.push(new docx.Paragraph({children:[new docx.TextRun({text:"Jaqueline do Prado Ferreira", bold:true})]}));
+      filhos.push(new docx.Paragraph({children:[new docx.TextRun({text:"Contadora – CRC SC-048028/O-0"})]}));
+    }
     else if(b.t === "sig1"){
       filhos.push(new docx.Paragraph({spacing:{before:900}, children:[new docx.TextRun({text:"________________________________________________"})]}));
       filhos.push(new docx.Paragraph({children:[new docx.TextRun({text: b.nome, bold:true})]}));
@@ -320,7 +373,7 @@ async function baixarWord(){
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   const nomeArq = (v("f_nome") || "empregada").replace(/[^\w\- ]+/g,"").replace(/\s+/g,"_");
-  const prefixo = modeloAtual() === "orientacao_demissao_empregador" ? "Orientacao_Demissao" : "Termo_Cancelamento_Experiencia";
+  const prefixo = modeloAtual() === "orientacao_demissao_empregador" ? "Orientacao_Demissao" : (modeloAtual() === "termo_prolabore" ? "Termo_Nao_Retirada_Prolabore" : "Termo_Cancelamento_Experiencia");
   a.href = url; a.download = `${prefixo}_${nomeArq}.docx`;
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 2000);

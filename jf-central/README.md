@@ -13,7 +13,7 @@ Cada simulador é um arquivo único (`index.html`), sem servidor e sem enviar da
 | `proposta-revisao-2027/` | Proposta de Revisão para 2027 (Simples e Lucro Presumido), no papel timbrado |
 | `minha-hora-financas/` | Minha Hora e Finanças: custo da hora, despesas do escritório (PJ) e pessoais (PF) |
 | `contrato-proposta/` | Contrato e Proposta de Prestação de Serviços |
-| `declaracoes-dp/` | Gerador de Declarações DP |
+| `declaracoes-dp/` | Gerador de Declarações DP (cancelamento de término de experiência, orientação de demissão sem justa causa, termo de ciência e responsabilidade de não retirada de pró-labore) |
 | `checklist-fechamento-mensal/` | Checklist de Fechamento Mensal |
 | `checklist-obrigacoes-acessorias/` | Checklist de Obrigações Acessórias |
 | `checklist-documentos-societarios/` | Checklist de Documentos Societários |
