@@ -29,3 +29,5 @@ Cada simulador é um arquivo único (`index.html`), sem servidor e sem enviar da
 Apoio à conferência. Não substitui a análise da contadora nem a legislação vigente.
 
 **Buscar CNPJ (opcional):** Fator R, Contrato e Proposta, Declarações DP, Proposta de Revisão 2027, Jornadas e os dois checklists (Fechamento e Obrigações) têm o botão "Buscar CNPJ". Só envia o CNPJ ao BrasilAPI (terceiros, espelho da base da Receita) depois de confirmação na tela. Não grava nada. Dados podem estar defasados: conferir no Comprovante da Receita.
+
+O botão também lista o CNAE principal e os secundários e, na Calculadora de Fator R, marca a elegibilidade quando algum CNAE consta na lista curta da LC 123, art. 18 (principal: "Sujeita ao Fator R"; só secundário: "Atividade mista"). A lista de CNAEs está no código de cada ferramenta (objeto `DB`) e deve ser ampliada e conferida na Resolução CGSN 140/2018.

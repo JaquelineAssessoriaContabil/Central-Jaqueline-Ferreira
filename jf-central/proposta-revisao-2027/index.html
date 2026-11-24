@@ -345,6 +345,19 @@ var CFG={"cnpj": "cnpj", "nome": "empresa"};
 var BASE="https://brasilapi.com.br/api/cnpj/v1/";
 var RECEITA="https://solucoes.receita.fazenda.gov.br/Servicos/cnpjreva/Cnpjreva_Solicitacao.asp";
 var consentido=false;
+/* Atividades da LC 123/2006, art. 18, com o CNAE correspondente (montado a partir do texto da lei; conferir na Resolução CGSN 140/2018). Só entram códigos de que há segurança. */
+var B5M1="LC 123 art. 18, §5º-B + §5º-M, I (Anexo III com Fator R; abaixo de 28% vai ao Anexo V)",B5M2="LC 123 art. 18, §5º-D + §5º-M, II (Anexo III com Fator R; abaixo de 28% vai ao Anexo V)",B5I="LC 123 art. 18, §5º-I e §5º-J (Anexo V; com Fator R ≥ 28% vai ao Anexo III)";
+var DB={"8650004":{f:1,b:B5M1+", XVI, fisioterapia"},"7111100":{f:1,b:B5M1+", XVIII, arquitetura"},
+"8630501":{f:1,b:B5M1+", XIX, medicina"},"8630502":{f:1,b:B5M1+", XIX, medicina"},"8630503":{f:1,b:B5M1+", XIX, medicina"},"8650001":{f:1,b:B5M1+", XIX, enfermagem"},
+"8630504":{f:1,b:B5M1+", XX, odontologia"},
+"8650003":{f:1,b:B5M1+", XXI, psicologia"},"8650005":{f:1,b:B5M1+", XXI, terapia ocupacional"},"8650006":{f:1,b:B5M1+", XXI, fonoaudiologia"},"8650002":{f:1,b:B5M1+", XXI, nutrição"},"8630506":{f:1,b:B5M1+", XXI, vacinação"},
+"6822600":{f:1,b:B5M2+", I, administração de imóveis de terceiros"},"9313100":{f:1,b:B5M2+", II/III, academias"},
+"6201501":{f:1,b:B5M2+", IV, software (só se desenvolvido no estabelecimento do optante)"},"6201502":{f:1,b:B5M2+", VI, sites (só se feitos no estabelecimento do optante)"},
+"6202300":{f:1,b:B5M2+", V, licenciamento de software"},"6203100":{f:1,b:B5M2+", V, licenciamento de software"},
+"8640202":{f:1,b:B5M2+", XII, laboratório clínico"},"8640201":{f:1,b:B5M2+", XII, anatomia patológica"},
+"6920602":{f:1,b:B5I+", IX, auditoria e consultoria"},"7020400":{f:1,b:B5I+", IX, consultoria em gestão"},"7112000":{f:1,b:B5I+", VI, engenharia"},"7311400":{f:1,b:B5I+", X, publicidade"},"7500100":{f:1,b:B5I+", II, veterinária"},
+"6920601":{f:0,a:"III",b:"LC 123 art. 18, §5º-B, XIV (escritório de contabilidade: Anexo III direto, sem Fator R; ver também §§22-B e 22-C)"}};
+
 function $(i){return i?document.getElementById(i):null}
 var inp=$(CFG.cnpj);if(!inp)return;
 var st=document.createElement("style");
@@ -386,6 +399,10 @@ function busca(d){aviso("Buscando…",false);btn.disabled=true;
     if(e&&e.message==="nf")aviso("CNPJ não encontrado na base consultada. Confira os números ou consulte direto na Receita.",true,true);
     else if(e&&e.message==="rl")aviso("Muitas consultas seguidas. Aguarde um minuto e tente de novo.",true);
     else aviso("Não foi possível consultar agora (sem internet, bloqueio do navegador ou serviço fora do ar). Preencha à mão ou use a consulta da Receita.",true,true)})}
+
+function tagCnae(c){var r=DB[c];if(!r)return "anexo não identificado (conferir)";return r.f?"Fator R · "+r.b:"Anexo "+r.a+", sem Fator R · "+r.b}
+function listaCnaes(j,cn,cd){var all=[];if(cn)all.push({c:String(cn).padStart(7,"0"),d:cd,p:true});
+  var sec=j.cnaes_secundarios||j.cnaesSecundarios||[];sec.forEach(function(x){var v=x.codigo!==undefined?x.codigo:x.code;if(v===undefined||v===null||v==="")return;all.push({c:String(v).padStart(7,"0"),d:x.descricao||x.description||"",p:false})});return all}
 function pega(j){for(var i=1;i<arguments.length;i++){var v=j[arguments[i]];if(v!==undefined&&v!==null&&v!=="")return v}return ""}
 function aplica(d,j){var feitos=[];
   var razao=pega(j,"razao_social","razaoSocial");
@@ -399,11 +416,19 @@ function aplica(d,j){var feitos=[];
   if(mun)partes.push(mun+(uf?"/"+uf:""));
   if(CFG.end&&partes.length&&setv(CFG.end,partes.join(", ")))feitos.push("endereço");
   var cep=pega(j,"cep");if(CFG.cep&&cep&&setv(CFG.cep,fmtCep(cep)))feitos.push("CEP");
+  var cd=pega(j,"cnae_fiscal_descricao");var all=listaCnaes(j,cn,cd);var fr=all.filter(function(x){return DB[x.c]&&DB[x.c].f});
+  var prFR=all.length&&all[0].p&&DB[all[0].c]&&DB[all[0].c].f;if(CFG.eleg&&fr.length&&setv(CFG.eleg,prFR?"sim":"mista"))feitos.push(prFR?"elegibilidade (Sujeita ao Fator R)":"elegibilidade (atividade mista: o Fator R está só em CNAE secundário)");
   limpa();var m=document.createElement("div");m.className="m";
   linha(feitos.length?"Preenchido: "+feitos.join(", ")+". Revise antes de usar.":"A consulta voltou, mas esta ferramenta não tem campo para esses dados.",m);
   var sit=pega(j,"descricao_situacao_cadastral","situacaoCadastral");
   if(sit){var dt=fmtData(pega(j,"data_situacao_cadastral"));var l=linha("Situação cadastral: "+sit+(dt?" (desde "+dt+")":""),m);if(String(sit).toUpperCase()!=="ATIVA"){l.style.fontWeight="700";l.style.color="#b3261e"}}
-  var cd=pega(j,"cnae_fiscal_descricao");if(cn)linha("Atividade principal: "+fmtCnae(cn)+(cd?" — "+cd:""),m);
+  if(cn)linha("Atividade principal: "+fmtCnae(cn)+(cd?" — "+cd:""),m);
+  if(all.length){
+    if(fr.length){var w=linha("Atenção ao Fator R: "+(fr.length>1?fr.length+" CNAEs constam":"1 CNAE consta")+" na lista de atividades sujeitas ao Fator R"+(CFG.eleg?" (elegibilidade marcada como '"+(prFR?"Sujeita ao Fator R":"Atividade mista / requer análise")+"'; confirme se a atividade é exercida de fato)":"")+":",m);w.style.fontWeight="700";
+      fr.forEach(function(x){linha("• "+fmtCnae(x.c)+" — "+x.d+(x.p?" (principal)":" (secundário)"),m)})}
+    else linha("Nenhum dos "+all.length+" CNAE(s) consta na lista de Fator R desta ferramenta. Isso não prova que não haja Fator R, pois a lista é curta: confira na LC 123, art. 18.",m);
+    var dtl=document.createElement("details");dtl.style.marginTop="4px";var sm=document.createElement("summary");sm.textContent="Ver todos os CNAEs e o anexo ("+all.length+")";sm.style.cursor="pointer";dtl.appendChild(sm);
+    all.forEach(function(x){var l=document.createElement("div");l.style.cssText="margin:3px 0;font-size:12px";l.textContent=fmtCnae(x.c)+" — "+x.d+(x.p?" (principal)":"")+": "+tagCnae(x.c);dtl.appendChild(l)});m.appendChild(dtl)}
   var porte=pega(j,"porte","descricao_porte");if(porte)linha("Porte: "+porte,m);
   if(j.opcao_pelo_simples!==undefined&&j.opcao_pelo_simples!==null)linha("Opção pelo Simples Nacional: "+(j.opcao_pelo_simples?"sim":"não")+" | MEI: "+(j.opcao_pelo_mei?"sim":"não"),m);
   var f=document.createElement("div");f.style.cssText="margin-top:6px;font-size:12px;color:#555";
@@ -414,5 +439,6 @@ btn.onclick=function(){var d=digits(inp.value);
   if(consentido)busca(d);else pergunta(d)};
 })();
 </script>
+
 </body>
 </html>
