@@ -113,7 +113,16 @@ $("vwImg").onclick=function(){this.className=this.className?"":"z"};
 document.addEventListener("keydown",function(e){if($("vw").className!=="on")return;if(e.key==="Escape")$("vw").className="";if(e.key==="ArrowRight")nav(1);if(e.key==="ArrowLeft")nav(-1)});
 $("q").addEventListener("input",lista);
 if(LOCAL){document.querySelector(".pick").style.display="none"}
-$("pickBt").onclick=function(){$("pickIn").click()};
+var SD=null;
+function idbp(m,fn){return new Promise(function(ok){try{var q=indexedDB.open("jf_dom_h",1);q.onupgradeneeded=function(){q.result.createObjectStore("h")};q.onerror=function(){ok(null)};q.onsuccess=function(){var tx=q.result.transaction("h",m),s=tx.objectStore("h"),r=fn(s);tx.oncomplete=function(){ok(r&&r.result!==undefined?r.result:null)};tx.onerror=function(){ok(null)}}}catch(e){ok(null)}})}
+async function varre(d){for await(var e of d.entries()){var n=e[0],h=e[1];if(h.kind==="directory")await varre(h);else if(/\.(png|pdf)$/i.test(n)){FILES[n]=await h.getFile();if(/\.png$/i.test(n))NFILES++}}}
+function msgPasta(){var st=$("pickSt");if(NFILES){st.style.color="";st.style.fontWeight="";st.className="st ok";st.textContent=NFILES+" mapas encontrados. Pode clicar nos títulos."}else{st.className="st";st.style.color="";st.textContent="Não achei mapas nessa pasta. Escolha a pasta “Material Principal”."}}
+async function usaDir(h){FILES={};NFILES=0;$("pickSt").textContent="Lendo a pasta…";try{await varre(h)}catch(e){}msgPasta()}
+$("pickBt").onclick=async function(){
+  if(SD){var p=await SD.requestPermission({mode:"read"});if(p==="granted"){await usaDir(SD);$("pickBt").textContent="Escolher outra pasta";return}}
+  if(window.showDirectoryPicker){try{var h=await window.showDirectoryPicker();SD=h;await idbp("readwrite",function(s){return s.put(h,"dir")});await usaDir(h);$("pickBt").textContent="Escolher outra pasta"}catch(e){}}
+  else $("pickIn").click()};
+(async function(){if(!window.showDirectoryPicker||LOCAL)return;var h=await idbp("readonly",function(s){return s.get("dir")});if(!h)return;SD=h;$("pickBt").textContent="Reconectar a pasta dos mapas (1 clique)";$("pickSt").textContent="Pasta lembrada: "+h.name+". Clique no botão para reconectar.";try{if(await h.queryPermission({mode:"read"})==="granted"){await usaDir(h);$("pickBt").textContent="Escolher outra pasta"}}catch(e){}})();
 $("pickIn").onchange=function(){FILES={};NFILES=0;[].forEach.call(this.files,function(f){if(/\.(png|pdf)$/i.test(f.name)){FILES[f.name]=f;if(/\.png$/i.test(f.name))NFILES++}});
   var st=$("pickSt");if(NFILES){st.style.color="";st.style.fontWeight="";st.className="st ok";st.textContent=NFILES+" mapas encontrados. Pode clicar nos títulos."}else{st.className="st";st.textContent="Não achei mapas nessa pasta. Escolha a pasta “Material Principal”."}};
 
