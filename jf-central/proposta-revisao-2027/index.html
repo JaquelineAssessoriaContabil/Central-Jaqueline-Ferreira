@@ -440,13 +440,14 @@ function aplica(d,j){var feitos=[];
   var porte=pega(j,"porte","descricao_porte");if(porte)linha("Porte: "+porte,m);
   if(j.opcao_pelo_simples!==undefined&&j.opcao_pelo_simples!==null)linha("Opção pelo Simples Nacional: "+(j.opcao_pelo_simples?"sim":"não")+" | MEI: "+(j.opcao_pelo_mei?"sim":"não"),m);
   var f=document.createElement("div");f.style.cssText="margin-top:6px;font-size:12px;color:#555";
-  f.appendChild(document.createTextNode("Dados do BrasilAPI (cópia da base da Receita, atualizada periodicamente, pode estar defasada). Confira a situação atual no Comprovante de Inscrição. "));link(f,"Abrir a consulta da Receita");m.appendChild(f);msg.appendChild(m)}
+  f.appendChild(document.createTextNode("[Buscar CNPJ v24/11-d] Dados do BrasilAPI (cópia da base da Receita, atualizada periodicamente, pode estar defasada). Confira a situação atual no Comprovante de Inscrição. "));link(f,"Abrir a consulta da Receita");m.appendChild(f);msg.appendChild(m)}
 btn.onclick=function(){var d=digits(inp.value);
   if(d.length!==14){aviso("Digite os 14 números do CNPJ antes de buscar.",true);return}
   if(!valido(d)){aviso("Esse CNPJ não é válido (dígitos verificadores não conferem). Confira a digitação.",true);return}
   if(consentido)busca(d);else pergunta(d)};
 })();
 </script>
+
 
 
 
