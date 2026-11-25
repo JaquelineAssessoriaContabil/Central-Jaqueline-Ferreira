@@ -313,9 +313,10 @@
     <div class="campo so-rescisao"><label for="rs_data_contrato">Data de início do contrato (vigência)</label><input type="date" id="rs_data_contrato" value="2026-09-01"></div>
     <div class="campo so-rescisao"><label for="rs_aviso">Aviso prévio do contrato (dias) — cláusula 6.2</label><input type="number" id="rs_aviso" min="1" value="60"></div>
     <div class="campo so-rescisao"><label for="rs_opcao">Forma de encerramento</label>
-      <select id="rs_opcao" class="sel"><option value="A">A – Cumprir o aviso prévio (rescisão no fim do prazo)</option><option value="B">B – Encerramento antecipado, com pagamento</option></select>
+      <select id="rs_opcao" class="sel"><option value="A">A – Cumprir o aviso prévio (rescisão no fim do prazo)</option><option value="B">B – Encerramento antecipado, com pagamento</option><option value="C">C – Encerramento por acordo, sem cobrança do restante do aviso</option></select>
     </div>
     <div class="campo so-rescisao"><label for="rs_efetiva">Data em que a rescisão fica efetiva</label><input type="date" id="rs_efetiva" value="2027-01-04"></div>
+    <div class="campo so-optc"><label for="rs_acordo">Data em que o encerramento foi combinado entre as partes</label><input type="date" id="rs_acordo" value="2026-11-03"></div>
     <div class="campo so-optb"><label for="rs_valor">Valor da Opção B (honorários dos dias de aviso)</label><input type="text" id="rs_valor" placeholder="ex.: R$ 900,00"></div>
     <div class="campo so-optb"><label for="rs_parc">Número de parcelas da Opção B</label><input type="number" id="rs_parc" min="1" value="2"></div>
     <div class="campo so-optb"><label for="rs_venc_b">Vencimento(s) da Opção B (uma data por parcela, separadas por "e")</label><input type="text" id="rs_venc_b" value="10/11/2026 e 30/11/2026" placeholder="ex.: 10/11/2026 e 30/11/2026"></div>
@@ -37357,12 +37358,15 @@ function montarRescisao(){
   b.push(CL("DA RESCISÃO"));
   if(opcao === "A"){
     b.push(P(SEG(`${num()}.1. A rescisão do contrato será efetiva em ${efetiva}, cumprido o aviso prévio por escrito de ${aviso} (${extenso(aviso)}) dias, contados de ${dAviso}. Até essa data, os honorários mensais serão devidos normalmente.`)));
+  } else if(opcao === "C"){
+    const dAcordo = val("rs_acordo").value ? dataCurta(val("rs_acordo").value) : "";
+    b.push(P(SEG(`${num()}.1. As partes ajustaram, em `), V(dAcordo), SEG(`, o encerramento do contrato, cuja rescisão será efetiva em ${efetiva}. As partes dispensam o cumprimento do restante do aviso prévio de ${aviso} (${extenso(aviso)}) dias, sem cobrança de honorários correspondentes a esse período restante.`)));
   } else {
     b.push(P(SEG(`${num()}.1. A rescisão do contrato será efetiva em ${efetiva}. As partes dispensam o cumprimento do restante do aviso prévio de ${aviso} (${extenso(aviso)}) dias, mediante o pagamento previsto na cláusula seguinte.`)));
   }
 
   b.push(CL("DO PAGAMENTO"));
-  if(opcao === "A"){
+  if(opcao === "A" || opcao === "C"){
     b.push(P(SEG(`${num()}.1. Os honorários serão pagos conforme a cláusula quinta do contrato, até a data de efetivação da rescisão.`)));
   } else {
     const total = valorNumero(val("rs_valor").value);
@@ -37832,6 +37836,7 @@ function checarCampos(){
   if(isRescisao()){
     const req = ["c_razao","c_cnpj","c_rep","c_cpf","cidade","data_ass","rs_data_proposta","rs_data_contrato","rs_efetiva","foro"];
     if(val("rs_opcao").value === "B") req.push("rs_valor","rs_venc_b");
+    if(val("rs_opcao").value === "C") req.push("rs_acordo");
     const falt = req.filter(id => !val(id).value.trim());
     const av = val("aviso");
     av.style.display = falt.length ? "block" : "none";
@@ -37991,6 +37996,7 @@ function ajustarCampos(){
   ["valor","venc","inicio"].forEach(id => val(id).closest(".campo").style.display = (resc || avu || novo || carta || adit || bx) ? "none" : "");
   document.querySelectorAll(".so-rescisao").forEach(el => el.style.display = resc ? "" : "none");
   document.querySelectorAll(".so-optb").forEach(el => el.style.display = (resc && val("rs_opcao").value === "B") ? "" : "none");
+  document.querySelectorAll(".so-optc").forEach(el => el.style.display = (resc && val("rs_opcao").value === "C") ? "" : "none");
   const nome = bx ? "Contrato de Baixa de Empresa" : adit ? "Termo Aditivo" : carta ? "Carta de Responsabilidade" : resc ? "Termo de Rescisão" : (proposta ? "Proposta" : "Contrato") + (mei ? " para MEI" : cam ? " MEI Caminhoneiro" : "");
   document.title = "Gerador de " + nome;
   document.querySelector(".painel h1").textContent = "Gerador de " + nome;
@@ -38004,7 +38010,7 @@ document.querySelectorAll("input").forEach(el => {
 val("tipo").addEventListener("change", () => { ajustarCampos(); if(isMEI()) aplicarPlano(); if(isCam()) val("valor").value = "R$ 180,00"; render(); });
 val("m_plano").addEventListener("change", () => { aplicarPlano(); render(); });
 val("rs_opcao").addEventListener("change", () => {
-  val("rs_efetiva").value = val("rs_opcao").value === "B" ? "2026-12-01" : "2027-01-04";
+  val("rs_efetiva").value = val("rs_opcao").value === "B" ? "2026-12-01" : (val("rs_opcao").value === "C" ? "2026-11-30" : "2027-01-04");
   ajustarCampos(); render();
 });
 document.querySelectorAll("select").forEach(el => el.addEventListener("change", render));
