@@ -10,6 +10,7 @@ Cada simulador é um arquivo único (`index.html`), sem servidor e sem enviar da
 | `simples-hibrido/` | Simples Integral × Híbrido (CBS/IBS pelo regime regular) |
 | `carta-reforma-tributaria/` | Carta de Adequação à Reforma Tributária |
 | `calculadora-honorarios/` | Calculadora de Honorários (MEI, Simples, Presumido) |
+| `levantamento-honorarios/` | Levantamento da Empresa para honorários: ficha do cliente, índice de complexidade (pesos de exemplo) e envio dos dados para a Calculadora |
 | `proposta-revisao-2027/` | Proposta de Revisão para 2027 (Simples e Lucro Presumido), no papel timbrado |
 | `minha-hora-financas/` | Minha Hora e Finanças: custo da hora, despesas do escritório (PJ) e pessoais (PF) |
 | `contrato-proposta/` | Contrato e Proposta de Prestação de Serviços |

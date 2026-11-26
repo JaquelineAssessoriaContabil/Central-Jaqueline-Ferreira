@@ -584,5 +584,33 @@ carregar();parametros();desenharAv();montarBlocos();$("conf").checked=!!S.confer
 window.__jf={calcular:calcular,entrada:entrada,render:render};
 })();
 </script>
+<script>
+/* JF • Levantamento → Calculadora. Lê o que o Levantamento da Empresa guardou neste navegador. Nada é enviado para fora. */
+(function(){"use strict";
+var K="jf_lev_calc",o=null;
+try{o=JSON.parse(localStorage.getItem(K)||"null")}catch(e){}
+if(!o||!o.regime)return;
+var alvo=document.getElementById("a-calculo");if(!alvo)return;
+var box=document.createElement("div");box.className="aviso";box.id="jfLev";
+var tx=document.createElement("div");
+tx.textContent="Há um levantamento guardado"+(o.cliente?" de "+o.cliente:"")+". Usar estes dados na conta? Isso troca o que está nos campos do cliente.";
+if(o.mista){var m=document.createElement("div");m.style.cssText="font-size:12px;margin-top:3px";m.textContent="Atividade mista: confira a atividade principal e as secundárias depois de usar.";tx.appendChild(m)}
+var b1=document.createElement("button"),b2=document.createElement("button");
+b1.type=b2.type="button";b1.className="btn";b2.className="btn sec2";b1.textContent="Usar estes dados";b2.textContent="Ignorar";
+b1.style.margin=b2.style.margin="6px 6px 0 0";
+function ev(el){el.dispatchEvent(new Event("input",{bubbles:true}));el.dispatchEvent(new Event("change",{bubbles:true}))}
+function set(id,val){var e=document.getElementById(id);if(!e||val===undefined||val===null||val==="")return;e.value=val;ev(e)}
+function chk(id,on){var e=document.getElementById(id);if(!e)return;e.checked=!!on;ev(e)}
+b1.onclick=function(){
+  set("cliente",o.cliente);set("regime",o.regime);set("ativ",o.ativ);
+  ["servicos","comercio","industria"].forEach(function(s){chk("sec_"+s,(o.sec||[]).indexOf(s)>=0)});
+  set("fat",o.fat);set("notas",o.notas);set("func",o.func);set("perfil",o.perfil);
+  try{localStorage.removeItem(K)}catch(e){}
+  box.className="aviso ok";tx.textContent="Dados do levantamento aplicados. Confira os campos e escolha o plano.";b1.remove();b2.remove()};
+b2.onclick=function(){try{localStorage.removeItem(K)}catch(e){}box.remove()};
+box.appendChild(tx);box.appendChild(b1);box.appendChild(b2);
+alvo.insertBefore(box,alvo.firstChild);
+})();
+</script>
 </body>
 </html>
