@@ -28,7 +28,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:6px 8px;b
 <div class="passos no-print"><b>Passo a passo</b><ol>
 <li>No Domínio, gere o <b>Acompanhamento de Entradas</b> do mês e o relatório de <b>Fornecedores</b> da empresa (PDF). Se tiver, use também os <b>XML das notas de entrada</b> (NF-e): são mais completos e trazem o regime do fornecedor.</li>
 <li>Anexe os arquivos abaixo (pode escolher vários de uma vez).</li>
-<li>Confira a tabela: ajuste o <b>regime</b> do fornecedor e se a linha <b>conta</b> como crédito.</li>
+<li>Confira a tabela: ajuste o <b>regime</b> do fornecedor e se a linha <b>conta</b> como crédito. Em <b>Regime conferido?</b>, clique em <b>Consultar no portal</b> (copia o CNPJ e abre o Portal do Simples Nacional), veja se é optante na data da compra e marque <b>Confirmei</b>. A confirmação fica salva neste navegador por 90 dias.</li>
 <li>Copie os dois números do resultado, ou clique em <b>Levar para as calculadoras</b>.</li></ol></div>
 
 <div class="card no-print"><h2>1. Documentos</h2>
@@ -43,7 +43,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:6px 8px;b
 <div><label for="alqSimples">CBS + IBS dentro do DAS do fornecedor do Simples (% da venda) — <b>exemplo</b></label><input id="alqSimples" value="4,00" inputmode="decimal"></div></div>
 <div class="peq" style="margin-top:6px">A alíquota cheia segue a usada nas outras calculadoras (2027). O valor do Simples é um <b>exemplo</b>: troque pela parcela de CBS/IBS do DAS do fornecedor. O crédito de quem compra do Simples fica limitado ao CBS/IBS que o fornecedor deve dentro do Simples (LC 214/2025, art. 47, § 9º).</div></div>
 
-<div class="card"><h2 id="tit">3. Fornecedores</h2><div id="avisos"></div><div style="overflow:auto"><table><thead><tr><th>Fornecedor</th><th>CFOP</th><th class="r">Valor</th><th>Regime</th><th>Conta?</th><th class="r">Crédito (%)</th><th class="r">Base de crédito</th><th>Observação</th></tr></thead><tbody id="tb"></tbody></table></div></div>
+<div class="card"><h2 id="tit">3. Fornecedores</h2><div id="avisos"></div><div style="overflow:auto"><table><thead><tr><th>Fornecedor</th><th>CFOP</th><th class="r">Valor</th><th>Regime</th><th>Regime conferido?</th><th>Conta?</th><th class="r">Crédito (%)</th><th class="r">Base de crédito</th><th>Observação</th></tr></thead><tbody id="tb"></tbody></table></div></div>
 
 <div class="card"><h2>4. Resultado</h2><div class="cards" id="kpis"></div><div id="conf"></div>
 <div class="row no-print" style="margin-top:8px"><button class="btn" id="cpCompras">Copiar compras</button><button class="btn" id="cpEfet">Copiar crédito efetivo</button><button class="btn sec" id="leva">Levar para as calculadoras</button><button class="btn sec" id="imp">Imprimir / PDF</button></div>
@@ -217,18 +217,30 @@ function render(){
   if(!S.pdf&&!S.xml.length){$("corpo").hidden=true;return}
   $("corpo").hidden=false;
   var m=monta(),bpS=bpSimples(),tb="",tot=0,elig=0,cred=0,sem=0,rows=[];
+  var pend=0,pendBase=0,pendN={},totN={},hojeD=new Date();
   m.linhas.forEach(function(x,i){
     var o=S.ov[x.fk]||{},reg=o.r||x.reg,inf=cfopInfo(x.cf),conta=(S.ov[x.fk+"|"+x.cf]||{}).c||inf.conta;
     var bp=reg==="regular"?10000:reg==="simples"?bpS:0,cb=conta==="s"?Math.round(x.valor*bp/10000):0;
     tot+=x.valor;if(conta==="s"){elig+=x.valor;cred+=cb;if(reg==="nd")sem+=x.valor}
     rows.push({x:x,reg:reg,conta:conta,bp:bp,cb:cb,obs:inf.obs});
+    var dg=String(x.doc||"").replace(/\D/g,""),cnpj=dg.length===14,ok=o.ok&&o.ok.r===reg,dias=ok?Math.floor((hojeD-new Date(o.ok.d+"T12:00:00"))/864e5):0,velho=ok&&dias>90,confirmado=ok&&!velho;
+    var sus=reg==="regular"&&/(^|[^A-Z])(ME|EPP|MEI)([^A-Z]|$)/.test(String(x.nome).toUpperCase());
+    var celCf;
+    if(!cnpj)celCf="<span class='peq'>"+(reg==="pf"?"Pessoa física: não se aplica":"Sem CNPJ: confira o cadastro")+"</span>";
+    else celCf=(confirmado?"<b style='color:#0b7a55'>✓ Confirmado</b> <span class='peq'>"+esc(o.ok.d.split("-").reverse().join("/"))+"</span>":(velho?"<b style='color:#8a5a00'>Reconferir</b> <span class='peq'>(última: "+esc(o.ok.d.split("-").reverse().join("/"))+")</span>":"<b style='color:#B42318'>Não conferido</b>"))
+      +(sus?"<div class='peq' style='color:#B42318'>O nome sugere ME/EPP/MEI, mas o regime está como regular. Confira.</div>":"")
+      +"<div class='no-print' style='margin-top:4px'><button class='btn sec' type='button' data-cf='"+esc(dg)+"'>Consultar no portal</button> <label class='peq'><input type='checkbox' data-ok='"+esc(x.fk)+"' data-rg='"+esc(reg)+"'"+(confirmado?" checked":"")+"> Confirmei: "+esc(REG[reg]||reg)+"</label></div>";
+    if(conta==="s"&&bp>0&&cnpj){totN[x.fk]=1;if(!confirmado){pendN[x.fk]=1;pendBase+=cb}}
     tb+="<tr"+(conta==="s"&&reg==="nd"?" class='sem'":"")+"><td><b>"+esc(x.nome)+"</b><div class='peq'>"+esc(x.doc||"")+"</div></td><td>"+esc(x.cf[0]+"."+x.cf.slice(1))+"</td><td class='r'>"+brl(x.valor)+"</td>"
      +"<td><select data-r='"+esc(x.fk)+"'>"+Object.keys(REG).map(function(k){return "<option value='"+k+"'"+(k===reg?" selected":"")+">"+REG[k]+"</option>"}).join("")+"</select></td>"
+     +"<td>"+celCf+"</td>"
      +"<td><select data-c='"+esc(x.fk+"|"+x.cf)+"'><option value='s'"+(conta==="s"?" selected":"")+">Sim</option><option value='n'"+(conta==="n"?" selected":"")+">Não</option></select></td>"
      +"<td class='r'>"+(conta==="s"?pc2(bp/100)+"%":"—")+"</td><td class='r'>"+(conta==="s"?brl(cb):"—")+"</td><td class='peq'>"+esc(inf.obs)+"</td></tr>"});
   $("tb").innerHTML=tb;
   var av=m.avisos.map(function(a){return "<div class='aviso "+(a[0]==="erro"?"erro":"")+"'>"+a[1]+"</div>"}).join("");
   if(sem)av+="<div class='aviso erro'>"+brl(sem)+" em compras estão com regime <b>Não informado</b> e entram com crédito 0%. Escolha o regime na tabela.</div>";
+  var nT=Object.keys(totN).length,nP=Object.keys(pendN).length;
+  if(nT)av+="<div class='aviso "+(nP?"":"ok")+"'>"+(nP?"<b>"+nP+" de "+nT+" fornecedores</b> com crédito estão sem confirmação do regime (base de crédito de "+brl(pendBase)+"). Para cada um: clique em <b>Consultar no portal</b> (o CNPJ é copiado, cole no portal e resolva o captcha), veja se a empresa é optante do Simples na data da compra e marque <b>Confirmei</b>. Se for diferente, troque o regime na tabela antes de marcar.":"Todos os "+nT+" fornecedores com crédito têm o regime confirmado.")+"</div>";
   $("avisos").innerHTML=av;
   var efet=elig?cred/elig*100:0,estim=Math.round(cred*par("alqCheia")/10000);
   $("kpis").innerHTML="<div class='kpi'><b>"+brl(tot)+"</b><span>Total de entradas lidas</span></div><div class='kpi'><b>"+brl(elig)+"</b><span>Compras com direito a crédito</span></div><div class='kpi'><b>"+pc2(efet)+"%</b><span>Crédito efetivo médio</span></div><div class='kpi'><b>"+brl(estim)+"</b><span>CBS + IBS a creditar (estimado)</span></div>";
@@ -241,8 +253,15 @@ function render(){
   ULT={empresa:S.pdf?S.pdf.nome:"",pa:S.pdf?S.pdf.pa:"",compras:elig,efet:efet,estim:estim};
   $("tit").textContent="3. Fornecedores"+(ULT.empresa?" — "+ULT.empresa+(ULT.pa?" — "+ULT.pa:""):"");
 }
+var PORTAL="https://www8.receita.fazenda.gov.br/simplesnacional/aplicacoes.aspx?id=21";
+$("tb").addEventListener("click",function(e){var d=e.target.getAttribute&&e.target.getAttribute("data-cf");if(!d)return;
+  var f=d.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/,"$1.$2.$3/$4-$5");
+  copia(f,"CNPJ "+f+" copiado. Cole no portal do Simples Nacional, resolva o captcha e consulte.");
+  try{window.open(PORTAL,"_blank","noopener")}catch(x){}});
 $("tb").addEventListener("change",function(e){var el=e.target;
   if(el.dataset.r!=null){(S.ov[el.dataset.r]=S.ov[el.dataset.r]||{}).r=el.value}
+  else if(el.dataset.ok!=null){var q=S.ov[el.dataset.ok]=S.ov[el.dataset.ok]||{};
+    if(el.checked){var rr=el.dataset.rg;var d=new Date();q.ok={r:rr,d:d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2)}}else delete q.ok}
   else if(el.dataset.c!=null){(S.ov[el.dataset.c]=S.ov[el.dataset.c]||{}).c=el.value}
   grava();render()});
 ["alqCheia","alqSimples"].forEach(function(i){$(i).addEventListener("input",render)});
