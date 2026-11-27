@@ -95,7 +95,16 @@ button:focus-visible{outline:2px solid var(--dourado);outline-offset:2px}
   .app{display:block;padding:0;max-width:none}
 }
 </style>
-</head>
+<!--JFLAY--><style>@media screen{
+.app{max-width:1760px!important;grid-template-columns:480px minmax(0,1fr)!important;gap:32px!important;padding:24px 32px!important}
+.panel{padding:24px 26px!important}
+.panel .field label{font-size:14px!important}
+.panel .field input,.panel .sel,.panel .field textarea{font-size:16px!important;padding:11px 13px!important}
+.panel .dica{font-size:13px!important}.panel .sub,.panel .passos,.panel .prov,.panel .aviso{font-size:13.5px!important}
+.panel .sec-t{font-size:12.5px!important}.panel button{font-size:15.5px!important;padding:13px 14px!important}
+.folha{margin-left:auto!important;margin-right:auto!important}
+}
+@media screen and (max-width:1100px){.app{grid-template-columns:minmax(0,1fr)!important;padding:14px!important}}</style><!--/JFLAY--></head>
 <body>
 <div class="app">
 

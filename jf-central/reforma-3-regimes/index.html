@@ -95,7 +95,16 @@ button:focus-visible{outline:2px solid var(--dourado);outline-offset:2px}
   .app{display:block;padding:0;max-width:none}
 }
 </style>
-</head>
+<!--JFLAY--><style>@media screen{
+.app{max-width:1760px!important;grid-template-columns:480px minmax(0,1fr)!important;gap:32px!important;padding:24px 32px!important}
+.panel{padding:24px 26px!important}
+.panel .field label{font-size:14px!important}
+.panel .field input,.panel .sel,.panel .field textarea{font-size:16px!important;padding:11px 13px!important}
+.panel .dica{font-size:13px!important}.panel .sub,.panel .passos,.panel .prov,.panel .aviso{font-size:13.5px!important}
+.panel .sec-t{font-size:12.5px!important}.panel button{font-size:15.5px!important;padding:13px 14px!important}
+.folha{margin-left:auto!important;margin-right:auto!important}
+}
+@media screen and (max-width:1100px){.app{grid-template-columns:minmax(0,1fr)!important;padding:14px!important}}</style><!--/JFLAY--></head>
 <body>
 <div class="app">
 <aside class="panel no-print">
@@ -103,26 +112,28 @@ button:focus-visible{outline:2px solid var(--dourado);outline-offset:2px}
   <h1 class="t">Reforma tributária nos 3 regimes</h1>
   <p class="sub">Compara, para o mesmo cliente, o que muda em 2027 no Simples, no Lucro Presumido e no Lucro Real, quando a CBS e o IBS entram no lugar do PIS e da COFINS.</p>
   <div id="jfimpAqui"></div>
-<div class="passos"><b>Passo a passo</b>
+<div class="passos"><b>Como preencher (5 minutos)</b>
     <ol>
-      <li>Informe a receita do mês e as compras que dão direito a crédito.</li>
-      <li>Confira CBS, IBS e a redução de alíquota da atividade (valores provisórios).</li>
-      <li>Para a coluna do Simples, informe a alíquota efetiva e a parte de PIS/COFINS do DAS (PGDAS-D).</li>
-      <li>Leia o resultado ao lado: cada regime mostra o custo de hoje, o de 2027 e a diferença.</li>
-      <li>Imprima o resumo para o cliente ou copie para o WhatsApp.</li>
+      <li><b>Anexe o extrato do PGDAS-D</b> na caixa acima: ele já preenche a receita, a alíquota efetiva e o PIS/COFINS do Simples.</li>
+      <li><b>Compras com crédito:</b> use a ferramenta <i>Crédito das Compras</i> (Domínio) e clique em levar para cá, ou digite o total das compras do mês.</li>
+      <li><b>CBS e IBS:</b> já vêm com os valores de 2027. Só mexa se a atividade tiver redução de alíquota.</li>
+      <li><b>Confira os números em cinza</b> abaixo de cada campo: eles dizem de onde tirar cada valor.</li>
+      <li><b>Leia o resultado ao lado:</b> verde = 2027 paga menos; vermelho = paga mais. Depois imprima ou copie para o WhatsApp.</li>
     </ol>
+    <p style="margin:6px 0 0"><b>Os números que já aparecem são só exemplo.</b> Troque pelos do cliente.</p>
   </div>
   <div class="sec">
     <p class="sec-t">1. Cliente</p>
     <div class="field"><label for="empresa">Empresa</label><input id="empresa" autocomplete="off" placeholder="Ex.: Studio Bela Ltda"></div>
   </div>
   <div class="sec">
-    <p class="sec-t">2. Movimento do mês (exemplo)</p>
-    <div class="field"><label for="receita">Receita tributável do mês (R$)</label><input id="receita" inputmode="decimal" value="50.000,00"></div>
+    <p class="sec-t">2. Movimento do mês (valores de exemplo: troque)</p>
+    <div class="field"><label for="receita">Receita tributável do mês (R$)</label><input id="receita" inputmode="decimal" value="50.000,00">
+      <p class="dica">Onde achar: faturamento do mês no Domínio (Saídas) ou a receita do mês no PGDAS-D. Some só o que é tributado (sem ST e sem isentos).</p></div>
     <div class="field"><label for="compras">Compras do mês com direito a crédito (R$)</label><input id="compras" inputmode="decimal" value="20.000,00">
-      <p class="dica">Valor das compras que geram crédito de PIS/COFINS (Real, hoje) e de CBS/IBS (2027).</p></div>
+      <p class="dica">Onde achar: Domínio, relatório Acompanhamento de Entradas do mês, ou a ferramenta Crédito das Compras. Entram mercadorias para revenda, insumos e serviços tomados; não entram uso e consumo nem ativo.</p></div>
     <div class="field"><label for="efet">Crédito efetivo médio das compras em 2027 (%)</label><input id="efet" inputmode="decimal" value="100">
-      <p class="dica">100% = fornecedores do regime regular. Compra de fornecedor do Simples integral dá crédito menor; reduza se for o caso.</p></div>
+      <p class="dica">Na dúvida deixe 100%. Se boa parte das compras for de fornecedor do Simples, o crédito é menor: a ferramenta Crédito das Compras calcula esse percentual e traz para cá.</p></div>
   </div>
   <div class="sec">
     <p class="sec-t">3. CBS e IBS em 2027</p>
@@ -133,13 +144,14 @@ button:focus-visible{outline:2px solid var(--dourado);outline-offset:2px}
     <p class="prov"><b>Valores provisórios:</b> o TCU calculou 11,3% de referência para a CBS (28/10/2026). Com a redução transitória de 0,1 ponto, a CBS cobrada fica em 11,2%, mais IBS de teste de 0,1%. O Senado fixa por resolução até 15/12/2026. Atualize quando sair.</p>
     <div class="field"><label for="red">Redução de alíquota da atividade</label>
       <select id="red" class="sel"><option value="0">Sem redução (alíquota cheia)</option><option value="30">Redução de 30%</option><option value="60">Redução de 60%</option><option value="100">Alíquota zero</option></select>
-      <p class="dica">Confirme o enquadramento do serviço ou produto na LC 214/2025.</p></div>
+      <p class="dica">A maioria das empresas fica em "Sem redução". Use 30% ou 60% só se o produto ou serviço estiver nessa lista na LC 214/2025 (ex.: saúde, educação, alimentos da cesta). Confirme antes.</p></div>
   </div>
   <div class="sec">
     <p class="sec-t">4. Só para o Simples (PGDAS-D)</p>
-    <div class="field"><label for="ai">Alíquota efetiva do Simples (%)</label><input id="ai" inputmode="decimal" value="8,00"></div>
+    <div class="field"><label for="ai">Alíquota efetiva do Simples (%)</label><input id="ai" inputmode="decimal" value="8,00">
+      <p class="dica">Onde achar: PGDAS-D, no cálculo do mês, campo "Alíquota efetiva" (ou DAS ÷ receita do mês). Se o cliente não é do Simples, deixe como está: só a coluna do Simples muda.</p></div>
     <div class="field"><label for="pe">Parte do DAS que é PIS/COFINS (% da receita)</label><input id="pe" inputmode="decimal" value="1,00">
-      <p class="dica">Pegue na repartição dos tributos do PGDAS-D. Esse valor sai do DAS no híbrido.</p></div>
+      <p class="dica">Onde achar: PGDAS-D, repartição dos tributos: some PIS + COFINS e divida pela receita do mês. No híbrido essa parte sai do DAS.</p></div>
   </div>
   <div class="btns">
     <button class="b1" type="button" id="btnPdf">Imprimir resumo (PDF)</button>
