@@ -722,5 +722,65 @@ var pr=window.matchMedia&&window.matchMedia("print").matches;
 for(var i=0;i<fs.length;i++){var f=fs[i];f.style.zoom=1;if(pr)continue;var p=f.parentElement,w=p?p.clientWidth:0;
 var z=Math.max(1,Math.min(1.75,(w-4)/793.7));f.style.zoom=z>1.02?z:1}}
 window.addEventListener("resize",aj);window.addEventListener("beforeprint",function(){var fs=document.querySelectorAll(".folha");for(var i=0;i<fs.length;i++)fs[i].style.zoom=1});window.addEventListener("afterprint",aj);
-if(document.readyState!=="loading")aj();else document.addEventListener("DOMContentLoaded",aj);setTimeout(aj,600)})();</script><!--/JFZOOM--></body>
+if(document.readyState!=="loading")aj();else document.addEventListener("DOMContentLoaded",aj);setTimeout(aj,600)})();</script><!--/JFZOOM--><!--JFEXP--><script>(function(){"use strict";
+var $=function(i){return document.getElementById(i)};
+var brl=function(c){return (c/100).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})};
+var pc=function(n){return n.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})+"%"};
+var maisMenos=function(d,m,n){return d>0?brl(d)+" "+m:brl(-d)+" "+n};
+var path=location.pathname;
+var REGIMES='<p><b>Os regimes em uma frase:</b></p><ul>'+
+ '<li><b>Simples Nacional:</b> um só boleto (DAS) com vários impostos juntos. Paga-se um percentual sobre o faturamento, que sobe conforme a empresa fatura mais. É simples e previsível.</li>'+
+ '<li><b>Lucro Presumido:</b> a Receita presume que a empresa lucra um percentual fixo do faturamento (em geral, 8% no comércio e 32% nos serviços) e cobra IRPJ e CSLL sobre isso. PIS/COFINS, ICMS/ISS e INSS da folha são pagos à parte.</li>'+
+ '<li><b>Lucro Real:</b> paga-se imposto sobre o lucro de verdade, apurado na contabilidade. Costuma servir para quem tem lucro baixo ou prejuízo, e exige a contabilidade em dia.</li></ul>';
+function b1(c){ /* reforma-3-regimes */
+  if(!c||!c.lp||!(c.rec>0))return "";
+  var lp=c.lp,lr=c.lr,sp=c.sp,rp=c.comp/c.rec*100;
+  var h="<p><b>O que muda em 2027:</b> a CBS (e um IBS de teste) passa a ser cobrada no lugar do PIS e da COFINS. A grande diferença é o <b>crédito</b>: o imposto que veio embutido nas compras pode ser descontado do imposto das vendas.</p>"+
+   "<p><b>Lucro Presumido:</b> hoje paga "+brl(lp.hoje)+" por mês de PIS/COFINS, sem descontar nada das compras. Em 2027, a CBS/IBS sobre as vendas seria "+brl(c.deb)+"; com o crédito das compras ("+brl(c.cred)+") ficaria "+brl(c.novo)+". Resultado: "+(lp.dif===0?"sem diferença.":"paga "+maisMenos(lp.dif,"a mais","a menos")+" por mês.")+"</p>"+
+   "<p><b>Lucro Real:</b> hoje paga "+brl(lr.hoje)+" de PIS/COFINS já com crédito. Em 2027, a CBS/IBS líquida seria "+brl(lr.novo)+": "+(lr.dif===0?"sem diferença.":"paga "+maisMenos(lr.dif,"a mais","a menos")+" por mês.")+"</p>"+
+   "<p><b>Simples Nacional:</b> no <b>integral</b> nada muda: continua pagando "+brl(sp.integral)+" de DAS. No <b>híbrido</b>, a CBS/IBS sai do DAS e é paga pelas regras gerais, com crédito das compras: seriam "+brl(sp.hibrido)+" ("+(sp.dif===0?"igual ao integral":maisMenos(sp.dif,"a mais","a menos")+" que o integral")+").</p>"+
+   "<p><b>Por que deu esse resultado?</b> O crédito depende do quanto a empresa compra. Aqui as compras com crédito são "+brl(c.comp)+" ("+pc(rp)+" da receita) e o crédito médio é "+pc(c.ef)+". "+(c.novo>lp.hoje?"O crédito não cobre o imposto das vendas, por isso a CBS/IBS fica mais pesada que o PIS/COFINS de hoje.":"O crédito das compras abate bem o imposto das vendas, por isso a CBS/IBS fica mais leve.")+"</p>"+
+   "<p><b>Conclusão:</b> "+(sp.dif<0?"para o cliente do Simples, o híbrido tende a compensar neste cenário. ":(sp.dif>0?"para o cliente do Simples, o Simples integral continua mais barato neste cenário. ":"para o cliente do Simples, os dois caminhos custam o mesmo neste cenário. "))+"Para o Presumido e o Real, a reforma "+(lp.dif>0?"aumenta":"reduz")+" o imposto sobre o consumo no Presumido e "+(lr.dif>0?"aumenta":"reduz")+" no Real. Isso é só uma parte da conta: antes de mudar de regime, comparamos também os outros tributos.</p>";
+  return REGIMES+h}
+function b2(c){ /* simples-hibrido */
+  if(!c||!(c.rec>0))return "";
+  var pf=$("perfil")?$("perfil").value:"";
+  var h="<p><b>Os dois caminhos:</b></p><ul>"+
+   "<li><b>Simples integral:</b> continua tudo dentro do DAS, como hoje. Não há crédito das compras. A empresa paga "+brl(c.dasInt)+" por mês.</li>"+
+   "<li><b>Simples híbrido:</b> a empresa continua no Simples, mas a CBS e o IBS saem do DAS e são calculados pelas regras gerais, com <b>crédito das compras</b>. Pagaria "+brl(c.tot)+" por mês.</li></ul>"+
+   "<p><b>Por que deu esse resultado?</b> O híbrido troca uma parte do DAS ("+brl(c.dasInt-c.dasPar)+") por CBS/IBS sobre as vendas ("+brl(c.dC+c.dI)+") menos o crédito das compras ("+brl(c.cC+c.cI)+"). As compras com crédito são "+brl(c.comp)+" ("+pc(c.comp/c.rec*100)+" da receita)"+(c.be!==null?"; para empatar, precisariam ser de cerca de "+brl(c.be)+" por mês":"")+".</p>"+
+   (pf==="pf"?"<p>Como as vendas são principalmente para pessoa física, o cliente não aproveita crédito, então o híbrido ajuda pouco do lado das vendas.</p>":"")+
+   "<p><b>Conclusão:</b> "+(c.dif<0?"neste cenário o <b>híbrido</b> é melhor: economiza cerca de "+brl(-c.dif)+" por mês.":(c.dif>0?"neste cenário o <b>Simples integral</b> é melhor: o híbrido custaria cerca de "+brl(c.dif)+" a mais por mês.":"os dois custam o mesmo neste cenário."))+" A opção vale por semestre, então vale refazer a conta quando as compras mudarem muito.</p>";
+  return h}
+function b3(c){ /* precificacao */
+  if(!c||!c.ok)return "";
+  var f=c.vFin*100,n=c.vNet*100;
+  return "<p><b>O que muda:</b></p>"+
+   "<p>Hoje o preço de venda ("+brl(c.P0)+") já leva os impostos dentro. Em 2027 a CBS e o IBS aparecem <b>à parte</b> na nota: o cliente paga o preço sem imposto mais o imposto.</p>"+
+   "<p>Para a empresa continuar ganhando o mesmo em reais por unidade, o <b>preço sem imposto</b> passaria a ser "+brl(c.P1)+" ("+(n>=0?"+":"")+pc(n)+") e o <b>preço final ao cliente</b> seria "+brl(c.F)+" ("+(f>=0?"+":"")+pc(f)+" sobre o preço de hoje).</p>"+
+   "<p><b>Quem sente o quê?</b> O cliente pessoa física paga o preço final inteiro. A empresa cliente do regime regular recupera a CBS/IBS como crédito e sente só o preço sem imposto.</p>"+
+   "<p><b>Conclusão:</b> "+(f>0.05?"o preço final tende a subir, porque o crédito das compras não compensa todo o imposto que passa a ser somado ao preço. ":(f<-0.05?"o preço final pode até cair, porque o crédito das compras compensa o imposto somado ao preço. ":"o preço final fica praticamente igual. "))+"Quanto maior o crédito das compras, menor o reajuste necessário.</p>"}
+function b4(c){ /* simulacao-anual */
+  if(!c||!c.t||!c.ok)return "";
+  var t=c.t,rec=t.rec||1,op=[["Simples integral",t.int],["Simples híbrido",t.hib]];if(c.folhaOk)op.push(["Lucro Presumido em 2027",t.p26]);op.sort(function(a,b){return a[1]-b[1]});
+  var best=op[0],h=REGIMES+
+   "<p><b>Simples híbrido:</b> a empresa fica no Simples, mas a CBS e o IBS saem do DAS e são pagos pelas regras gerais, com crédito das compras.</p>"+
+   "<p><b>Por que deu esse resultado?</b></p><ul>"+
+   "<li>O <b>Simples integral</b> custou "+pc(t.int/rec*100)+" da receita no ano: é um percentual único, com todos os impostos dentro.</li>"+
+   "<li>O <b>Lucro Presumido</b> em 2027 custou "+pc(t.p26/rec*100)+(c.folhaOk?"":" (incompleto, falta a folha)")+": soma IRPJ, CSLL, CBS/IBS, INSS da folha e ICMS/ISS, cada um com sua conta.</li>"+
+   "<li>O <b>híbrido</b> custou "+pc(t.hib/rec*100)+": troca parte do DAS por CBS/IBS com crédito. As compras com crédito foram "+brl(t.comp)+" ("+pc(t.comp/rec*100)+" da receita).</li></ul>"+
+   "<p><b>Conclusão:</b> neste cenário, o caminho mais barato em 2027 é o <b>"+best[0]+"</b>"+(best[0]==="Simples integral"?"":", com economia de "+brl(t.int-best[1])+" no ano em relação ao Simples integral")+". "+
+   "O Lucro Real não entrou na conta porque falta o lucro contábil. Antes de decidir, também olhamos a distribuição de lucros ao sócio e os prazos para mudar de regime.</p>";
+  return h}
+var B=null;
+if(path.indexOf("reforma-3-regimes")>=0)B=b1;else if(path.indexOf("simples-hibrido")>=0)B=b2;else if(path.indexOf("precificacao-cbs-por-fora")>=0)B=b3;else if(path.indexOf("simulacao-anual")>=0)B=b4;
+var doc=$("doc");if(!B||!doc)return;
+var ob=null;
+function poe(){var c=window.__r,old=doc.querySelector(".conclusao");if(old)return;var h=B(c);if(!h)return;
+  var el=document.createElement("div");el.className="box conclusao";el.innerHTML="<h3 style='margin:0 0 6px'>Em palavras simples</h3>"+h;
+  var a=doc.querySelector(".assina");if(ob)ob.disconnect();if(a)a.parentNode.insertBefore(el,a);else doc.appendChild(el);
+  if(ob)ob.observe(doc,{childList:true})}
+ob=new MutationObserver(function(){poe()});ob.observe(doc,{childList:true});poe();
+})();
+</script><!--/JFEXP--></body>
 </html>
