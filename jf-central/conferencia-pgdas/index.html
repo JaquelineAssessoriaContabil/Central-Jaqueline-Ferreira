@@ -93,6 +93,10 @@ tr.mes:hover{background:#FBF7F6}
 .m3>div{padding:10px 14px;border-right:1px solid var(--linha)}.m3>div:last-child{border-right:0}
 .m3 small{display:block;text-transform:uppercase;font-size:11px;color:var(--cinza)}.m3 b{font-size:18px}
 .mobs{padding:8px 14px 12px;border-top:1px solid var(--linha);font-size:13px}.mobs ul{margin:2px 0 0 18px;padding:0}
+.bl{border:1px solid var(--linha);border-radius:10px;padding:8px 14px;background:#FCFAF9;font-size:13px}
+.bl p{margin:6px 0}
+.bl-t{font-size:14px;margin:16px 0 6px}
+.doc .bl{font-size:8.5pt;border:0;padding:0;background:none}
 .regras{background:var(--rose-claro);border-radius:8px;padding:9px 12px;font-size:12px;color:#444;margin-top:12px}
 .sub{border:1px solid #E5A39B;border-radius:12px;padding:12px 14px;margin:12px 0;background:#FFFBFA}
 .sub h3{margin:0 0 4px;font-size:14px;color:var(--vermelho)}
@@ -166,6 +170,7 @@ tr.tot th{background:var(--rose-claro)}
       <div class="cards" id="kpis2"></div>
       <div id="sublim"></div>
       <div id="tabelas"></div>
+      <div id="baseLegalTela"></div>
       <div class="regras">Regras aplicadas: alíquota efetiva = (RBT12 × alíquota nominal − parcela a deduzir) ÷ RBT12, com a repartição dos Anexos I a V da LC 123/2006 vigentes em 2026. Substituição tributária, tributação monofásica, exportação, ISS retido e sublimite retiram os tributos correspondentes. Valores sem multa e juros. Diferença positiva = valor a recolher; negativa = pago a mais.</div>
       <div class="row" style="margin-top:12px"><button class="btn" id="btPdf2" type="button">Imprimir relatório</button><button class="btn sec2" id="btCsv" type="button">Exportar para Excel (CSV)</button></div>
       <div class="aviso" style="margin-top:12px">Ferramenta de conferência. Antes de retificar qualquer declaração, confirme o resultado com a contadora responsável. Não substitui a análise da contadora nem a legislação vigente. Valores sem multa e juros.</div>
@@ -533,7 +538,7 @@ function desenha(){
     h+="<tr class='tot'><th>Total</th><th class='r'>"+brl(tr)+"</th><th></th><th></th><th class='r'>"+brl(tot)+"</th><th class='r'>"+brl(tc)+"</th><th class='r'>"+dtTxt(tc-tot)+"</th><th></th></tr></table>"});
   $("tabelas").innerHTML=h;
   Array.prototype.forEach.call(document.querySelectorAll("a.ver"),function(a){a.onclick=function(e){e.preventDefault();var d=$(a.getAttribute("data-det"));d.hidden=!d.hidden;a.textContent=(d.hidden?"▸":"▾")+" ver por tributo"}});
-  $("vEntrada").hidden=true;$("vResultado").hidden=false;$("detalhado").hidden=true;$("btDet").textContent="Ver relatório detalhado";window.scrollTo(0,0);
+  $("baseLegalTela").innerHTML=baseLegal();$("vEntrada").hidden=true;$("vResultado").hidden=false;$("detalhado").hidden=true;$("btDet").textContent="Ver relatório detalhado";window.scrollTo(0,0);
 }
 $("btVolta").onclick=function(){$("vResultado").hidden=true;$("vEntrada").hidden=false;window.scrollTo(0,0)};
 $("btDet").onclick=function(){var d=$("detalhado");d.hidden=!d.hidden;$("btDet").textContent=d.hidden?"Ver relatório detalhado":"Esconder relatório detalhado";if(!d.hidden)d.scrollIntoView({behavior:"smooth",block:"start"})};
@@ -566,6 +571,13 @@ function detalheMes(x){var d=x.d,r=x.r,h="<div class='mesdet'><h4>"+esc(d.pa)+" 
   var ob=x.itens.filter(function(i){return i.t});
   if(ob.length)h+="<p><b>Observações</b></p><ul>"+ob.map(function(i){return "<li>"+esc(i.t)+"</li>"}).join("")+"</ul>";
   return h+"</div>"}
+function baseLegal(){return "<h3 class='bl-t'>Base legal: alíquota zero não é imunidade</h3><div class='bl'>"+
+"<p><b>1. LC 123/2006, art. 24.</b> A optante do Simples Nacional não pode usar nem destinar valor a título de incentivo fiscal. O §1º diz que mudanças de base de cálculo, alíquota, percentual ou outros fatores feitas pela União, pelos Estados, pelo DF ou pelos Municípios não entram no valor apurado pelo Simples.</p>"+
+"<p><b>2. Solução de Consulta Cosit nº 95/2014 (Receita Federal).</b> Sobre a parcela da receita com imunidade, desconsideram-se os percentuais dos tributos imunes. Já suspensão, isenção e alíquota zero são incompatíveis com a opção pelo Simples, salvo o que a lei prevê expressamente.</p>"+
+"<p><b>3. Constituição Federal, art. 149, §2º, I, e art. 153, §3º, III.</b> As contribuições sociais não incidem sobre a receita de exportação, e o IPI não incide sobre produtos industrializados destinados ao exterior.</p>"+
+"<p><b>4. STF, Tema 207 (RE 598.468, julgado em 22/05/2020).</b> Essas duas imunidades valem também para as empresas optantes pelo Simples Nacional.</p>"+
+"<p><b>Resumo.</b> Imunidade vem da Constituição: a parcela do tributo imune sai do DAS. Alíquota zero é redução dada por lei ou pela TIPI: o produto continua no campo de incidência e, no Simples, o tributo é calculado normalmente (art. 24 da LC 123).</p>"+
+"<p class='peq'><b>Como esta ferramenta aplica:</b> em receita de exportação, tira ICMS, PIS, COFINS, IPI e ISS e mantém IRPJ, CSLL e CPP; com ISS retido, tira o ISS. Esta regra de exportação foi montada pelo texto acima e ainda não foi testada com um extrato real de exportação.<br><b>Conferido em:</b> texto consolidado da LC 123 (art. 24), ementa e trechos da Cosit 95/2014 e tese do Tema 207. <b>Não consegui:</b> ler a Cosit 95/2014 inteira, nem abrir o Planalto daqui. Confirme no original antes de usar em parecer.</p></div>"}
 function relatorio(det){
   var it=resultado.itens, c={ok:0,atencao:0,problema:0,nao_conferido:0}, sd=0,sc=0;
   it.forEach(function(x){c[x.estado]++;sd+=x.d.declTotal||0;sc+=(x.calcTotal!=null?x.calcTotal:(x.d.declTotal||0))});
@@ -581,6 +593,7 @@ function relatorio(det){
       return "<tr><td>"+esc(d.pa)+"</td><td class='r'>"+brl(topo)+"</td><td class='r'>"+brl(sub)+"</td><td class='r'>"+p+"%</td><td>"+(d.impedido==null?"—":(d.impedido?"Impedido":"Não impedido"))+"</td><td>"+st+"</td></tr>"}).join("")+"</table>";
     h+="<h3>Conta detalhada de cada mês</h3>"+L.map(detalheMes).join("");}
   });
+  if(det)h+=baseLegal();
   h+="<h3>Base e limites</h3><p class='peq'>Cálculo pelas tabelas dos Anexos I a V da LC 123/2006 (redação da LC 155/2016, vigentes em 2026), a partir do que foi declarado no PGDAS-D. Não confere a receita contra as notas fiscais nem a escolha da atividade ou do anexo. Valores sem multa e juros. Apoia a análise da contadora e não substitui a legislação vigente; confirme antes de retificar.</p></div>";
   return h}
 $("btCsv").onclick=function(){ if(!resultado)return;
