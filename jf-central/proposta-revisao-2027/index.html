@@ -919,5 +919,11 @@ JFImp.mount({el:"jfimpAqui",titulo:TITULO,texto:TEXTO,aceita:ACEITA,onResultado:
 })();
 </script>
 <!--JFIMP-FIM-->
-</body>
+<!--JFZOOM--><style>@media print{.folha{zoom:1!important}}</style><script>(function(){"use strict";
+function aj(){var fs=document.querySelectorAll(".folha");if(!fs.length)return;
+var pr=window.matchMedia&&window.matchMedia("print").matches;
+for(var i=0;i<fs.length;i++){var f=fs[i];f.style.zoom=1;if(pr)continue;var p=f.parentElement,w=p?p.clientWidth:0;
+var z=Math.max(1,Math.min(1.75,(w-4)/793.7));f.style.zoom=z>1.02?z:1}}
+window.addEventListener("resize",aj);window.addEventListener("beforeprint",function(){var fs=document.querySelectorAll(".folha");for(var i=0;i<fs.length;i++)fs[i].style.zoom=1});window.addEventListener("afterprint",aj);
+if(document.readyState!=="loading")aj();else document.addEventListener("DOMContentLoaded",aj);setTimeout(aj,600)})();</script><!--/JFZOOM--></body>
 </html>
