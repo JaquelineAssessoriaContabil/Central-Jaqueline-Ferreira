@@ -145,6 +145,7 @@ a{color:var(--rose-d)}
     <div class="f"><label for="eReg">Regime</label><select id="eReg"><option value="mei">MEI</option><option value="simples" selected>Simples Nacional</option><option value="presumido">Lucro Presumido</option><option value="real">Lucro Real</option></select></div>
     <div class="f"><label for="eUF">UF</label><input type="text" id="eUF" maxlength="2" value="SC" style="width:56px"></div>
     <div class="f"><label for="eMun">Município (ISS)</label><input type="text" id="eMun" maxlength="60" value="Videira"></div>
+    <div class="f"><label for="eIni">Começa em (empresa nova)</label><input type="month" id="eIni"></div>
   </div>
   <h3>O que a empresa faz e tem</h3>
   <div class="checks" id="eChecks"></div>
@@ -415,6 +416,9 @@ function removeAnexo(btn){
 
 /* ---------- calendário ---------- */
 function ajusta(d,adj){return adj==="prox"?prox(d):adj==="ant"?ant(d):d}
+function refYM(c){var a=/^(\d{2})\/(\d{4})$/.exec(c);if(a)return +a[2]*12+ +a[1];
+  a=/^(\d)º trimestre\/(\d{4})$/.exec(c);if(a)return +a[2]*12+ +a[1]*3;
+  a=/^ano (\d{4})$/.exec(c);if(a)return +a[1]*12+12;return 0}
 function itensDoMes(y,m){
   var out=[],sem=[];
   S.empresas.forEach(function(e){
@@ -429,6 +433,7 @@ function itensDoMes(y,m){
       else if(t.k==="anual"){if(m!==t.mes)return;data=D(y,m,t.dia);comp="ano "+(y-1)}
       else if(t.k==="anualUtil"){if(m!==t.mes)return;data=ultUtil(y,m);comp="ano "+(y-1)}
       else if(t.k==="sem"){comp=compMes(y,m,1)}
+      if(e.ini&&/^\d{4}-\d{2}$/.test(e.ini)){var ri=refYM(comp),si=+e.ini.slice(0,4)*12+ +e.ini.slice(5);if(ri&&ri<si)return}
       var it={e:e,r:r,data:data,comp:comp,est:q[0],motivo:q[1],key:e.id+"|"+r.id+"|"+comp};
       (data?out:sem).push(it);
     });
@@ -480,7 +485,7 @@ function renderMx(){
   R.forEach(function(r){h+='<th class="v"><span>'+esc(r.curto)+'</span></th>'});
   h+='</tr></thead><tbody>';
   S.empresas.forEach(function(e){
-    h+='<tr><td class="e">'+esc(e.nome)+'<br><span class="nota">'+esc(REGN[e.reg]||"")+(e.inativa?" • pausada":"")+'</span></td>';
+    h+='<tr><td class="e">'+esc(e.nome)+'<br><span class="nota">'+esc(REGN[e.reg]||"")+(e.inativa?" • pausada":"")+(e.ini?" • começa em "+esc(e.ini.slice(5)+"/"+e.ini.slice(0,4)):"")+'</span></td>';
     R.forEach(function(r){var q=r.q(e);var s=e.inativa?"nao":q[0];var ch=s==="sim"?"●":s==="confirmar"?"?":"–";var cl=s==="sim"?"sim":s==="confirmar"?"cf":"nao";
       h+='<td><span class="s '+cl+'" title="'+esc(q[1]||"")+'">'+ch+'</span></td>'});
     h+='</tr>'});
@@ -495,7 +500,7 @@ function montaChecks(){
   $("eChecks").innerHTML=h}
 function mascCnpj(v){v=v.replace(/\D/g,"").slice(0,14);var o=v;if(v.length>12)o=v.replace(/(\d{2})(\d{3})(\d{3})(\d{4})(\d{0,2})/,"$1.$2.$3/$4-$5");else if(v.length>8)o=v.replace(/(\d{2})(\d{3})(\d{3})(\d{0,4})/,"$1.$2.$3/$4");else if(v.length>5)o=v.replace(/(\d{2})(\d{3})(\d{0,3})/,"$1.$2.$3");else if(v.length>2)o=v.replace(/(\d{2})(\d{0,3})/,"$1.$2");return o}
 function cnpjOk(v){var d=v.replace(/\D/g,"");if(d.length!==14||/^(\d)\1+$/.test(d))return false;function dv(n){var p=n-7,s=0;for(var i=0;i<n;i++){s+=+d[i]*p--;if(p<2)p=9}var r=s%11;return r<2?0:11-r}return dv(12)===+d[12]&&dv(13)===+d[13]}
-function limpaForm(){editId=null;$("eNome").value="";$("eCnpj").value="";$("eReg").value="simples";$("eUF").value="SC";$("eMun").value="Videira";document.querySelectorAll("#eChecks input").forEach(function(c){c.checked=false});$("eModo").textContent=""}
+function limpaForm(){editId=null;$("eNome").value="";$("eCnpj").value="";$("eReg").value="simples";$("eUF").value="SC";$("eMun").value="Videira";$("eIni").value="";document.querySelectorAll("#eChecks input").forEach(function(c){c.checked=false});$("eModo").textContent=""}
 function renderEmp(){
   var tb=$("tEmp").tBodies[0],h="";
   S.empresas.forEach(function(e){
@@ -507,6 +512,7 @@ function salvaEmp(){
   var nome=$("eNome").value.trim();if(!nome){aviso("Informe o nome ou apelido da empresa.","erro");return}
   var cnpj=$("eCnpj").value.trim();
   var e={id:editId||("e"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),nome:nome,cnpj:cnpj,reg:$("eReg").value,uf:$("eUF").value.trim().toUpperCase(),mun:$("eMun").value.trim()};
+  if(/^\d{4}-\d{2}$/.test($("eIni").value))e.ini=$("eIni").value;
   document.querySelectorAll("#eChecks input").forEach(function(c){if(c.checked)e[c.dataset.f]=true});
   var i=S.empresas.findIndex(function(x){return x.id===e.id});if(i>=0)S.empresas[i]=e;else S.empresas.push(e);
   S.empresas.sort(function(a,b){return a.nome.localeCompare(b.nome)});
@@ -515,7 +521,7 @@ function salvaEmp(){
 }
 function editaEmp(id){
   var e=S.empresas.find(function(x){return x.id===id});if(!e)return;
-  editId=id;$("eNome").value=e.nome;$("eCnpj").value=e.cnpj||"";$("eReg").value=e.reg;$("eUF").value=e.uf||"";$("eMun").value=e.mun||"";
+  editId=id;$("eNome").value=e.nome;$("eCnpj").value=e.cnpj||"";$("eReg").value=e.reg;$("eUF").value=e.uf||"";$("eMun").value=e.mun||"";$("eIni").value=e.ini||"";
   document.querySelectorAll("#eChecks input").forEach(function(c){c.checked=!!e[c.dataset.f]});
   $("eModo").textContent="Editando: "+e.nome;window.scrollTo(0,0)}
 function excluiEmp(btn,id){
