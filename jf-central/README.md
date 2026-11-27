@@ -6,10 +6,11 @@ Cada simulador é um arquivo único (`index.html`), sem servidor e sem enviar da
 | Pasta | Simulador |
 |---|---|
 | `fator-r/` | Calculadora de Fator R (Simples Nacional) |
-| `jornadas-remuneracao/` | Jornadas e Remuneração (v12, 23/11/2026) , aba Aprendiz|
+| `jornadas-remuneracao/` | Jornadas e Remuneração (v12, 23/11/2026) |
 | `simples-hibrido/` | Simples Integral × Híbrido (CBS/IBS pelo regime regular) |
 | `reforma-3-regimes/` | Reforma Tributária nos 3 Regimes: compara PIS/COFINS de hoje com CBS+IBS de 2027 no Simples (integral × híbrido), Presumido e Real. CBS 11,2% + IBS 0,1% provisórios até a resolução do Senado (prazo 15/12/2026) |
 | `precificacao-cbs-por-fora/` | Precificação com CBS por fora: preço sem imposto e preço final em 2027 para manter a margem de hoje (Presumido, Real e Simples híbrido) |
+| `credito-compras/` | Crédito das Compras (CBS/IBS): lê Entradas e Fornecedores do Domínio (PDF) e NF-e (XML) e calcula compras com direito a crédito e crédito efetivo médio |
 | `carta-reforma-tributaria/` | Carta de Adequação à Reforma Tributária |
 | `calculadora-honorarios/` | Calculadora de Honorários (MEI, Simples, Presumido) |
 | `levantamento-honorarios/` | Levantamento da Empresa para honorários: ficha do cliente, índice de complexidade (pesos de exemplo) e envio dos dados para a Calculadora |

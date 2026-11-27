@@ -691,5 +691,21 @@ JFImp.mount({el:"jfimpAqui",titulo:TITULO,texto:TEXTO,aceita:ACEITA,onResultado:
 })();
 </script>
 <!--JFIMP-FIM-->
+
+<script>
+/* JF • Crédito das Compras → esta calculadora. Lê o que a ferramenta "Crédito das Compras" guardou neste navegador. Nada é enviado para fora. */
+(function(){"use strict";
+var K="jf_credito_compras",o=null;try{o=JSON.parse(localStorage.getItem(K)||"null")}catch(e){}
+if(!o||!(o.efet>=0)||!o.t||Date.now()-o.t>864e5*45)return;
+var alvo=document.querySelector(".passos");if(!alvo||!alvo.parentNode)return;
+var box=document.createElement("div");box.className="passos";box.style.borderLeftColor="#0E8F63";
+var tx=document.createElement("div");tx.textContent="Há um cálculo de crédito das compras guardado"+(o.empresa?" de "+o.empresa:"")+(o.pa?" ("+o.pa+")":"")+": crédito efetivo médio de "+o.efet.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})+"%"+(true?"":" sobre R$ "+(o.compras/100).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2})+" de compras")+". Usar nesta calculadora? Isso troca "+(true?"o campo do crédito efetivo":"os campos de compras e crédito efetivo")+".";
+var b1=document.createElement("button"),b2=document.createElement("button");b1.type=b2.type="button";b1.className="b1";b2.className="b2";b1.textContent="Usar crédito das compras";b2.textContent="Ignorar";b1.style.cssText=b2.style.cssText="margin:6px 6px 0 0;width:auto;padding:7px 14px";
+function set(id,v){var e=document.getElementById(id);if(!e)return;e.value=v;e.dispatchEvent(new Event("input",{bubbles:true}));e.dispatchEvent(new Event("change",{bubbles:true}))}
+b1.onclick=function(){if(!true)set("compras",(o.compras/100).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2}));set("efet",o.efet.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2}));tx.textContent="Dados aplicados. Confira os campos.";b1.remove();b2.remove()};
+b2.onclick=function(){box.remove()};
+box.appendChild(tx);box.appendChild(b1);box.appendChild(b2);alvo.parentNode.insertBefore(box,alvo);
+})();
+</script>
 </body>
 </html>
