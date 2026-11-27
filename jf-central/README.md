@@ -6,7 +6,7 @@ Cada simulador é um arquivo único (`index.html`), sem servidor e sem enviar da
 | Pasta | Simulador |
 |---|---|
 | `fator-r/` | Calculadora de Fator R (Simples Nacional) |
-| `jornadas-remuneracao/` | Jornadas e Remuneração (v12, 23/11/2026) |
+| `jornadas-remuneracao/` | Jornadas e Remuneração (v12, 23/11/2026) , aba Aprendiz|
 | `simples-hibrido/` | Simples Integral × Híbrido (CBS/IBS pelo regime regular) |
 | `reforma-3-regimes/` | Reforma Tributária nos 3 Regimes: compara PIS/COFINS de hoje com CBS+IBS de 2027 no Simples (integral × híbrido), Presumido e Real. CBS 11,2% + IBS 0,1% provisórios até a resolução do Senado (prazo 15/12/2026) |
 | `precificacao-cbs-por-fora/` | Precificação com CBS por fora: preço sem imposto e preço final em 2027 para manter a margem de hoje (Presumido, Real e Simples híbrido) |

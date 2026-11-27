@@ -99,6 +99,7 @@ th,td{font-size:10px;padding:5px}
 <a class="active" href="#j42">Jornada semanal</a>
 <a href="#x36">Escala 12x36</a>
 <a href="#hora">Trabalho por hora</a>
+<a href="#aprendiz">Aprendiz</a>
 <a href="#relatorio">Relatório PDF</a>
 <a href="#cct">Convenção coletiva</a>
 <a href="#base">Base legal</a>
@@ -196,6 +197,29 @@ th,td{font-size:10px;padding:5px}
 
 
 
+
+<section id="aprendiz" class="panel">
+<div class="card">
+<h2>Jovem aprendiz — jornada e remuneração</h2>
+<div class="notice"><b>Regras que a tela confere:</b> jornada máxima de 6h por dia, sem hora extra e sem compensação (CLT, art. 432); até 8h somente se já concluiu o ensino fundamental e se forem contadas as horas de aprendizagem teórica (art. 432, § 1º); salário mínimo-hora, salvo condição mais favorável (art. 428, § 2º); FGTS de 2% (Lei 8.036/1990, art. 15, § 7º); contrato de até 2 anos (art. 428, § 3º). A jornada é a soma das horas na empresa com as horas de aula teórica.</div>
+<div class="grid">
+<div><label>Empresa</label><input id="apEmpresa" placeholder="Nome da empresa"></div>
+<div><label>Aprendiz</label><input id="apNome" placeholder="Nome do aprendiz"></div>
+<div><label>CCI / entidade formadora</label><input id="apCci" placeholder="Nome da entidade que faz a formação (CCI)"></div>
+<div><label>Início do contrato</label><input id="apInicio" type="date"></div>
+<div><label>Fim do contrato (opcional)</label><input id="apFim" type="date"></div>
+<div><label>Data de nascimento (opcional)</label><input id="apNasc" type="date"></div>
+<div><label>Concluiu o ensino fundamental?</label><select id="apEns"><option value="nao">Não / não sei</option><option value="sim">Sim</option></select></div>
+<div><label>Valor da hora mínima (R$)</label><input id="apHora" inputmode="decimal" value="7,37"></div>
+<div><label>Hora mais favorável da CCT/contrato (R$, opcional)</label><input id="apHoraCct" inputmode="decimal" placeholder="Deixe vazio se não houver"></div>
+</div>
+<h3>Jornada semanal</h3>
+<div class="tablewrap"><table><thead><tr><th>Dia</th><th>Trabalha?</th><th>Horas na empresa</th><th>Horas de aula (CCI)</th><th>Total do dia</th></tr></thead><tbody id="apTbody"></tbody></table></div>
+<div class="actions no-print"><button class="btn primary" onclick="apCalc()">Calcular aprendiz</button><button class="btn ghost" onclick="apPreset()">Preencher 4h de segunda a sexta</button><button class="btn ghost" onclick="window.print()">Imprimir / PDF</button></div>
+<div id="apOut" aria-live="polite"></div>
+<div class="notice warn"><b>Conferir antes de usar:</b> o valor da hora de R$ 7,37 vem do salário mínimo de R$ 1.621,00 (Decreto 12.797/2025, ÷ 220). Se a convenção coletiva ou o contrato tiver valor maior, informe no campo acima. INSS e IRRF do aprendiz são apurados no Domínio. A forma de pagar (por hora ou mensal fixo) deve constar no contrato de aprendizagem. Não foi possível conferir o texto da CLT direto no Planalto; os artigos foram conferidos em cópias da Lei 10.097/2000 publicadas pela Câmara e pelo Senado.</div>
+</div>
+</section>
 
 <section id="relatorio" class="panel">
 <div class="card no-print">
@@ -765,4 +789,55 @@ if(document.readyState==="complete")inicia();else window.addEventListener("load"
 
 
 
+<script>
+/* JF • Aprendiz — cálculo em centavos inteiros; nada sai do navegador. */
+(function(){"use strict";
+var DIAS=["Segunda","Terça","Quarta","Quinta","Sexta","Sábado","Domingo"];
+function $(i){return document.getElementById(i)}
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function cent(v){var s=String(v==null?"":v).trim().replace(/[R$\s]/g,"");if(!s)return 0;if(s.indexOf(",")>=0)s=s.replace(/\./g,"").replace(",",".");var n=parseFloat(s);return isFinite(n)?Math.round(n*100):0}
+function brl(c){return (c/100).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}
+function hh(x){return String(Math.round(x*100)/100).replace(".",",")+"h"}
+function monta(){var tb=$("apTbody");if(!tb||tb.children.length)return;
+  DIAS.forEach(function(d,i){var tr=document.createElement("tr");
+    tr.innerHTML="<td>"+d+"</td><td><input type='checkbox' id='apT"+i+"' aria-label='Trabalha "+d+"'></td><td><input type='number' min='0' step='0.25' id='apP"+i+"' value='0' aria-label='Horas na empresa "+d+"'></td><td><input type='number' min='0' step='0.25' id='apA"+i+"' value='0' aria-label='Horas de aula "+d+"'></td><td id='apD"+i+"'>—</td>";tb.appendChild(tr)})}
+function num(id){var v=parseFloat($(id).value);return isFinite(v)&&v>0?v:0}
+window.apPreset=function(){for(var i=0;i<7;i++){var on=i<5;$("apT"+i).checked=on;$("apP"+i).value=on?4:0;$("apA"+i).value=0}apCalc()};
+window.apCalc=function(){
+  var out=$("apOut"),av=[],soma=0,diasT=0,maxDia=0,fund=$("apEns").value==="sim";
+  for(var i=0;i<7;i++){var on=$("apT"+i).checked,p=on?num("apP"+i):0,a=on?num("apA"+i):0,t=p+a;$("apD"+i).textContent=on?hh(t):"—";
+    if(on&&t>0){soma+=t;diasT++;if(t>maxDia)maxDia=t}
+    if(!on&&(num("apP"+i)||num("apA"+i)))av.push(DIAS[i]+": há horas lançadas, mas o dia não está marcado como trabalhado; elas não entram na conta.");
+    var lim=fund?8:6; if(on&&t>lim)av.push(DIAS[i]+": "+hh(t)+" passa do limite de "+lim+"h por dia"+(fund?"":" (6h; só chega a 8h quem já concluiu o ensino fundamental, contando as aulas)")+". Hora extra e compensação são proibidas para aprendiz (art. 432).")}
+  if(fund&&maxDia>6)av.push("Jornada de mais de 6h por dia só é permitida se as horas acima de 6 forem de aprendizagem teórica (art. 432, § 1º). Confira no programa de aprendizagem.");
+  if(!soma){out.innerHTML="<div class='notice warn'>Marque os dias e informe as horas.</div>";return}
+  var hora=cent($("apHora").value),cct=cent($("apHoraCct").value),usa=Math.max(hora,cct);
+  if(!usa){out.innerHTML="<div class='notice warn'>Informe o valor da hora.</div>";return}
+  if(cct&&cct<hora)av.push("A hora da CCT/contrato ("+brl(cct)+") é menor que o mínimo ("+brl(hora)+"): vale o mínimo, salvo condição mais favorável.");
+  var hMes=soma*5, sal=Math.round(usa*hMes), fgts=Math.round(sal*2/100), dec=Math.round(sal/12), fer=Math.round(sal/12*4/3), fgDec=Math.round((dec+fer)*2/100);
+  var ini=$("apInicio").value,fim=$("apFim").value,nasc=$("apNasc").value;
+  if(ini&&fim){var a=new Date(ini+"T00:00:00"),b=new Date(fim+"T00:00:00"),lim2=new Date(a);lim2.setFullYear(lim2.getFullYear()+2);
+    if(b<a)av.push("O fim do contrato é anterior ao início."); else if(b>lim2)av.push("O contrato passa de 2 anos (art. 428, § 3º). Só há exceção para pessoa com deficiência.")}
+  if(ini&&nasc){var n=new Date(nasc+"T00:00:00"),s=new Date(ini+"T00:00:00"),id=s.getFullYear()-n.getFullYear();if(s<new Date(s.getFullYear(),n.getMonth(),n.getDate()))id--;
+    if(id<14)av.push("Na data de início o aprendiz tem "+id+" anos; a idade mínima é 14.");
+    else if(id>=24&&!(id===24&&false))av.push("Na data de início o aprendiz tem "+id+" anos; a aprendizagem vale até 24 anos (exceto pessoa com deficiência). Conferir.")}
+  var res="<h3>Resultado</h3><div class='tablewrap'><table><tbody>"
+   +"<tr><th>Dias de trabalho na semana</th><td>"+diasT+"</td></tr>"
+   +"<tr><th>Horas por semana (empresa + aula)</th><td>"+hh(soma)+"</td></tr>"
+   +"<tr><th>Horas por mês (semanais × 5, já com o descanso semanal)</th><td>"+hh(hMes)+"</td></tr>"
+   +"<tr><th>Valor da hora usado</th><td>"+brl(usa)+"</td></tr>"
+   +"<tr><th><b>Salário mensal do aprendiz</b></th><td><b>"+brl(sal)+"</b></td></tr>"
+   +"<tr><th>FGTS mensal (2%)</th><td>"+brl(fgts)+"</td></tr>"
+   +"<tr><th>Provisão mensal de 13º (1/12)</th><td>"+brl(dec)+"</td></tr>"
+   +"<tr><th>Provisão mensal de férias + 1/3</th><td>"+brl(fer)+"</td></tr>"
+   +"<tr><th>FGTS (2%) sobre as provisões</th><td>"+brl(fgDec)+"</td></tr>"
+   +"<tr><th><b>Custo mensal estimado (sem INSS patronal, vale-transporte e outros)</b></th><td><b>"+brl(sal+fgts+dec+fer+fgDec)+"</b></td></tr>"
+   +"</tbody></table></div>";
+  var cab=[];if($("apEmpresa").value)cab.push("Empresa: "+esc($("apEmpresa").value));if($("apNome").value)cab.push("Aprendiz: "+esc($("apNome").value));if($("apCci").value)cab.push("CCI: "+esc($("apCci").value));
+  out.innerHTML=(cab.length?"<p><b>"+cab.join(" • ")+"</b></p>":"")+(av.length?"<div class='notice warn'><b>Atenção:</b><br>"+av.map(esc).join("<br>")+"</div>":"<div class='notice'>Jornada dentro dos limites informados.</div>")+res
+   +"<p class='muted'>Exemplo de conferência: 4h × 5 dias = 20h por semana = 100h por mês × R$ 7,37 = R$ 737,00. Sábado e domingo não são trabalhados; o descanso semanal já está dentro do divisor 220.</p>";
+};
+monta();
+})();
+</script>
 </body></html>
