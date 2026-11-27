@@ -36,6 +36,7 @@ table.pg td.c{padding:0 11.5% 0 8.6%}
 }
 
 
+
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 body{margin:0;background:#F3EAE8;color:#000;font:14px/1.5 "Segoe UI",system-ui,-apple-system,Arial,sans-serif}
@@ -54,13 +55,14 @@ body{margin:0;background:#F3EAE8;color:#000;font:14px/1.5 "Segoe UI",system-ui,-
 .btn{border:0;border-radius:10px;padding:9px 16px;font:inherit;cursor:pointer;background:var(--rose-escuro);color:#fff}
 .btn.sec2{background:#fff;color:var(--rose-escuro);border:1px solid var(--rose-escuro)}
 .btn.verde{background:#0E8F63}
+.btn.grande{padding:12px 22px;font-weight:700;font-size:15px}
 .btn[disabled]{opacity:.45;cursor:not-allowed}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 #drop{border:2px dashed var(--rose);border-radius:14px;background:var(--rose-claro);padding:26px 14px;text-align:center;cursor:pointer;color:var(--rose-escuro)}
 #drop.on{background:#fff;border-color:var(--dourado)}
 #drop b{display:block;font-size:15px}
 .lista{margin:10px 0 0;padding:0;list-style:none;font-size:13px}
-.lista li{padding:5px 8px;border-bottom:1px solid var(--linha);display:flex;gap:8px;flex-wrap:wrap}
+.lista li{padding:5px 8px;border-bottom:1px solid var(--linha)}
 .lista .e{color:var(--vermelho)}
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:10px 0}
 .kpi{border:1px solid var(--linha);border-radius:12px;padding:10px 12px;background:#fff}
@@ -80,6 +82,22 @@ tr.mes:hover{background:#FBF7F6}
 .emp{font-size:15px;margin:16px 0 4px}
 .peq{font-size:12px;color:var(--cinza)}
 .n-erro{color:var(--vermelho)}.n-aviso{color:#8A5A00}.n-info{color:#444}
+.mcard{border:1px solid var(--linha);border-radius:12px;margin:12px 0;background:#fff;overflow:hidden}
+.mcard.s-ok{border-color:#9AD3BC}.mcard.s-problema{border-color:#E5A39B}.mcard.s-atencao{border-color:#E6CF8E}
+.mtop{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:12px 14px}
+.mpa{display:inline-block;background:#000;color:#fff;border-radius:8px;padding:6px 12px;font-weight:700;letter-spacing:.3px}
+.mem{font-weight:700;margin-top:8px;text-transform:uppercase;font-size:13px}
+.mbad{border-radius:8px;padding:8px 14px;font-weight:700;color:#fff;background:#0E8F63}
+.mbad.problema{background:var(--vermelho)}.mbad.atencao{background:#B7791F}.mbad.nao_conferido{background:#777}
+.m3{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--linha)}
+.m3>div{padding:10px 14px;border-right:1px solid var(--linha)}.m3>div:last-child{border-right:0}
+.m3 small{display:block;text-transform:uppercase;font-size:11px;color:var(--cinza)}.m3 b{font-size:18px}
+.mobs{padding:8px 14px 12px;border-top:1px solid var(--linha);font-size:13px}.mobs ul{margin:2px 0 0 18px;padding:0}
+.regras{background:var(--rose-claro);border-radius:8px;padding:9px 12px;font-size:12px;color:#444;margin-top:12px}
+.sub{border:1px solid #E5A39B;border-radius:12px;padding:12px 14px;margin:12px 0;background:#FFFBFA}
+.sub h3{margin:0 0 4px;font-size:14px;color:var(--vermelho)}
+.barra{height:8px;border-radius:6px;background:#EEE;margin:4px 0 2px;overflow:hidden}.barra i{display:block;height:100%;background:#0E8F63}.barra i.al{background:#B7791F}.barra i.vm{background:var(--vermelho)}
+tr.tot th{background:var(--rose-claro)}
 #toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#000;color:#fff;padding:10px 16px;border-radius:10px;opacity:0;pointer-events:none;transition:.25s;z-index:99}
 #toast.on{opacity:1}
 #impressao{display:none}
@@ -111,34 +129,46 @@ tr.mes:hover{background:#FBF7F6}
     <div><h1>Conferência de PGDAS</h1><small>Refaz a conta do Simples Nacional de cada mês e compara com o que foi declarado · uso interno · os PDFs não saem do seu computador</small></div>
   </div>
 
-  <div class="passos"><b>Passo a passo</b>
-    <ol>
-      <li>No Portal do Simples Nacional (ou na pasta do cliente), pegue o <b>Extrato do PGDAS-D</b> em PDF de cada mês. Pode ser de vários meses e de várias empresas.</li>
-      <li>Arraste os PDFs para o quadro abaixo ou clique nele para escolher os arquivos. A lista mostra a empresa e o mês de cada um.</li>
-      <li>Clique em <b>Conferir</b>. Cada mês aparece como <b>Correto</b>, <b>Atenção</b> ou <b>Com problema</b>. Clique na linha do mês para ver o motivo e a conta de cada imposto.</li>
-      <li>Clique em <b>Gerar relatório (PDF)</b> para guardar no papel timbrado. Se o mesmo mês entrar duas vezes (original e retificadora), vale o mais recente.</li>
-    </ol>
-  </div>
-
+  <div id="vEntrada">
   <div class="card">
-    <h2>1. Coloque os extratos</h2>
-    <div id="drop" tabindex="0" role="button" aria-label="Escolher arquivos PDF"><b>Arraste os PDFs aqui ou clique para escolher</b><span>Extrato do PGDAS-D em PDF (o original, com texto)</span></div>
+    <h2>1. Coloque os PGDAS</h2>
+    <div id="drop" tabindex="0" role="button" aria-label="Escolher arquivos PDF"><b>Clique ou arraste aqui os PDFs do PGDAS-D</b><span>Pode colocar vários de uma vez, de uma ou mais empresas (Extrato do Simples Nacional, o original com texto)</span></div>
     <input type="file" id="arq" accept="application/pdf,.pdf" multiple hidden>
     <div id="lendo" class="aviso" hidden></div>
     <ul class="lista" id="lista"></ul>
     <div class="row" style="margin-top:12px">
-      <button class="btn verde" id="btConf" type="button" disabled>Conferir</button>
+      <button class="btn verde grande" id="btConf" type="button" disabled>Gerar resultado</button>
       <button class="btn sec2" id="btLimpa" type="button">Limpar tudo</button>
     </div>
+    <div class="aviso ok" style="margin-top:10px">Os PDFs são lidos aqui no seu computador e não são enviados para nenhum lugar.</div>
+  </div>
+  <div class="passos"><b>Passo a passo</b>
+    <ol>
+      <li><b>Pegue os extratos.</b> No Portal do Simples Nacional (PGDAS-D), abra cada mês e salve o <b>Extrato</b> em PDF. Não serve o Recibo nem a Declaração: só o Extrato traz o cálculo por imposto. Pode ser de vários meses e de várias empresas.</li>
+      <li><b>Coloque os PDFs.</b> Clique no quadro acima ou arraste os arquivos. A lista mostra a empresa e o mês de cada um.</li>
+      <li><b>Clique em Gerar resultado.</b> Cada mês aparece como Correto, Atenção ou Com problema, com DAS declarado, DAS correto e a diferença.</li>
+      <li><b>Veja o detalhe.</b> Clique em “Ver relatório detalhado” para a conferência do sublimite, a faixa e a conta de cada imposto (“ver por tributo”).</li>
+      <li><b>Imprima ou exporte.</b> “Imprimir” gera o PDF no papel timbrado e “Exportar para Excel (CSV)” abre numa planilha. Se o mesmo mês entrar duas vezes (original e retificadora), vale o mais recente.</li>
+    </ol>
+  </div>
   </div>
 
-  <div id="resultado" hidden>
+  <div id="vResultado" hidden>
     <div class="card">
-      <h2>2. Resultado</h2>
+      <div class="row"><button class="btn sec2" id="btVolta" type="button">◀ Voltar</button><button class="btn" id="btPdf" type="button">Imprimir</button><button class="btn sec2" id="btDet" type="button">Ver relatório detalhado</button></div>
+      <h2 style="margin-top:14px">Resultado</h2>
       <div class="cards" id="kpis"></div>
       <div id="avisosGerais"></div>
+      <div id="cartoes"></div>
+    </div>
+    <div class="card" id="detalhado" hidden>
+      <h2>Relatório detalhado</h2>
+      <div class="cards" id="kpis2"></div>
+      <div id="sublim"></div>
       <div id="tabelas"></div>
-      <div class="row" style="margin-top:12px"><button class="btn" id="btPdf" type="button">Gerar relatório (PDF)</button> <button class="btn sec2" id="btCsv" type="button">Exportar planilha (CSV)</button></div>
+      <div class="regras">Regras aplicadas: alíquota efetiva = (RBT12 × alíquota nominal − parcela a deduzir) ÷ RBT12, com a repartição dos Anexos I a V da LC 123/2006 vigentes em 2026. Substituição tributária, tributação monofásica, exportação, ISS retido e sublimite retiram os tributos correspondentes. Valores sem multa e juros. Diferença positiva = valor a recolher; negativa = pago a mais.</div>
+      <div class="row" style="margin-top:12px"><button class="btn" id="btPdf2" type="button">Imprimir relatório</button><button class="btn sec2" id="btCsv" type="button">Exportar para Excel (CSV)</button></div>
+      <div class="aviso" style="margin-top:12px">Ferramenta de conferência. Antes de retificar qualquer declaração, confirme o resultado com a contadora responsável. Não substitui a análise da contadora nem a legislação vigente. Valores sem multa e juros.</div>
     </div>
   </div>
 
@@ -389,7 +419,6 @@ function conferir(lista,hoje){
 root.PGDAS={analisar:analisar,calcular:calcular,conferir:conferir,classifica:classifica,cents:cents,TRIB:TRIB,NOMET:NOMET,FAIXAS:FAIXAS,REP:REP,faixaDe:faixaDe,brl:brl};
 if(typeof module!=="undefined")module.exports=root.PGDAS;
 })(typeof window!=="undefined"?window:globalThis);
-
 </script>
 <script>
 (function(){"use strict";
@@ -437,8 +466,8 @@ function adiciona(files){
 }
 function desenhaLista(){
   $("lista").innerHTML=itens.map(function(x){ if(x.erro)return "<li class='e'>✖ "+esc(x.nome)+" — "+esc(x.erro)+"</li>";
-    return "<li>✔ <b>"+esc(x.d.nome)+"</b> · PA "+esc(x.d.pa)+" · "+(x.d.retificadora?"Retificadora":"Original")+" <span class='peq'>("+esc(x.nome)+")</span></li>"}).join("");
-  $("btConf").disabled=!itens.some(function(x){return x.d});
+    return "<li>✔ <span class='peq'>"+esc(x.nome)+"</span> — <b>"+esc(x.d.nome)+"</b> — "+esc(x.d.pa)+(x.d.retificadora?" (retificadora)":"")+"</li>"}).join("");
+  var nOk=itens.filter(function(x){return x.d}).length;$("btConf").disabled=!nOk;$("btConf").textContent="Gerar resultado"+(nOk?" ("+nOk+" PGDAS)":"");
 }
 $("drop").onclick=function(){$("arq").click()};
 $("drop").onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();$("arq").click()}};
@@ -448,7 +477,7 @@ $("arq").onchange=function(){adiciona(this.files);this.value=""};
 $("drop").addEventListener("drop",function(e){adiciona(e.dataTransfer.files)});
 var cf=false,cft=null;
 $("btLimpa").onclick=function(){var b=$("btLimpa");if(!cf){cf=true;b.textContent="Clique de novo para limpar tudo";clearTimeout(cft);cft=setTimeout(function(){cf=false;b.textContent="Limpar tudo"},4000);return}
-  clearTimeout(cft);cf=false;b.textContent="Limpar tudo";itens=[];resultado=null;$("resultado").hidden=true;desenhaLista();toast("Tudo limpo")};
+  clearTimeout(cft);cf=false;b.textContent="Limpar tudo";itens=[];resultado=null;$("vResultado").hidden=true;$("vEntrada").hidden=false;desenhaLista();toast("Tudo limpo")};
 
 /* ---------- resultado ---------- */
 var ROT={ok:"✔ Correto",atencao:"⚠ Atenção",problema:"⚠ Com problema",nao_conferido:"? Não conferido"};
@@ -465,28 +494,49 @@ function corpoDetalhe(x){
   h+="<div class='peq'><b>Atividades</b><ul>"+rr+"</ul>RBT12 usada: "+brl(x.r.rbt)+" ("+esc(x.r.base||"")+")"+(x.d.dasNumero?" · DAS "+esc(x.d.dasNumero)+", vencimento "+esc(x.d.venc)+", total "+brl(x.d.dasTotal):"")+
     (x.d.pagamento==="nao"?" · pagamento não reconhecido na data da apuração ("+esc(x.d.apuradoTxt)+")":"")+"</div>";
   return h}
+var MESES=["JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO","JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"];
+function paTitulo(d){return "PGDAS DE "+(MESES[d.mes-1]||"")+" / "+d.ano}
+function somaKpi(it){var c={ok:0,atencao:0,problema:0,nao_conferido:0},sd=0,sc=0,falta=0,mais=0;
+  it.forEach(function(x){c[x.estado]++;sd+=x.d.declTotal||0;sc+=(x.calcTotal!=null?x.calcTotal:(x.d.declTotal||0));if(x.difTotal>0&&x.estado!=="nao_conferido")falta+=x.difTotal;if(x.difTotal<0)mais+=-x.difTotal});
+  return {c:c,sd:sd,sc:sc,dt:sc-sd,falta:falta,mais:mais}}
+function dtTxt(v){return v===0?"R$ 0,00":(v>0?"+":"−")+brl(Math.abs(v))}
+function barraSub(x){var d=x.d,sub=d.sublimite||360000000,topo=d.rba!=null?d.rba:d.rbt12,p=topo/sub*100;
+  return {sub:sub,topo:topo,p:p,cl:p>100?"vm":(p>80?"al":""),sit:p>100?(d.impedido===false?"Passou: confira":"Passou: ICMS/ISS fora do DAS"):(d.impedido===true?"Impedido sem passar: confira":(p>80?"Perto do limite":"OK"))}}
 function desenha(){
   resultado=P.conferir(itens.filter(function(x){return x.d}).map(function(x){return x.d}),new Date());
-  var it=resultado.itens, c={ok:0,atencao:0,problema:0,nao_conferido:0}, falta=0,mais=0;
-  it.forEach(function(x){c[x.estado]++;if(x.difTotal>0&&x.estado!=="nao_conferido")falta+=x.difTotal;if(x.difTotal<0)mais+=-x.difTotal});
-  $("kpis").innerHTML="<div class='kpi v'><b>"+c.ok+"</b><span>PGDAS corretos</span></div><div class='kpi a'><b>"+c.atencao+"</b><span>com atenção</span></div><div class='kpi r'><b>"+c.problema+"</b><span>com problema</span></div><div class='kpi'><b>"+c.nao_conferido+"</b><span>não conferidos</span></div>"+
-    "<div class='kpi r'><b>"+brl(falta)+"</b><span>declarado a menos (a recolher)</span></div><div class='kpi'><b>"+brl(mais)+"</b><span>declarado a mais</span></div>";
+  var it=resultado.itens, k=somaKpi(it), c=k.c;
+  var kp="<div class='kpi v'><b>"+c.ok+"</b><span>PGDAS corretos</span></div>"+(c.atencao?"<div class='kpi a'><b>"+c.atencao+"</b><span>com atenção</span></div>":"")+"<div class='kpi r'><b>"+c.problema+"</b><span>com problema</span></div>"+(c.nao_conferido?"<div class='kpi'><b>"+c.nao_conferido+"</b><span>não conferidos</span></div>":"")+"<div class='kpi "+(k.dt===0?"":"r")+"'><b>"+dtTxt(k.dt)+"</b><span>diferença total</span></div>";
+  $("kpis").innerHTML=kp;
+  $("kpis2").innerHTML="<div class='kpi'><b>"+it.length+"</b><span>PGDAS analisados</span></div><div class='kpi v'><b>"+c.ok+"</b><span>corretos ("+Math.round(c.ok/it.length*100)+"%)</span></div><div class='kpi r'><b>"+c.problema+"</b><span>com problema ("+Math.round(c.problema/it.length*100)+"%)</span></div><div class='kpi'><b>"+brl(k.sd)+"</b><span>DAS declarado</span></div><div class='kpi'><b>"+brl(k.sc)+"</b><span>DAS correto</span></div><div class='kpi "+(k.dt===0?"":"r")+"'><b>"+dtTxt(k.dt)+"</b><span>diferença</span></div>";
   var av="";
   if(resultado.ignorados.length)av+="<div class='aviso'>"+resultado.ignorados.length+" arquivo(s) do mesmo mês foram trocados por uma apuração mais recente: "+resultado.ignorados.map(function(o){return esc(o.d.nome.slice(0,28))+" "+esc(o.d.pa)+(o.d.retificadora?" (retif.)":" (orig.)")}).join("; ")+".</div>";
   $("avisosGerais").innerHTML=av;
+  /* cartões por mês */
+  $("cartoes").innerHTML=it.map(function(x){var d=x.d, ob=x.itens.filter(function(i){return i.n!=="info"||x.estado==="nao_conferido"});
+    return "<div class='mcard s-"+x.estado+"'><div class='mtop'><div><span class='mpa'>"+esc(paTitulo(d))+(d.retificadora?" (retificadora)":"")+"</span><div class='mem'>"+esc(d.nome)+"</div><div class='peq'>CNPJ "+esc(d.cnpj)+"</div></div><div class='mbad "+x.estado+"'>"+esc(ROT[x.estado].replace(/^\S+\s/,"✔ ").replace("✔ Correto","✔ PGDAS CORRETO").replace("✔ Atenção","⚠ ATENÇÃO").replace("✔ Com problema","⚠ COM PROBLEMA").replace("✔ Não conferido","? NÃO CONFERIDO"))+"</div></div>"+
+      "<div class='m3'><div><small>DAS declarado</small><b>"+brl(d.declTotal||0)+"</b></div><div><small>DAS correto</small><b>"+(x.calc?brl(x.calcTotal):"—")+"</b></div><div><small>Diferença</small><b>"+esc(difTxt(x))+"</b></div></div>"+
+      (ob.length?"<div class='mobs'><ul>"+ob.map(function(i){return "<li class='n-"+i.n+"'>"+esc(i.t)+"</li>"}).join("")+"</ul></div>":"")+"</div>"}).join("");
+  /* sublimite: último PGDAS de cada empresa */
   var por={};it.forEach(function(x){(por[x.d.cnpj]=por[x.d.cnpj]||[]).push(x)});
+  var sh="<div class='sub'><h3>⚠ Conferência do sublimite (ICMS e ISS)</h3><div class='peq'>Situação de cada empresa no último PGDAS colocado. Quem passa do sublimite do estado paga ICMS/ISS fora do DAS; um erro aqui gera cobrança em dobro ou imposto não recolhido.</div><table class='t' style='margin-top:6px'><tr><th>Empresa</th><th>Mês</th><th class='r'>RBT12</th><th class='r'>Acumulado no ano</th><th>Situação</th></tr>";
+  Object.keys(por).forEach(function(kk){var L=por[kk],x=L[L.length-1],s=barraSub(x);
+    sh+="<tr><td><b>"+esc(x.d.nome)+"</b></td><td>"+esc(x.d.pa)+"</td><td class='r'>"+brl(x.d.rbt12||0)+"</td><td class='r'>"+(x.d.rba!=null?brl(x.d.rba):"—")+"<div class='barra'><i class='"+s.cl+"' style='width:"+Math.min(100,s.p).toFixed(1)+"%'></i></div><span class='peq'>"+s.p.toFixed(2).replace(".",",")+"% do sublimite de "+brl(s.sub)+"</span></td><td>"+s.sit+"</td></tr>"});
+  $("sublim").innerHTML=sh+"</table></div>";
+  /* tabela detalhada */
   var h="";
-  Object.keys(por).forEach(function(k){var L=por[k],n=L[0].d;
-    h+="<h3 class='emp'>"+esc(n.nome)+" <span class='peq'>CNPJ básico "+esc(n.cnpj)+" · "+esc(n.municipio)+"/"+esc(n.uf)+"</span></h3><table class='t'><tr><th>Mês</th><th>Tipo</th><th class='r'>Receita</th><th class='r'>DAS declarado</th><th class='r'>DAS correto</th><th class='r'>Diferença</th><th>Situação</th></tr>";
-    L.forEach(function(x,i){var id="d"+k.replace(/\D/g,"")+"_"+i;
-      h+="<tr class='mes' data-det='"+id+"'><td>"+esc(mesTxt(x.d))+"</td><td>"+(x.d.retificadora?"Retif.":"Original")+"</td><td class='r'>"+brl(x.d.rpa)+"</td><td class='r'>"+brl(x.d.declTotal||0)+"</td><td class='r'>"+(x.calc?brl(x.calcTotal):"—")+"</td><td class='r'>"+difTxt(x)+"</td><td><span class='sel s-"+x.estado+"'>"+ROT[x.estado]+"</span></td></tr>"+
-        "<tr class='det' id='"+id+"' hidden><td colspan='7'>"+corpoDetalhe(x)+"</td></tr>"});
-    var tot=L.reduce(function(s,x){return s+(x.d.declTotal||0)},0), tc=L.reduce(function(s,x){return s+(x.calcTotal!=null?x.calcTotal:(x.d.declTotal||0))},0);
-    h+="<tr><th colspan='3'>Total</th><th class='r'>"+brl(tot)+"</th><th class='r'>"+brl(tc)+"</th><th class='r'>"+(tc-tot===0?"—":(tc>tot?"+":"−")+brl(Math.abs(tc-tot)))+"</th><th></th></tr></table>"});
+  Object.keys(por).forEach(function(kk){var L=por[kk],n=L[0].d;
+    h+="<h3 class='emp'>"+esc(n.nome)+" <span class='peq'>CNPJ "+esc(n.cnpj)+" · "+esc(n.municipio)+"/"+esc(n.uf)+"</span></h3><table class='t'><tr><th>Mês</th><th class='r'>Receita do mês</th><th class='r'>RBT12</th><th>Faixa</th><th class='r'>DAS declarado</th><th class='r'>DAS correto</th><th class='r'>Diferença</th><th>Situação</th></tr>";
+    L.forEach(function(x,i){var id="d"+kk.replace(/\D/g,"")+"_"+i, fx=x.r&&x.r.ativ&&x.r.ativ[0]&&x.r.ativ[0].faixa?x.r.ativ[0].faixa+"ª":"—";
+      h+="<tr><td><b>"+esc(x.d.pa)+"</b>"+(x.d.retificadora?" <span class='peq'>retif.</span>":"")+"<br><span class='peq'>"+esc(x.nome||"")+"</span><br><a href='#' class='ver' data-det='"+id+"'>▸ ver por tributo</a></td><td class='r'>"+brl(x.d.rpa)+"</td><td class='r'>"+brl(x.r.rbt||0)+"</td><td>"+fx+"</td><td class='r'>"+brl(x.d.declTotal||0)+"</td><td class='r'>"+(x.calc?brl(x.calcTotal):"—")+"</td><td class='r'>"+difTxt(x)+"</td><td><span class='sel s-"+x.estado+"'>"+ROT[x.estado]+"</span></td></tr>"+
+        "<tr class='det' id='"+id+"' hidden><td colspan='8'>"+corpoDetalhe(x)+"</td></tr>"});
+    var tr=L.reduce(function(s,x){return s+x.d.rpa},0),tot=L.reduce(function(s,x){return s+(x.d.declTotal||0)},0), tc=L.reduce(function(s,x){return s+(x.calcTotal!=null?x.calcTotal:(x.d.declTotal||0))},0);
+    h+="<tr class='tot'><th>Total</th><th class='r'>"+brl(tr)+"</th><th></th><th></th><th class='r'>"+brl(tot)+"</th><th class='r'>"+brl(tc)+"</th><th class='r'>"+dtTxt(tc-tot)+"</th><th></th></tr></table>"});
   $("tabelas").innerHTML=h;
-  Array.prototype.forEach.call(document.querySelectorAll("tr.mes"),function(tr){tr.onclick=function(){var d=$(tr.getAttribute("data-det"));d.hidden=!d.hidden}});
-  $("resultado").hidden=false; $("resultado").scrollIntoView({behavior:"smooth",block:"start"});
+  Array.prototype.forEach.call(document.querySelectorAll("a.ver"),function(a){a.onclick=function(e){e.preventDefault();var d=$(a.getAttribute("data-det"));d.hidden=!d.hidden;a.textContent=(d.hidden?"▸":"▾")+" ver por tributo"}});
+  $("vEntrada").hidden=true;$("vResultado").hidden=false;$("detalhado").hidden=true;$("btDet").textContent="Ver relatório detalhado";window.scrollTo(0,0);
 }
+$("btVolta").onclick=function(){$("vResultado").hidden=true;$("vEntrada").hidden=false;window.scrollTo(0,0)};
+$("btDet").onclick=function(){var d=$("detalhado");d.hidden=!d.hidden;$("btDet").textContent=d.hidden?"Ver relatório detalhado":"Esconder relatório detalhado";if(!d.hidden)d.scrollIntoView({behavior:"smooth",block:"start"})};
 $("btConf").onclick=desenha;
 
 /* ---------- relatório ---------- */
@@ -516,7 +566,7 @@ function detalheMes(x){var d=x.d,r=x.r,h="<div class='mesdet'><h4>"+esc(d.pa)+" 
   var ob=x.itens.filter(function(i){return i.t});
   if(ob.length)h+="<p><b>Observações</b></p><ul>"+ob.map(function(i){return "<li>"+esc(i.t)+"</li>"}).join("")+"</ul>";
   return h+"</div>"}
-function relatorio(){
+function relatorio(det){
   var it=resultado.itens, c={ok:0,atencao:0,problema:0,nao_conferido:0}, sd=0,sc=0;
   it.forEach(function(x){c[x.estado]++;sd+=x.d.declTotal||0;sc+=(x.calcTotal!=null?x.calcTotal:(x.d.declTotal||0))});
   var dt=sc-sd;
@@ -526,10 +576,10 @@ function relatorio(){
   Object.keys(por).forEach(function(k){var L=por[k],n=L[0].d;
     h+="<h3>"+esc(n.nome)+" · CNPJ básico "+esc(n.cnpj)+" · "+esc(n.municipio)+"/"+esc(n.uf)+"</h3><table><tr><th>Mês</th><th>Tipo</th><th>Receita</th><th>RBT12</th><th>Faixa</th><th>DAS declarado</th><th>DAS correto</th><th>Diferença</th><th>Situação</th></tr>"+
     L.map(function(x){var fx=x.r&&x.r.ativ&&x.r.ativ[0]&&x.r.ativ[0].faixa?x.r.ativ[0].faixa+"ª":"—";return "<tr><td>"+esc(x.d.pa)+"</td><td>"+(x.d.retificadora?"Retif.":"Original")+"</td><td class='r'>"+brl(x.d.rpa)+"</td><td class='r'>"+brl(x.r.rbt||0)+"</td><td>"+fx+"</td><td class='r'>"+brl(x.d.declTotal||0)+"</td><td class='r'>"+(x.calc?brl(x.calcTotal):"—")+"</td><td class='r'>"+esc(difTxt(x))+"</td><td>"+esc(ROT[x.estado])+"</td></tr>"}).join("")+"</table>";
-    h+="<h3>Conferência do sublimite</h3><table><tr><th>Mês</th><th>Maior entre RBT12 e RBA</th><th>Sublimite do estado</th><th>% usado</th><th>ICMS/ISS no DAS</th><th>Situação</th></tr>"+
+    if(det){h+="<h3>Conferência do sublimite</h3><table><tr><th>Mês</th><th>Maior entre RBT12 e RBA</th><th>Sublimite do estado</th><th>% usado</th><th>ICMS/ISS no DAS</th><th>Situação</th></tr>"+
     L.map(function(x){var d=x.d,sub=d.sublimite||360000000,topo=Math.max(d.rba||0,d.rbt12||0),p=Math.round(topo/sub*100),st=topo>sub?(d.impedido===false?"Passou e sem impedimento: confira":"Passou: ICMS/ISS fora do DAS"):(d.impedido===true?"Impedido sem passar: confira":(p>80?"Perto do limite":"Dentro do limite"));
       return "<tr><td>"+esc(d.pa)+"</td><td class='r'>"+brl(topo)+"</td><td class='r'>"+brl(sub)+"</td><td class='r'>"+p+"%</td><td>"+(d.impedido==null?"—":(d.impedido?"Impedido":"Não impedido"))+"</td><td>"+st+"</td></tr>"}).join("")+"</table>";
-    h+="<h3>Conta detalhada de cada mês</h3>"+L.map(detalheMes).join("");
+    h+="<h3>Conta detalhada de cada mês</h3>"+L.map(detalheMes).join("");}
   });
   h+="<h3>Base e limites</h3><p class='peq'>Cálculo pelas tabelas dos Anexos I a V da LC 123/2006 (redação da LC 155/2016, vigentes em 2026), a partir do que foi declarado no PGDAS-D. Não confere a receita contra as notas fiscais nem a escolha da atividade ou do anexo. Valores sem multa e juros. Apoia a análise da contadora e não substitui a legislação vigente; confirme antes de retificar.</p></div>";
   return h}
@@ -540,9 +590,11 @@ $("btCsv").onclick=function(){ if(!resultado)return;
   resultado.itens.forEach(function(x){var fx=x.r&&x.r.ativ&&x.r.ativ[0]&&x.r.ativ[0].faixa||"";L.push([x.d.nome,x.d.cnpj,x.d.pa,x.d.retificadora?"Retificadora":"Original",m(x.d.rpa),m(x.r.rbt),fx,m(x.d.declTotal),x.calc?m(x.calcTotal):"",x.difTotal==null?"":m(x.difTotal),ROT[x.estado].replace(/^\S+\s/,"")])});
   var b=new Blob(["\ufeff"+L.map(function(r){return r.map(q).join(";")}).join("\r\n")],{type:"text/csv;charset=utf-8"});
   var a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="Conferencia PGDAS.csv";document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500)};
-$("btPdf").onclick=function(){ if(!resultado)return;
-  $("impressao").innerHTML="<div class='folha'><img class='tb-h' src='"+TB_H+"' alt=''><img class='tb-f' src='"+TB_F+"' alt=''><table class='pg'><thead><tr><td><div class='sp-t'></div></td></tr></thead><tfoot><tr><td><div class='sp-b'></div></td></tr></tfoot><tbody><tr><td class='c'>"+relatorio()+"</td></tr></tbody></table></div>";
-  var t=document.title;document.title="Conferencia PGDAS";setTimeout(function(){window.print();document.title=t},60)};
+function imprimir(det){ if(!resultado)return;
+  $("impressao").innerHTML="<div class='folha'><img class='tb-h' src='"+TB_H+"' alt=''><img class='tb-f' src='"+TB_F+"' alt=''><table class='pg'><thead><tr><td><div class='sp-t'></div></td></tr></thead><tfoot><tr><td><div class='sp-b'></div></td></tr></tfoot><tbody><tr><td class='c'>"+relatorio(det)+"</td></tr></tbody></table></div>";
+  var t=document.title;document.title="Conferencia PGDAS";setTimeout(function(){window.print();document.title=t},60)}
+$("btPdf").onclick=function(){imprimir(false)};
+$("btPdf2").onclick=function(){imprimir(true)};
 })();
 </script>
 </body>
