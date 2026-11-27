@@ -45,3 +45,6 @@ O botão também lista o CNAE principal e os secundários e, na Calculadora de F
 **Salvamento automático (F5 zera):** Fator R, Contrato e Proposta, Declarações DP, Proposta de Revisão 2027, Jornadas, os dois checklists (Fechamento e Obrigações), Carta de Adequação e Simples × Híbrido guardam o que é digitado neste navegador (nada é enviado). O botão "Limpar" apaga, com confirmação em dois cliques. Atenção: o dado fica neste computador; limpe antes de usar em máquina de outra pessoa.
 
 **CNPJs já consultados:** depois de cada Buscar CNPJ, a ferramenta guarda no navegador o CNPJ, o nome e o resultado. Ao digitar o CNPJ (ou escolher na lista que aparece), os campos e o resultado voltam sem nova consulta. O botão "Apagar CNPJs salvos" limpa a lista, com confirmação em dois cliques. O F5 não apaga essa lista.
+
+## Importação de documentos (PDF)
+Fator R, Simples × Híbrido, Reforma nos 3 Regimes, Precificação com CBS por Fora, Calculadora de Honorários, Levantamento de Honorários e Proposta de Revisão 2027 têm um quadro "Anexar" no topo: leem o Extrato do PGDAS-D e/ou o Cartão CNPJ (PDF com texto) e preenchem os campos. Contrato e Proposta, Declarações DP e os dois checklists leem o Cartão CNPJ. Tudo é lido no navegador; PDF digitalizado (foto) não é lido.
