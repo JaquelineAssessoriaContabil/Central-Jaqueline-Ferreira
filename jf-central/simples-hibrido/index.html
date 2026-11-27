@@ -291,5 +291,32 @@ if(document.readyState==="complete")inicia();else window.addEventListener("load"
 
 
 
+<script>
+/* JF • Conferência de PGDAS → Simples × Híbrido. Lê o que a Conferência guardou neste navegador. Nada é enviado para fora. */
+(function(){"use strict";
+var K="jf_pgdas_hib",o=null;
+try{o=JSON.parse(localStorage.getItem(K)||"null")}catch(e){}
+if(!o||!(o.rec>0))return;
+var alvo=document.querySelector(".passos");if(!alvo||!alvo.parentNode)return;
+var box=document.createElement("div");box.className="passos";box.id="jfPg";box.style.borderLeftColor="#0E8F63";
+var tx=document.createElement("div");
+tx.textContent="Há um PGDAS guardado"+(o.empresa?" de "+o.empresa:"")+(o.pa?" ("+o.pa+")":"")+". Usar a receita, a alíquota efetiva e a parte de PIS/COFINS deste mês? Isso troca esses campos.";
+var m=document.createElement("div");m.style.cssText="font-size:12px;margin-top:3px";m.textContent="O PGDAS não traz o perfil de clientes, as compras com crédito nem CBS/IBS: continue preenchendo esses campos.";tx.appendChild(m);
+var b1=document.createElement("button"),b2=document.createElement("button");
+b1.type=b2.type="button";b1.className="b1";b2.className="b2";b1.textContent="Usar dados do PGDAS";b2.textContent="Ignorar";
+b1.style.cssText=b2.style.cssText="margin:6px 6px 0 0;width:auto;padding:7px 14px";
+function fmt(n,c){return n.toLocaleString("pt-BR",{minimumFractionDigits:c,maximumFractionDigits:c})}
+function ev(el){el.dispatchEvent(new Event("input",{bubbles:true}));el.dispatchEvent(new Event("change",{bubbles:true}))}
+function set(id,v){var e=document.getElementById(id);if(!e)return;e.value=v;ev(e)}
+b1.onclick=function(){
+  var ai=o.das/o.rec*100, pe=o.pc/o.rec*100;
+  set("empresa",o.empresa||"");set("receita",fmt(o.rec/100,2));set("ai",fmt(ai,4));set("pe",fmt(pe,4));
+  try{localStorage.removeItem(K)}catch(e){}
+  box.style.borderLeftColor="#0E8F63";tx.textContent="Dados do PGDAS aplicados: receita do mês, alíquota efetiva (DAS ÷ receita) e PIS/COFINS ÷ receita. Se houve exportação, ST ou monofásica, confira a receita tributável.";b1.remove();b2.remove()};
+b2.onclick=function(){try{localStorage.removeItem(K)}catch(e){}box.remove()};
+box.appendChild(tx);box.appendChild(b1);box.appendChild(b2);
+alvo.parentNode.insertBefore(box,alvo);
+})();
+</script>
 </body>
 </html>

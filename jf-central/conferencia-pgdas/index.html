@@ -507,6 +507,10 @@ function somaKpi(it){var c={ok:0,atencao:0,problema:0,nao_conferido:0},sd=0,sc=0
 function dtTxt(v){return v===0?"R$ 0,00":(v>0?"+":"−")+brl(Math.abs(v))}
 function barraSub(x){var d=x.d,sub=d.sublimite||360000000,topo=d.rba!=null?d.rba:d.rbt12,p=topo/sub*100;
   return {sub:sub,topo:topo,p:p,cl:p>100?"vm":(p>80?"al":""),sit:p>100?(d.impedido===false?"Passou: confira":"Passou: ICMS/ISS fora do DAS"):(d.impedido===true?"Impedido sem passar: confira":(p>80?"Perto do limite":"OK"))}}
+function levaHibrido(x){var d=x.d; if(!d.rpa){toast("Este PGDAS está sem receita no mês");return}
+  var pc=((d.decl&&d.decl.pis)||0)+((d.decl&&d.decl.cofins)||0);
+  try{localStorage.setItem("jf_pgdas_hib",JSON.stringify({empresa:d.nome,pa:d.pa,rec:d.rpa,das:d.declTotal||0,pc:pc,t:Date.now()}))}catch(e){toast("Não foi possível guardar neste navegador");return}
+  toast("Guardado. Abra o Simples × Híbrido e clique em “Usar dados do PGDAS”.")}
 function desenha(){
   resultado=P.conferir(itens.filter(function(x){return x.d}).map(function(x){return x.d}),new Date());
   var it=resultado.itens, k=somaKpi(it), c=k.c;
@@ -517,10 +521,12 @@ function desenha(){
   if(resultado.ignorados.length)av+="<div class='aviso'>"+resultado.ignorados.length+" arquivo(s) do mesmo mês foram trocados por uma apuração mais recente: "+resultado.ignorados.map(function(o){return esc(o.d.nome.slice(0,28))+" "+esc(o.d.pa)+(o.d.retificadora?" (retif.)":" (orig.)")}).join("; ")+".</div>";
   $("avisosGerais").innerHTML=av;
   /* cartões por mês */
-  $("cartoes").innerHTML=it.map(function(x){var d=x.d, ob=x.itens.filter(function(i){return i.n!=="info"||x.estado==="nao_conferido"});
+  $("cartoes").innerHTML=it.map(function(x,idx){var d=x.d, ob=x.itens.filter(function(i){return i.n!=="info"||x.estado==="nao_conferido"});
     return "<div class='mcard s-"+x.estado+"'><div class='mtop'><div><span class='mpa'>"+esc(paTitulo(d))+(d.retificadora?" (retificadora)":"")+"</span><div class='mem'>"+esc(d.nome)+"</div><div class='peq'>CNPJ "+esc(d.cnpj)+"</div></div><div class='mbad "+x.estado+"'>"+esc(ROT[x.estado].replace(/^\S+\s/,"✔ ").replace("✔ Correto","✔ PGDAS CORRETO").replace("✔ Atenção","⚠ ATENÇÃO").replace("✔ Com problema","⚠ COM PROBLEMA").replace("✔ Não conferido","? NÃO CONFERIDO"))+"</div></div>"+
       "<div class='m3'><div><small>DAS declarado</small><b>"+brl(d.declTotal||0)+"</b></div><div><small>DAS correto</small><b>"+(x.calc?brl(x.calcTotal):"—")+"</b></div><div><small>Diferença</small><b>"+esc(difTxt(x))+"</b></div></div>"+
-      (ob.length?"<div class='mobs'><ul>"+ob.map(function(i){return "<li class='n-"+i.n+"'>"+esc(i.t)+"</li>"}).join("")+"</ul></div>":"")+"</div>"}).join("");
+      (ob.length?"<div class='mobs'><ul>"+ob.map(function(i){return "<li class='n-"+i.n+"'>"+esc(i.t)+"</li>"}).join("")+"</ul></div>":"")+
+      "<div class='mobs'><button class='btn sec2 lev' type='button' data-i='"+idx+"'>Levar para Simples × Híbrido</button> <span class='peq'>guarda receita, alíquota efetiva e PIS/COFINS deste mês</span></div></div>"}).join("");
+  Array.prototype.forEach.call(document.querySelectorAll("button.lev"),function(b){b.onclick=function(){levaHibrido(resultado.itens[+b.getAttribute("data-i")])}});
   /* sublimite: último PGDAS de cada empresa */
   var por={};it.forEach(function(x){(por[x.d.cnpj]=por[x.d.cnpj]||[]).push(x)});
   var sh="<div class='sub'><h3>⚠ Conferência do sublimite (ICMS e ISS)</h3><div class='peq'>Situação de cada empresa no último PGDAS colocado. Quem passa do sublimite do estado paga ICMS/ISS fora do DAS; um erro aqui gera cobrança em dobro ou imposto não recolhido.</div><table class='t' style='margin-top:6px'><tr><th>Empresa</th><th>Mês</th><th class='r'>RBT12</th><th class='r'>Acumulado no ano</th><th>Situação</th></tr>";
