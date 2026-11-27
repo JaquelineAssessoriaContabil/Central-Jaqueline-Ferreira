@@ -21,6 +21,7 @@ Cada simulador é um arquivo único (`index.html`), sem servidor e sem enviar da
 | `declaracoes-dp/` | Gerador de Declarações DP (cancelamento de término de experiência, orientação de demissão sem justa causa, termo de ciência e responsabilidade de não retirada de pró-labore) |
 | `checklist-fechamento-mensal/` | Checklist de Fechamento Mensal |
 | `checklist-obrigacoes-acessorias/` | Checklist de Obrigações Acessórias |
+| `radar-obrigacoes/` | Radar de Obrigações: cadastro das empresas (fica só no navegador, com backup em arquivo fora do repositório), matriz empresa × obrigação, calendário mensal com status. Regras e prazos conferidos em 27/11/2026, cada um marcado como fonte oficial, fonte secundária ou não confirmado |
 | `conferencia-pgdas/` | Conferência de PGDAS: lê o Extrato do PGDAS-D em PDF, refaz a conta pelos Anexos I a V (LC 123/2006, redação LC 155/2016, tabelas de 2026) e compara com o declarado. Leitor de PDF pdf.js (Mozilla, Apache 2.0) embutido no arquivo; não confere 2027 em diante |
 | `checklist-documentos-societarios/` | Checklist de Documentos Societários |
 | `reforma-sem-surto/` | Reforma Sem Surto — para entender: resumo em linguagem simples do material de Reforma Tributária, com datas e fontes conferidas |
