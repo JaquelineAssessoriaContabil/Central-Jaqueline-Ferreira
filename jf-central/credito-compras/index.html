@@ -257,6 +257,7 @@ var PORTAL="https://www8.receita.fazenda.gov.br/simplesnacional/aplicacoes.aspx?
 $("tb").addEventListener("click",function(e){var d=e.target.getAttribute&&e.target.getAttribute("data-cf");if(!d)return;
   var f=d.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/,"$1.$2.$3/$4-$5");
   copia(f,"CNPJ "+f+" copiado. Cole no portal do Simples Nacional, resolva o captcha e consulte.");
+  var bt=e.target;bt.textContent="CNPJ copiado ✓ (Ctrl+V no portal)";setTimeout(function(){bt.textContent="Consultar no portal"},6000);
   try{window.open(PORTAL,"_blank","noopener")}catch(x){}});
 $("tb").addEventListener("change",function(e){var el=e.target;
   if(el.dataset.r!=null){(S.ov[el.dataset.r]=S.ov[el.dataset.r]||{}).r=el.value}
