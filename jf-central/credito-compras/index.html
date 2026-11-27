@@ -249,7 +249,13 @@ $("tb").addEventListener("change",function(e){var el=e.target;
 function copia(t,ok){try{navigator.clipboard.writeText(t).then(function(){$("msg").textContent=ok},function(){$("msg").textContent="Não consegui copiar: selecione e copie à mão: "+t})}catch(e){$("msg").textContent="Valor: "+t}}
 $("cpCompras").onclick=function(){if(ULT)copia((ULT.compras/100).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2}),"Compras copiadas: cole no campo “Compras do mês com direito a crédito”.")};
 $("cpEfet").onclick=function(){if(ULT)copia(ULT.efet.toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2}),"Percentual copiado: cole no campo “Crédito efetivo médio”.")};
-$("leva").onclick=function(){if(!ULT)return;try{localStorage.setItem("jf_credito_compras",JSON.stringify({empresa:ULT.empresa,pa:ULT.pa,compras:ULT.compras,efet:ULT.efet,t:Date.now()}));$("msg").textContent="Guardado neste navegador. Abra o Simples × Híbrido, o 3 Regimes ou a Precificação e clique em “Usar crédito das compras”."}catch(e){$("msg").textContent="Não foi possível guardar neste navegador."}};
+$("leva").onclick=function(){if(!ULT)return;
+  try{localStorage.setItem("jf_credito_compras",JSON.stringify({empresa:ULT.empresa,pa:ULT.pa,compras:ULT.compras,efet:ULT.efet,t:Date.now()}))}catch(e){$("msg").textContent="Não foi possível guardar neste navegador.";return}
+  var D=[["simples-hibrido","Simples × Híbrido"],["reforma-3-regimes","Reforma nos 3 Regimes"],["precificacao-cbs-por-fora","Precificação com CBS por Fora"]];
+  $("msg").innerHTML="Guardado. Para qual calculadora você quer levar? "+D.map(function(d){return "<button class='btn sec' data-ir='"+d[0]+"' style='margin:4px 4px 0 0'>"+d[1]+"</button>"}).join("")+"<div class='peq'>Na calculadora, clique em “Usar crédito das compras” no quadro verde do topo.</div>"};
+$("msg").addEventListener("click",function(e){var d=e.target.getAttribute&&e.target.getAttribute("data-ir");if(!d)return;
+  try{if(window.top!==window){window.top.location.hash="#"+d;return}}catch(x){}
+  location.href="../"+d+"/index.html"});
 $("imp").onclick=function(){window.print()};
 $("drop").onclick=function(){$("arq").click()};
 $("drop").onkeydown=function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();$("arq").click()}};
