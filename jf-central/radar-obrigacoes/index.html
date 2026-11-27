@@ -233,6 +233,13 @@ function analisa(L){
     m=t.match(/CNPJ B[áa]sico:\s*([\d.]{10})/i);if(m){r.base=so(m[1])}
     m=t.match(/CNPJ Estabelecimento:\s*(\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2})/);if(m){r.cnpj=so(m[1]);r.base=r.cnpj.slice(0,8)}
     return r}
+  if(/RECIBO DE ENTREGA DA APURA[ÇC][ÃA]O NO PGDAS-D/i.test(t)){
+    r.tipo="pgdasrec";
+    var q=t.match(/N[úu]mero do Recibo\s*\n?\s*([0-9][0-9.\-]{10,30}[0-9])/i);if(q)r.num=q[1];
+    q=t.match(/(\d{2}\/\d{4})\s+(\d{17})/);if(q){r.comp=q[1];r.num2=q[2]}
+    q=t.match(/Transmiss[ãa]o[^\n]*\n+\s*(\d{2}\/\d{2}\/\d{4})\s+(\d{2}:\d{2})/i);if(q)r.dh=q[1]+" "+q[2];
+    q=t.match(/(\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2})/);if(q){r.cnpj=so(q[1]);r.base=r.cnpj.slice(0,8)}
+    return r}
   /* modelo genérico: recibo, protocolo, autenticação */
   var pad=[/(?:N[úu]mero do recibo|Recibo(?: de entrega)?(?: n[ºo°.]*)?|N[º°o.]* do recibo)\s*[:\-]?\s*([0-9][0-9.\-\/ ]{5,38}[0-9])/i,
     /(?:N[úu]mero da declara[çc][ãa]o|Declara[çc][ãa]o n[ºo°.]*)\s*[:\-]?\s*([0-9][0-9.\-\/ ]{5,38}[0-9])/i,
@@ -388,7 +395,7 @@ function leDoc(k,f){
     var num=r.num||r.num2;
     if(num&&!st.obs){st.obs=(r.tipo==="pgdas"?"Decl. ":"Recibo ")+num.slice(0,60);}
     if(r.dh&&!st.dt)st.dt=r.dh.slice(0,10).split("/").reverse().join("-");
-    if(r.tipo==="pgdas"&&ceq&&st.s==="pend")st.s="ok";
+    if((r.tipo==="pgdas"||r.tipo==="pgdasrec")&&ceq&&st.s==="pend")st.s="ok";
     S.status[k]=st;save();renderCal();
     if(av.length)aviso("Atenção: "+av.join("; ")+". Confira se anexou o arquivo certo.","erro");
     else aviso("PDF lido: "+(num?"nº "+num+(r.num2&&r.tipo==="pgdas"?" (DAS "+r.num2+")":""):"sem número")+(r.dh?", "+r.dh:"")+(r.comp?", competência "+r.comp:"")+"."+(st.s==="ok"?" Marquei como entregue.":" Confira e marque o status."),"ok")
