@@ -88,9 +88,13 @@ tr.mes:hover{background:#FBF7F6}
 .doc h3{font-size:10.5pt;margin:12px 0 4px;border-bottom:1px solid var(--rose);padding-bottom:2px;break-after:avoid}
 .doc table{width:100%;border-collapse:collapse;margin:5px 0}
 .doc tr{break-inside:avoid}
+.doc .mesdet table{break-inside:avoid}
 .doc td,.doc th{border:1px solid var(--linha);padding:4px 6px;text-align:left;vertical-align:top;font-size:8.5pt}
 .doc th{background:var(--rose-claro)}
 .doc td.r{text-align:right;white-space:nowrap}
+.doc h4{font-size:10pt;margin:12px 0 3px;break-after:avoid}
+.doc .mesdet{break-inside:auto}
+.doc p{margin:3px 0}
 .doc .peq{font-size:8pt;color:var(--cinza)}
 .doc ul{margin:2px 0 4px 16px;padding:0}
 @media print{
@@ -134,7 +138,7 @@ tr.mes:hover{background:#FBF7F6}
       <div class="cards" id="kpis"></div>
       <div id="avisosGerais"></div>
       <div id="tabelas"></div>
-      <div class="row" style="margin-top:12px"><button class="btn" id="btPdf" type="button">Gerar relatório (PDF)</button></div>
+      <div class="row" style="margin-top:12px"><button class="btn" id="btPdf" type="button">Gerar relatório (PDF)</button> <button class="btn sec2" id="btCsv" type="button">Exportar planilha (CSV)</button></div>
     </div>
   </div>
 
@@ -288,7 +292,7 @@ function valores(anexo,rbtC,fx,recC){
     for(i=0;i<TRIB.length;i++){var r=bp(rep[i]); out[TRIB[i]]=r===0n?0n:divR(rec*efNum*r,efDen*10000n)}
   }
   for(i=0;i<TRIB.length;i++)out[TRIB[i]]=Number(out[TRIB[i]]);
-  return {ef:efPct,vals:out,faixa:fx+1};
+  return {ef:efPct,vals:out,faixa:fx+1,nom:F[1],pd:F[2],lim5:(fx===4&&lim&&efPct>lim.lim)};
 }
 function calcular(d){
   var r={alertas:[],ativ:[],notas:[]};
@@ -303,7 +307,7 @@ function calcular(d){
     o.anexoUsado=anexo;
     if(!anexo||!c.ok||rbt<=0||rbt>480000000){o.ok=false;r.ativ.push(o);return}
     var T=valores(anexo,rbt,fx,a.rec), calc={}; TRIB.forEach(function(k){calc[k]=T.vals[k]});
-    o.ef=T.ef; o.faixa=T.faixa;
+    o.ef=T.ef; o.faixa=T.faixa; o.nom=T.nom; o.pdv=T.pd; o.lim5=T.lim5;
     if(c.exterior){["icms","pis","cofins","ipi","iss"].forEach(function(k){calc[k]=0});o.notas.push("receita de exportação: ICMS, PIS, COFINS, IPI e ISS não entram")}
     if(c.issRet){calc.iss=0;o.notas.push("ISS retido: não entra no DAS")}
     if(c.st){ ["icms","pis","cofins"].forEach(function(k){ if(a.dec[k]===0&&calc[k]>0){calc[k]=0;o.notas.push(NOMET[k]+" zerado (substituição tributária, monofásica ou antecipação): conferi só os demais")} }) }
@@ -486,17 +490,56 @@ function desenha(){
 $("btConf").onclick=desenha;
 
 /* ---------- relatório ---------- */
+function pct(v,c){return Number(v).toFixed(c==null?2:c).replace(".",",")+"%"}
+function tabTrib(dec,calc,tot){var h="<table><tr><th>Imposto</th><th>Declarado</th><th>Calculado</th><th>Diferença</th></tr>",sd=0,sc=0;
+  P.TRIB.forEach(function(k){var a=dec[k]||0,b=calc?calc[k]:0;if(!a&&!b)return;sd+=a;sc+=b;var df=b-a;
+    h+="<tr><td>"+esc(P.NOMET[k])+"</td><td class='r'>"+brl(a)+"</td><td class='r'>"+brl(b)+"</td><td class='r'>"+(df===0?"—":(df>0?"+":"−")+brl(Math.abs(df)))+"</td></tr>"});
+  var dt=sc-sd;return h+"<tr><th>Total</th><th class='r'>"+brl(sd)+"</th><th class='r'>"+brl(sc)+"</th><th class='r'>"+(dt===0?"—":(dt>0?"+":"−")+brl(Math.abs(dt)))+"</th></tr></table>"}
+function detalheMes(x){var d=x.d,r=x.r,h="<div class='mesdet'><h4>"+esc(d.pa)+" · "+(d.retificadora?"Retificadora":"Original")+" · "+esc(ROT[x.estado])+"</h4>";
+  h+="<table><tr><th>Dado do extrato</th><th>Valor</th></tr>"+
+   "<tr><td>Receita bruta do mês (RPA)</td><td class='r'>"+brl(d.rpa)+"</td></tr>"+
+   "<tr><td>RBT12 usada no cálculo</td><td class='r'>"+brl(r.rbt)+"</td></tr>"+
+   "<tr><td>Base da RBT12</td><td>"+esc(r.base||"")+"</td></tr>"+
+   (d.rba!=null?"<tr><td>Receita acumulada no ano (RBA)</td><td class='r'>"+brl(d.rba)+"</td></tr>":"")+
+   (d.fatorR!=null?"<tr><td>Fator r (extrato)</td><td>"+String(d.fatorR).replace(".",",")+" · Anexo "+esc(d.fatorAnexo)+(d.folha12!=null?" · folha 12 meses "+brl(d.folha12):"")+"</td></tr>":"")+
+   (d.sublimite?"<tr><td>Sublimite do estado</td><td class='r'>"+brl(d.sublimite)+"</td></tr>":"")+
+   (d.impedido!=null?"<tr><td>Impedido de recolher ICMS/ISS no DAS</td><td>"+(d.impedido?"Sim":"Não")+"</td></tr>":"")+
+   (d.dasNumero?"<tr><td>DAS</td><td>nº "+esc(d.dasNumero)+" · vencimento "+esc(d.venc)+" · total "+brl(d.dasTotal)+"</td></tr>":"")+"</table>";
+  r.ativ.forEach(function(a,i){
+    h+="<p><b>Atividade "+(i+1)+":</b> "+esc(a.desc.slice(0,200))+"<br>Receita: "+brl(a.rec)+"</p>";
+    if(a.calc&&a.anexoUsado){
+      h+="<p class='peq'>Anexo "+esc(a.anexoUsado)+" · "+a.faixa+"ª faixa · alíquota nominal "+pct(a.nom)+" · parcela a deduzir "+brl(Math.round(a.pdv*100))+"<br>"+
+        "Alíquota efetiva = (RBT12 "+brl(r.rbt)+" × "+pct(a.nom)+" − "+brl(Math.round(a.pdv*100))+") ÷ RBT12 = <b>"+pct(a.ef,4)+"</b>"+(a.lim5?"<br>5ª faixa: o ISS fica limitado a 5% da receita e os demais tributos usam o restante da alíquota.":"")+"</p>";
+      h+=tabTrib(a.dec,a.calc)}
+    else h+="<p class='peq'>Esta atividade não foi conferida"+(a.notas&&a.notas.length?": "+esc(a.notas.join(" "))+".":".")+"</p>"});
+  if(r.ativ.length>1&&x.calc){h+="<p><b>Total do mês</b></p>"+tabTrib(d.decl,x.calc)}
+  var ob=x.itens.filter(function(i){return i.t});
+  if(ob.length)h+="<p><b>Observações</b></p><ul>"+ob.map(function(i){return "<li>"+esc(i.t)+"</li>"}).join("")+"</ul>";
+  return h+"</div>"}
 function relatorio(){
-  var it=resultado.itens, h="<div class='doc'><h2>Conferência de PGDAS</h2><p class='peq'>Gerado em "+new Date().toLocaleDateString("pt-BR")+" · "+it.length+" PGDAS conferidos</p>";
+  var it=resultado.itens, c={ok:0,atencao:0,problema:0,nao_conferido:0}, sd=0,sc=0;
+  it.forEach(function(x){c[x.estado]++;sd+=x.d.declTotal||0;sc+=(x.calcTotal!=null?x.calcTotal:(x.d.declTotal||0))});
+  var dt=sc-sd;
+  var h="<div class='doc'><h2>Conferência de PGDAS</h2><p class='peq'>Gerado em "+new Date().toLocaleDateString("pt-BR")+" · "+it.length+" PGDAS conferidos</p>"+
+   "<table><tr><th>Corretos</th><th>Com atenção</th><th>Com problema</th><th>Não conferidos</th><th>DAS declarado</th><th>DAS correto</th><th>Diferença</th></tr><tr><td class='r'>"+c.ok+"</td><td class='r'>"+c.atencao+"</td><td class='r'>"+c.problema+"</td><td class='r'>"+c.nao_conferido+"</td><td class='r'>"+brl(sd)+"</td><td class='r'>"+brl(sc)+"</td><td class='r'>"+(dt===0?"R$ 0,00":(dt>0?"+":"−")+brl(Math.abs(dt)))+"</td></tr></table>";
   var por={};it.forEach(function(x){(por[x.d.cnpj]=por[x.d.cnpj]||[]).push(x)});
   Object.keys(por).forEach(function(k){var L=por[k],n=L[0].d;
-    h+="<h3>"+esc(n.nome)+" · CNPJ básico "+esc(n.cnpj)+"</h3><table><tr><th>Mês</th><th>Tipo</th><th>Receita</th><th>DAS declarado</th><th>DAS correto</th><th>Diferença</th><th>Situação</th></tr>"+
-    L.map(function(x){return "<tr><td>"+esc(x.d.pa)+"</td><td>"+(x.d.retificadora?"Retif.":"Original")+"</td><td class='r'>"+brl(x.d.rpa)+"</td><td class='r'>"+brl(x.d.declTotal||0)+"</td><td class='r'>"+(x.calc?brl(x.calcTotal):"—")+"</td><td class='r'>"+esc(difTxt(x))+"</td><td>"+esc(ROT[x.estado])+"</td></tr>"}).join("")+"</table>";
-    L.filter(function(x){return x.itens.some(function(i){return i.n!=="info"})||x.estado==="nao_conferido"}).forEach(function(x){
-      h+="<p><b>"+esc(x.d.pa)+"</b></p><ul>"+x.itens.filter(function(i){return i.n!=="info"||x.estado==="nao_conferido"}).map(function(i){return "<li>"+esc(i.t)+"</li>"}).join("")+"</ul>"});
+    h+="<h3>"+esc(n.nome)+" · CNPJ básico "+esc(n.cnpj)+" · "+esc(n.municipio)+"/"+esc(n.uf)+"</h3><table><tr><th>Mês</th><th>Tipo</th><th>Receita</th><th>RBT12</th><th>Faixa</th><th>DAS declarado</th><th>DAS correto</th><th>Diferença</th><th>Situação</th></tr>"+
+    L.map(function(x){var fx=x.r&&x.r.ativ&&x.r.ativ[0]&&x.r.ativ[0].faixa?x.r.ativ[0].faixa+"ª":"—";return "<tr><td>"+esc(x.d.pa)+"</td><td>"+(x.d.retificadora?"Retif.":"Original")+"</td><td class='r'>"+brl(x.d.rpa)+"</td><td class='r'>"+brl(x.r.rbt||0)+"</td><td>"+fx+"</td><td class='r'>"+brl(x.d.declTotal||0)+"</td><td class='r'>"+(x.calc?brl(x.calcTotal):"—")+"</td><td class='r'>"+esc(difTxt(x))+"</td><td>"+esc(ROT[x.estado])+"</td></tr>"}).join("")+"</table>";
+    h+="<h3>Conferência do sublimite</h3><table><tr><th>Mês</th><th>Maior entre RBT12 e RBA</th><th>Sublimite do estado</th><th>% usado</th><th>ICMS/ISS no DAS</th><th>Situação</th></tr>"+
+    L.map(function(x){var d=x.d,sub=d.sublimite||360000000,topo=Math.max(d.rba||0,d.rbt12||0),p=Math.round(topo/sub*100),st=topo>sub?(d.impedido===false?"Passou e sem impedimento: confira":"Passou: ICMS/ISS fora do DAS"):(d.impedido===true?"Impedido sem passar: confira":(p>80?"Perto do limite":"Dentro do limite"));
+      return "<tr><td>"+esc(d.pa)+"</td><td class='r'>"+brl(topo)+"</td><td class='r'>"+brl(sub)+"</td><td class='r'>"+p+"%</td><td>"+(d.impedido==null?"—":(d.impedido?"Impedido":"Não impedido"))+"</td><td>"+st+"</td></tr>"}).join("")+"</table>";
+    h+="<h3>Conta detalhada de cada mês</h3>"+L.map(detalheMes).join("");
   });
   h+="<h3>Base e limites</h3><p class='peq'>Cálculo pelas tabelas dos Anexos I a V da LC 123/2006 (redação da LC 155/2016, vigentes em 2026), a partir do que foi declarado no PGDAS-D. Não confere a receita contra as notas fiscais nem a escolha da atividade ou do anexo. Valores sem multa e juros. Apoia a análise da contadora e não substitui a legislação vigente; confirme antes de retificar.</p></div>";
   return h}
+$("btCsv").onclick=function(){ if(!resultado)return;
+  function q(s){s=String(s==null?"":s);return /[;"\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s}
+  function m(v){return v==null?"":(v/100).toFixed(2).replace(".",",")}
+  var L=[["Empresa","CNPJ básico","Mês","Tipo","Receita","RBT12","Faixa","DAS declarado","DAS correto","Diferença","Situação"]];
+  resultado.itens.forEach(function(x){var fx=x.r&&x.r.ativ&&x.r.ativ[0]&&x.r.ativ[0].faixa||"";L.push([x.d.nome,x.d.cnpj,x.d.pa,x.d.retificadora?"Retificadora":"Original",m(x.d.rpa),m(x.r.rbt),fx,m(x.d.declTotal),x.calc?m(x.calcTotal):"",x.difTotal==null?"":m(x.difTotal),ROT[x.estado].replace(/^\S+\s/,"")])});
+  var b=new Blob(["\ufeff"+L.map(function(r){return r.map(q).join(";")}).join("\r\n")],{type:"text/csv;charset=utf-8"});
+  var a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="Conferencia PGDAS.csv";document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500)};
 $("btPdf").onclick=function(){ if(!resultado)return;
   $("impressao").innerHTML="<div class='folha'><img class='tb-h' src='"+TB_H+"' alt=''><img class='tb-f' src='"+TB_F+"' alt=''><table class='pg'><thead><tr><td><div class='sp-t'></div></td></tr></thead><tfoot><tr><td><div class='sp-b'></div></td></tr></tfoot><tbody><tr><td class='c'>"+relatorio()+"</td></tr></tbody></table></div>";
   var t=document.title;document.title="Conferencia PGDAS";setTimeout(function(){window.print();document.title=t},60)};
